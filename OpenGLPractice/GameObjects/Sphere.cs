@@ -1,4 +1,5 @@
 ﻿using OpenGL;
+using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice.GameObjects
 {

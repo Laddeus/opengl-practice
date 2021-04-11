@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using OpenGL;
 
-namespace OpenGLPractice
+namespace OpenGLPractice.Utilities
 {
     internal static class GLUtilities
     {

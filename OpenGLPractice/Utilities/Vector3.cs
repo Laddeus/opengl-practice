@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenGLPractice
+namespace OpenGLPractice.Utilities
 {
     /// <summary>
     /// The <see cref="Vector3"/> struct.

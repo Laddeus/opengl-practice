@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using OpenGL;
 
-namespace OpenGLPractice
+namespace OpenGLPractice.Utilities
 {
     internal class Transform
     {

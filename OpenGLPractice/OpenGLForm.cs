@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using OpenGLPractice.GameObjects;
+using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice
 {
-    public partial class Form1 : Form
+    public partial class OpenGLForm : Form
     {
         cOGL cGL;
 
-        public Form1()
+        public OpenGLForm()
         {
             InitializeComponent();
             cGL = new cOGL(GameScene);

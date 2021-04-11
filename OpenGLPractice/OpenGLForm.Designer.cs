@@ -2,7 +2,7 @@
 
 namespace OpenGLPractice
 {
-    partial class Form1
+    partial class OpenGLForm
     {
         /// <summary>
         /// Required designer variable.

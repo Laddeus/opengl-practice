@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using OpenGL;
 using OpenGLPractice.GameObjects;
+using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice
 {

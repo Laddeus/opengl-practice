@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenGL;
+using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice.GameObjects
 {

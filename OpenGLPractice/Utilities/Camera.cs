@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenGL;
 
-namespace OpenGLPractice
+namespace OpenGLPractice.Utilities
 {
     internal class Camera
     {
