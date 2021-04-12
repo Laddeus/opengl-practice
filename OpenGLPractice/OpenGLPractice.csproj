@@ -49,6 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameObjects\Cup.cs" />
+    <Compile Include="GameObjects\HeliCup.cs" />
+    <Compile Include="GameObjects\Rod.cs" />
+    <Compile Include="GameObjects\Telescope.cs" />
     <Compile Include="Utilities\Camera.cs" />
     <Compile Include="cOGL.cs" />
     <Compile Include="OpenGLForm.cs">
@@ -58,7 +62,6 @@
       <DependentUpon>OpenGLForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GameObjects\Arrow.cs" />
-    <Compile Include="GameObjects\Axes.cs" />
     <Compile Include="GameObjects\Cube.cs" />
     <Compile Include="GameObjects\CubeWithArrow.cs" />
     <Compile Include="GameObjects\GameObject.cs" />

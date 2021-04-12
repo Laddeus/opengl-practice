@@ -3,7 +3,7 @@ using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice.GameObjects
 {
-    class Arrow : GameObject
+    internal class Arrow : GameObject
     {
         private GLUquadric m_QuadricObject;
 

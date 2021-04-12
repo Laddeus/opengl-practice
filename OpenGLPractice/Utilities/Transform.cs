@@ -101,9 +101,7 @@ namespace OpenGLPractice.Utilities
         {
             performTransformation(() =>
             {
-                //GL.glTranslatef(Position.X, Position.Y, Position.Z);
                 GL.glRotatef(i_RotationAngle, i_X, i_Y, i_Z);
-                //GL.glTranslatef(-Position.X, -Position.Y, -Position.Z);
             }, r_AccumulatedRotationMatrix);
 
             calculateDirectionVectors();
@@ -118,16 +116,10 @@ namespace OpenGLPractice.Utilities
         {
             performTransformation(() =>
             {
-                //float[] rotationMatrix = getObjectRotatioMatrix();
-                //float[] rotationMatrixInverse = getObjectInverseRotationMatrix();
-                //GL.glTranslatef(m_Position.X, m_Position.Y, m_Position.Z);
-                //GL.glMultMatrixf(rotationMatrix);
                 GL.glScalef(i_X, i_Y, i_Z);
-                //GL.glMultMatrixf(rotationMatrixInverse);
-                //GL.glTranslatef(-m_Position.X, -m_Position.Y, -m_Position.Z);
             }, r_AccumulatedScaleMatrix);
 
-            m_Scale = m_Scale * new Vector3(i_X, i_Y, i_Z);
+            m_Scale *= new Vector3(i_X, i_Y, i_Z);
         }
 
         private void performTransformation(Action i_TransformationAction, float[] i_AccumulatedTransformationMatrix)
@@ -204,7 +196,7 @@ namespace OpenGLPractice.Utilities
                 float rowResult = 0;
                 for (int j = 0; j < k_MatrixDimension; j++)
                 {
-                    rowResult += i_RotationMatrixRelativeToObject[j * k_MatrixDimension + i] * i_VectorToTransform[j];
+                    rowResult += i_RotationMatrixRelativeToObject[(j * k_MatrixDimension) + i] * i_VectorToTransform[j];
                 }
 
                 vectorTransformed[i] = rowResult;
@@ -222,7 +214,7 @@ namespace OpenGLPractice.Utilities
             {
                 for (int j = i; j < k_MatrixDimension; j++)
                 {
-                    rotationMatrix[i * k_MatrixDimension + j] = rotationMatrix[j * k_MatrixDimension + i];
+                    rotationMatrix[(i * k_MatrixDimension) + j] = rotationMatrix[(j * k_MatrixDimension) + i];
                 }
             }
 

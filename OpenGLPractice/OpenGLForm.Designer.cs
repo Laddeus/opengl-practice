@@ -2,7 +2,7 @@
 
 namespace OpenGLPractice
 {
-    partial class OpenGLForm
+    public partial class OpenGLForm
     {
         /// <summary>
         /// Required designer variable.
@@ -19,6 +19,7 @@ namespace OpenGLPractice
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -380,7 +381,7 @@ namespace OpenGLPractice
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.AccessibleName = "";
+            this.splitContainer1.Panel1.AccessibleName = string.Empty;
             this.splitContainer1.Panel1.Controls.Add(this.panelGameObjectsList);
             // 
             // splitContainer1.Panel2

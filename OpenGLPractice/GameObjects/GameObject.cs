@@ -59,15 +59,15 @@ namespace OpenGLPractice.GameObjects
         {
             GL.glPushMatrix();
 
-            float[] matrixBeforeOwnTransformations = new float[Transform.TransformationMatrixSize];
-
-            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, matrixBeforeOwnTransformations);
-            GL.glLoadMatrixf(matrixBeforeOwnTransformations);
-            GL.glMultMatrixf(Transform.TransformationMatrix);
-
+            applyAccumulatedTransformations();
             drawGameObject();
 
             GL.glPopMatrix();
+        }
+
+        private void applyAccumulatedTransformations()
+        {
+            GL.glMultMatrixf(Transform.TransformationMatrix);
         }
 
         private void drawGameObject()
@@ -143,21 +143,28 @@ namespace OpenGLPractice.GameObjects
 
         public void CallList()
         {
+            GL.glPushMatrix();
+
             if (!m_IsListInitialized)
             {
                 initializeGameObjectDefinitionList();
             }
 
+            applyAccumulatedTransformations();
             GLUtilities.CallGLMethod(() => GL.glCallList(r_GLListID));
+
+            GL.glPopMatrix();
         }
 
         private void initializeGameObjectDefinitionList()
         {
+            GL.glPushMatrix();
             GL.glNewList(r_GLListID, GL.GL_COMPILE);
 
             DefineGameObject();
 
             GL.glEndList();
+            GL.glPopMatrix();
 
             m_IsListInitialized = true;
         }

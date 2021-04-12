@@ -35,8 +35,8 @@ namespace OpenGLPractice.Utilities
         private void setEyePositionAroundLookAt()
         {
             double radianAngle = LookAtAngle * Math.PI / 180.0;
-            EyePosition = new Vector3(LookAtDistance * (float)Math.Cos(radianAngle) + LookAtPosition.X, EyePosition.Y,
-                LookAtDistance * (float)Math.Sin(radianAngle) + LookAtPosition.Z);
+            EyePosition = new Vector3((LookAtDistance * (float)Math.Cos(radianAngle)) + LookAtPosition.X, EyePosition.Y,
+                (LookAtDistance * (float)Math.Sin(radianAngle)) + LookAtPosition.Z);
         }
     }
 }

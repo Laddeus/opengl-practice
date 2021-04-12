@@ -7,10 +7,15 @@ namespace OpenGLPractice.GameObjects
     internal class Cube : GameObject
     {
         public Vector3 FrontFaceColor { get; set; }
+
         public Vector3 BackFaceColor { get; set; }
+
         public Vector3 RightFaceColor { get; set; }
+
         public Vector3 LeftFaceColor { get; set; }
+
         public Vector3 TopFaceColor { get; set; }
+
         public Vector3 BottomFaceColor { get; set; }
 
         public Cube(string i_Name) : base(i_Name)
@@ -63,6 +68,7 @@ namespace OpenGLPractice.GameObjects
             GL.glVertex3f(-0.5f, 0.5f, -0.5f);
 
             GL.glColor3f(BottomFaceColor.X, BottomFaceColor.Y, BottomFaceColor.Z);
+
             // bottom face
             GL.glVertex3f(-0.5f, -0.5f, 0.5f);
             GL.glVertex3f(-0.5f, -0.5f, -0.5f);

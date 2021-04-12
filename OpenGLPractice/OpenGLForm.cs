@@ -10,33 +10,32 @@ namespace OpenGLPractice
 {
     public partial class OpenGLForm : Form
     {
-        cOGL cGL;
+        private readonly Queue<Keys> r_KeysPressed = new Queue<Keys>();
+        private readonly Dictionary<Keys, Action> r_KeyActionDictionary;
+        private cOGL cGL;
 
         public OpenGLForm()
         {
             InitializeComponent();
             cGL = new cOGL(GameScene);
-            //apply the bars values as cGL.ScrollValue[..] properties 
-            //!!!
-            //KeyPreview = true;
 
             ActiveControl = GameScene;
             GameScene.KeyDown += GameScene_KeyDown;
             GameScene.MouseWheel += GameScene_MouseWheel;
             r_KeyActionDictionary = new Dictionary<Keys, Action>()
             {
-                {Keys.W, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.ForwardVector)},
-                {Keys.S, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.BackwardVector)},
-                {Keys.A, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.LeftVector)},
-                {Keys.D, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.RightVector)},
-                {Keys.Q, () => cGL.Camera.LookAtAngle -= 2},
-                {Keys.E, () => cGL.Camera.LookAtAngle += 2},
-                {Keys.Z, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.UpVector)},
-                {Keys.C, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.UpVector)},
-                {Keys.U, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.RightVector)},
-                {Keys.J, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.RightVector)},
-                {Keys.K, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.ForwardVector)},
-                {Keys.H, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.ForwardVector)},
+                { Keys.W, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.ForwardVector) },
+                { Keys.S, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.BackwardVector) },
+                { Keys.A, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.LeftVector) },
+                { Keys.D, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.RightVector) },
+                { Keys.Q, () => cGL.Camera.LookAtAngle -= 2 },
+                { Keys.E, () => cGL.Camera.LookAtAngle += 2 },
+                { Keys.Z, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.UpVector) },
+                { Keys.C, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.UpVector) },
+                { Keys.U, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.RightVector) },
+                { Keys.J, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.RightVector) },
+                { Keys.K, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.ForwardVector) },
+                { Keys.H, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.ForwardVector) },
             };
 
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
@@ -60,18 +59,9 @@ namespace OpenGLPractice
 
         private void GameScene_KeyDown(object i_Sender, KeyEventArgs i_KeyEventArgs)
         {
-
             r_KeysPressed.Enqueue(i_KeyEventArgs.KeyCode);
 
             i_KeyEventArgs.Handled = true;
-        }
-
-        private readonly Queue<Keys> r_KeysPressed = new Queue<Keys>();
-        private readonly Dictionary<Keys, Action> r_KeyActionDictionary;
-
-        private void GameCanvas_Paint(object sender, PaintEventArgs e)
-        {
-            cGL.Draw();
         }
 
         private void GameCanvas_Resize(object sender, EventArgs e)
@@ -106,10 +96,27 @@ namespace OpenGLPractice
         {
             string gameObjectName = textBoxGameObjectName.Text;
             Type gameObjectType = Type.GetType($"{GetType().Namespace}.GameObjects.{comboBoxGameObjects.SelectedItem}");
-            ConstructorInfo gameObjectConstrutConstructorInfo = gameObjectType.GetConstructor(new Type[] { typeof(string) });
-            GameObject gameObjectToAdd = (GameObject)gameObjectConstrutConstructorInfo.Invoke(new object[] { gameObjectName });
+            ConstructorInfo gameObjectConstrutConstructorInfo = gameObjectType?.GetConstructors()[0];
 
-            gameObjectBindingSource.Add(gameObjectToAdd);
+            if (gameObjectConstrutConstructorInfo != null)
+            {
+                int parameterCount = gameObjectConstrutConstructorInfo.GetParameters().Length;
+                object[] parameters = new object[parameterCount];
+
+                parameters[0] = gameObjectName;
+
+                for (int i = 1; i < parameterCount; i++)
+                {
+                    parameters[i] = Type.Missing;
+                }
+
+                GameObject gameObjectToAdd = (GameObject)gameObjectConstrutConstructorInfo.Invoke(parameters);
+                gameObjectBindingSource.Add(gameObjectToAdd);
+            }
+            else
+            {
+                MessageBox.Show($"Cannot create instance of type {gameObjectType.Name}", "Error", MessageBoxButtons.OK);
+            }
         }
 
         private void listBoxGameObjects_SelectedIndexChanged(object sender, EventArgs e)
@@ -158,7 +165,6 @@ namespace OpenGLPractice
                         default:
                             break;
                     }
-
                 }
             }
         }
