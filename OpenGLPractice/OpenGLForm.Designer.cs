@@ -32,12 +32,12 @@ namespace OpenGLPractice
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.Label xLabel;
-            System.Windows.Forms.Label yLabel;
-            System.Windows.Forms.Label zLabel;
-            System.Windows.Forms.Label label1;
-            System.Windows.Forms.Label label2;
-            System.Windows.Forms.Label label3;
+            this.xLabel = new System.Windows.Forms.Label();
+            this.yLabel = new System.Windows.Forms.Label();
+            this.zLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.GameLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.panelGameObjectDetailsView = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -65,12 +65,6 @@ namespace OpenGLPractice
             this.panelGameObjectsList = new System.Windows.Forms.Panel();
             this.listBoxGameObjects = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            xLabel = new System.Windows.Forms.Label();
-            yLabel = new System.Windows.Forms.Label();
-            zLabel = new System.Windows.Forms.Label();
-            label1 = new System.Windows.Forms.Label();
-            label2 = new System.Windows.Forms.Label();
-            label3 = new System.Windows.Forms.Label();
             this.panelGameObjectDetailsView.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameObjectBindingSource)).BeginInit();
@@ -88,57 +82,57 @@ namespace OpenGLPractice
             // 
             // xLabel
             // 
-            xLabel.AutoSize = true;
-            xLabel.Location = new System.Drawing.Point(20, 27);
-            xLabel.Name = "xLabel";
-            xLabel.Size = new System.Drawing.Size(17, 13);
-            xLabel.TabIndex = 2;
-            xLabel.Text = "X:";
+            this.xLabel.AutoSize = true;
+            this.xLabel.Location = new System.Drawing.Point(20, 27);
+            this.xLabel.Name = "xLabel";
+            this.xLabel.Size = new System.Drawing.Size(17, 13);
+            this.xLabel.TabIndex = 2;
+            this.xLabel.Text = "X:";
             // 
             // yLabel
             // 
-            yLabel.AutoSize = true;
-            yLabel.Location = new System.Drawing.Point(20, 53);
-            yLabel.Name = "yLabel";
-            yLabel.Size = new System.Drawing.Size(17, 13);
-            yLabel.TabIndex = 4;
-            yLabel.Text = "Y:";
+            this.yLabel.AutoSize = true;
+            this.yLabel.Location = new System.Drawing.Point(20, 53);
+            this.yLabel.Name = "yLabel";
+            this.yLabel.Size = new System.Drawing.Size(17, 13);
+            this.yLabel.TabIndex = 4;
+            this.yLabel.Text = "Y:";
             // 
             // zLabel
             // 
-            zLabel.AutoSize = true;
-            zLabel.Location = new System.Drawing.Point(20, 79);
-            zLabel.Name = "zLabel";
-            zLabel.Size = new System.Drawing.Size(17, 13);
-            zLabel.TabIndex = 6;
-            zLabel.Text = "Z:";
+            this.zLabel.AutoSize = true;
+            this.zLabel.Location = new System.Drawing.Point(20, 79);
+            this.zLabel.Name = "zLabel";
+            this.zLabel.Size = new System.Drawing.Size(17, 13);
+            this.zLabel.TabIndex = 6;
+            this.zLabel.Text = "Z:";
             // 
             // label1
             // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(20, 79);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(17, 13);
-            label1.TabIndex = 6;
-            label1.Text = "Z:";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(20, 79);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(17, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Z:";
             // 
             // label2
             // 
-            label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(20, 53);
-            label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(17, 13);
-            label2.TabIndex = 4;
-            label2.Text = "Y:";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(20, 53);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(17, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Y:";
             // 
             // label3
             // 
-            label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(20, 27);
-            label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(17, 13);
-            label3.TabIndex = 2;
-            label3.Text = "X:";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(20, 27);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(17, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "X:";
             // 
             // GameLoopTimer
             // 
@@ -168,11 +162,11 @@ namespace OpenGLPractice
             // 
             this.panel2.Controls.Add(this.zScaleTextBox);
             this.panel2.Controls.Add(this.buttonResetScale);
-            this.panel2.Controls.Add(label1);
+            this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.yScaleTextBox);
-            this.panel2.Controls.Add(label2);
+            this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.xScaleTextBox);
-            this.panel2.Controls.Add(label3);
+            this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.labelScale);
             this.panel2.Location = new System.Drawing.Point(12, 170);
             this.panel2.Name = "panel2";
@@ -191,7 +185,7 @@ namespace OpenGLPractice
             // 
             // gameObjectBindingSource
             // 
-            this.gameObjectBindingSource.DataSource = typeof(GameObject);
+            this.gameObjectBindingSource.DataSource = typeof(OpenGLPractice.GameObjects.GameObject);
             // 
             // buttonResetScale
             // 
@@ -237,11 +231,11 @@ namespace OpenGLPractice
             // 
             this.panel1.Controls.Add(this.zPositionTextBox);
             this.panel1.Controls.Add(this.buttonResetPosition);
-            this.panel1.Controls.Add(zLabel);
+            this.panel1.Controls.Add(this.zLabel);
             this.panel1.Controls.Add(this.yPositionTextBox);
-            this.panel1.Controls.Add(yLabel);
+            this.panel1.Controls.Add(this.yLabel);
             this.panel1.Controls.Add(this.xPositionTextBox);
-            this.panel1.Controls.Add(xLabel);
+            this.panel1.Controls.Add(this.xLabel);
             this.panel1.Controls.Add(this.labelObjectPosition);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
@@ -381,7 +375,7 @@ namespace OpenGLPractice
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.AccessibleName = string.Empty;
+            this.splitContainer1.Panel1.AccessibleName = "";
             this.splitContainer1.Panel1.Controls.Add(this.panelGameObjectsList);
             // 
             // splitContainer1.Panel2
@@ -429,13 +423,13 @@ namespace OpenGLPractice
             this.splitContainer2.SplitterDistance = 476;
             this.splitContainer2.TabIndex = 0;
             // 
-            // Form1
+            // OpenGLForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(860, 506);
             this.Controls.Add(this.splitContainer1);
-            this.Name = "Form1";
+            this.Name = "OpenGLForm";
             this.Text = "Form1";
             this.panelGameObjectDetailsView.ResumeLayout(false);
             this.panelGameObjectDetailsView.PerformLayout();
@@ -485,5 +479,11 @@ namespace OpenGLPractice
         private System.Windows.Forms.TextBox xScaleTextBox;
         private System.Windows.Forms.Label labelScale;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label xLabel;
+        private System.Windows.Forms.Label yLabel;
+        private System.Windows.Forms.Label zLabel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenGL;
+﻿using OpenGL;
 
 namespace OpenGLPractice.GameObjects
 {
@@ -14,9 +9,9 @@ namespace OpenGLPractice.GameObjects
         private readonly float r_OuterRingWidth;
         private readonly float r_Height;
 
-        public Rod(string i_Name, float i_InnerCylinderRadius = 0.1f, float i_OuterRingWidth = 0.1f, float i_Height = 1) : base(i_Name)
+        public Rod(string i_Name, float i_InnerRodRadius = 0.1f, float i_OuterRingWidth = 0.05f, float i_Height = 1) : base(i_Name)
         {
-            r_InnerCylinderRadius = i_InnerCylinderRadius;
+            r_InnerCylinderRadius = i_InnerRodRadius;
             r_OuterRingWidth = i_OuterRingWidth;
             r_Height = i_Height;
             r_OuterCylinderRadius = r_InnerCylinderRadius + r_OuterRingWidth;

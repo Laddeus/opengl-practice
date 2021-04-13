@@ -38,16 +38,8 @@ namespace OpenGLPractice
                 { Keys.H, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.ForwardVector) },
             };
 
-            Assembly currentAssembly = Assembly.GetExecutingAssembly();
-            IEnumerable<Type> allTypes = currentAssembly.GetTypes().Where(i_Type => i_Type.Namespace == $"{GetType().Namespace}.GameObjects");
-
-            foreach (Type type in allTypes)
-            {
-                if (type.BaseType == typeof(GameObject))
-                {
-                    comboBoxGameObjects.Items.Add(type.Name);
-                }
-            }
+            object[] allGameObjectTypeNames = GameObjectCreator.GetAllGameObjectTypeNames();
+            comboBoxGameObjects.Items.AddRange(allGameObjectTypeNames);
 
             gameObjectBindingSource.DataSource = cGL.GameObjects;
         }
@@ -95,28 +87,10 @@ namespace OpenGLPractice
         private void buttonAddGameObjectToScene_Click(object sender, EventArgs e)
         {
             string gameObjectName = textBoxGameObjectName.Text;
-            Type gameObjectType = Type.GetType($"{GetType().Namespace}.GameObjects.{comboBoxGameObjects.SelectedItem}");
-            ConstructorInfo gameObjectConstrutConstructorInfo = gameObjectType?.GetConstructors()[0];
+            string gameObjectSelected = comboBoxGameObjects.SelectedItem.ToString();
+            GameObject gameObjectCreated = GameObjectCreator.CreateGameObjectDefault(gameObjectSelected, gameObjectName);
 
-            if (gameObjectConstrutConstructorInfo != null)
-            {
-                int parameterCount = gameObjectConstrutConstructorInfo.GetParameters().Length;
-                object[] parameters = new object[parameterCount];
-
-                parameters[0] = gameObjectName;
-
-                for (int i = 1; i < parameterCount; i++)
-                {
-                    parameters[i] = Type.Missing;
-                }
-
-                GameObject gameObjectToAdd = (GameObject)gameObjectConstrutConstructorInfo.Invoke(parameters);
-                gameObjectBindingSource.Add(gameObjectToAdd);
-            }
-            else
-            {
-                MessageBox.Show($"Cannot create instance of type {gameObjectType.Name}", "Error", MessageBoxButtons.OK);
-            }
+            gameObjectBindingSource.Add(gameObjectCreated);
         }
 
         private void listBoxGameObjects_SelectedIndexChanged(object sender, EventArgs e)

@@ -14,8 +14,6 @@ namespace OpenGLPractice.GameObjects
 
         private readonly uint r_GLListID;
 
-        private bool m_IsListInitialized = false;
-
         protected readonly GLUquadric r_gluQuadric;
 
         private readonly uint r_LocalDirectionCoordinates;
@@ -31,10 +29,12 @@ namespace OpenGLPractice.GameObjects
             }
         }
 
+        public List<GameObject> Children { get; }
+
         protected GameObject(string i_Name)
         {
+            Children = new List<GameObject>();
             Transform = new Transform();
-            Children = new Dictionary<string, GameObject>();
             r_gluQuadric = GLU.gluNewQuadric();
 
             r_GLListID = GL.glGenLists(1);
@@ -50,8 +50,6 @@ namespace OpenGLPractice.GameObjects
         {
             GLU.gluDeleteQuadric(r_gluQuadric);
         }
-
-        public Dictionary<string, GameObject> Children { get; }
 
         protected abstract void DefineGameObject();
 
@@ -141,22 +139,7 @@ namespace OpenGLPractice.GameObjects
             GL.glEndList();
         }
 
-        public void CallList()
-        {
-            GL.glPushMatrix();
-
-            if (!m_IsListInitialized)
-            {
-                initializeGameObjectDefinitionList();
-            }
-
-            applyAccumulatedTransformations();
-            GLUtilities.CallGLMethod(() => GL.glCallList(r_GLListID));
-
-            GL.glPopMatrix();
-        }
-
-        private void initializeGameObjectDefinitionList()
+        public void InitializeList()
         {
             GL.glPushMatrix();
             GL.glNewList(r_GLListID, GL.GL_COMPILE);
@@ -165,8 +148,16 @@ namespace OpenGLPractice.GameObjects
 
             GL.glEndList();
             GL.glPopMatrix();
+        }
 
-            m_IsListInitialized = true;
+        public void CallList()
+        {
+            GL.glPushMatrix();
+
+            applyAccumulatedTransformations();
+            GLUtilities.CallGLMethod(() => GL.glCallList(r_GLListID));
+
+            GL.glPopMatrix();
         }
     }
 }

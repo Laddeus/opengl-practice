@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenGL;
+﻿using OpenGL;
 using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice.GameObjects
@@ -16,6 +11,9 @@ namespace OpenGLPractice.GameObjects
         private const double k_CupTopRadius = 0.7;
         private const double k_CupLipOuterRadius = 0.05;
         private const double k_CupLipInnerRadius = 0.7;
+
+        public float Height => k_CupHeight * Transform.Scale.Z;
+
         private Vector3 Color;
 
         public Cup(string i_Name) : base(i_Name)

@@ -11,9 +11,6 @@ namespace OpenGLPractice
         private readonly Control r_Panel;
         private int m_Width;
         private int m_Height;
-
-        public CubeWithArrow CubeWithArrow { get; }
-
         private GLUquadric obj;
 
         public Camera Camera { get; }
@@ -128,8 +125,8 @@ namespace OpenGLPractice
             }
 
             Camera.ApplyChanges();
-
             DrawOldAxes();
+
             foreach (GameObject gameObject in GameObjects)
             {
                 gameObject.Draw();
@@ -227,9 +224,6 @@ namespace OpenGLPractice
 
             GL.glMatrixMode(GL.GL_MODELVIEW);
             GL.glLoadIdentity();
-
-            GL.glEnable(GL.GL_LIGHTING);
-            GL.glEnable(GL.GL_LIGHT0);
         }
     }
 }
