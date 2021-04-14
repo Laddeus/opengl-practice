@@ -8,7 +8,6 @@ namespace OpenGLPractice
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        /// 
         [STAThread]
         public static void Main()
         {

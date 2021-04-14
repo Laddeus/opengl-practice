@@ -7,7 +7,7 @@ namespace OpenGLPractice.GameObjects
     {
         private GLUquadric m_QuadricObject;
 
-        public Vector3 Color { get; set; }
+        public Vector3 Color { get; set; } = new Vector3(0);
 
         public Arrow(string i_Name) : base(i_Name)
         {
@@ -23,6 +23,10 @@ namespace OpenGLPractice.GameObjects
         {
             GL.glColor3fv(Color.ToArray);
             GLU.gluCylinder(m_QuadricObject, 0.2, 0, 0.5, 20, 20);
+        }
+
+        public override void Tick(float i_DeltaTime)
+        {
         }
     }
 }

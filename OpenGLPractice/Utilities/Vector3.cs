@@ -8,10 +8,12 @@ namespace OpenGLPractice.Utilities
     /// </summary>
     internal struct Vector3
     {
+        private const int k_VectorSize = 3;
+
         /// <summary>
         /// The zero vector (0, 0, 0).
         /// </summary>
-        public static Vector3 Zero => new Vector3(0, 0, 0);
+        public static Vector3 Zero => new Vector3(0);
 
         /// <summary>
         /// The right vector (1, 0, 0).
@@ -43,35 +45,63 @@ namespace OpenGLPractice.Utilities
         /// </summary>
         public static Vector3 Backward => -Forward;
 
-        /// <summary>
-        /// The x coordinate of the vector.
-        /// </summary>
-        public float X { get; set; }
+        private readonly float[] r_VectorValues;
 
         /// <summary>
-        /// The y coordinate of the vector.
+        /// The x coordinate of this <see cref="Vector3"/> instance.
         /// </summary>
-        public float Y { get; set; }
+        public float X
+        {
+            get => r_VectorValues[0];
+            set => r_VectorValues[0] = value;
+        }
 
         /// <summary>
-        /// The z coordinate of the vector.
+        /// The y coordinate of this <see cref="Vector3"/> instance.
         /// </summary>
-        public float Z { get; set; }
+        public float Y
+        {
+            get => r_VectorValues[1];
+            set => r_VectorValues[1] = value;
+        }
 
         /// <summary>
-        /// The length also known as norm -> |V|.
+        /// The z coordinate of this <see cref="Vector3"/> instance.
+        /// </summary>
+        public float Z
+        {
+            get => r_VectorValues[2];
+            set => r_VectorValues[2] = value;
+        }
+
+        /// <summary>
+        /// The length or norm of this <see cref="Vector3"/> instance.
         /// </summary>
         public float Norm => Distance(Zero);
 
         /// <summary>
-        /// The vector normalized.
+        /// This <see cref="Vector3"/> instance normalized.
         /// </summary>
         public Vector3 Normalized => this / Norm;
 
         /// <summary>
-        /// The vector represented with an array of floats of size 3.
+        /// This <see cref="Vector3"/> instance represented with an array of floats of size 3.
         /// </summary>
         public float[] ToArray => new float[] { X, Y, Z };
+
+        /// <summary>
+        /// Converts this <see cref="Vector3"/> instance to <see cref="Vector2"/>.
+        /// </summary>
+        public Vector2 ToVector2 => new Vector2(X, Y);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Vector3" /> struct.
+        /// </summary>
+        /// <param name="i_Scalar"></param>
+        public Vector3(float i_Scalar)
+        {
+            r_VectorValues = new float[] { i_Scalar, i_Scalar, i_Scalar };
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Vector3" /> struct.
@@ -79,7 +109,7 @@ namespace OpenGLPractice.Utilities
         /// <param name="i_X"></param>
         /// <param name="i_Y"></param>
         /// <param name="i_Z"></param>
-        public Vector3(float i_X, float i_Y, float i_Z)
+        public Vector3(float i_X, float i_Y, float i_Z) : this(0)
         {
             X = i_X;
             Y = i_Y;
@@ -91,9 +121,9 @@ namespace OpenGLPractice.Utilities
         /// </summary>
         /// <param name="i_VectorArray"></param>
         /// <exception cref="Exception">Thrown when the length of <see cref="i_VectorArray"/> is less than 3</exception>
-        public Vector3(float[] i_VectorArray)
+        public Vector3(float[] i_VectorArray) : this(0)
         {
-            if (i_VectorArray.Length >= 3)
+            if (i_VectorArray.Length >= k_VectorSize)
             {
                 X = i_VectorArray[0];
                 Y = i_VectorArray[1];
@@ -101,12 +131,51 @@ namespace OpenGLPractice.Utilities
             }
             else
             {
-                throw new Exception("Length of array argument must be 3 or more.");
+                throw new Exception($"Length of array argument must be {k_VectorSize} or more.");
             }
         }
 
         /// <summary>
-        /// Sums up the X, Y, and Z values up to one value.
+        /// Initializes a new instance of the <see cref="Vector3" /> struct.
+        /// </summary>
+        /// <param name="i_VectorToCopy"></param>
+        public Vector3(Vector3 i_VectorToCopy) : this(0)
+        {
+            X = i_VectorToCopy.X;
+            Y = i_VectorToCopy.Y;
+            Z = i_VectorToCopy.Z;
+        }
+
+        /// <summary>
+        /// Gets value of <see cref="Vector3" /> by index.
+        /// </summary>
+        /// <param name="i_Row"></param>
+        /// <returns>The value of <see cref="Vector3"/> in the specified index position</returns>
+        public float this[int i_Row]
+        {
+            get
+            {
+                if (i_Row >= k_VectorSize)
+                {
+                    throw new IndexOutOfRangeException($"{GetType().Name} is of size {k_VectorSize}");
+                }
+
+                return r_VectorValues[i_Row];
+            }
+
+            set
+            {
+                if (i_Row >= k_VectorSize)
+                {
+                    throw new IndexOutOfRangeException($"{GetType().Name} is of size {k_VectorSize}");
+                }
+
+                r_VectorValues[i_Row] = value;
+            }
+        }
+
+        /// <summary>
+        /// Performs a sum of all elements in the specified <see cref="Vector3"/> instance.
         /// </summary>
         /// <param name="i_Vector"></param>
         /// <returns>A sum of the X, Y, and Z values.</returns>
@@ -116,7 +185,7 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Determines whether the two vectors are equal.
+        /// Determines whether this instance and the specified <see cref="Vector3"/> are equal.
         /// </summary>
         /// <param name="i_FirstVector"></param>
         /// <param name="i_SecondVector"></param>
@@ -127,7 +196,7 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Determines whether the two vectors are not equal.
+        /// Determines whether this instance and the specified <see cref="Vector3"/> are NOT equal.
         /// </summary>
         /// <param name="i_FirstVector"></param>
         /// <param name="i_SecondVector"></param>
@@ -138,17 +207,17 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Performs negation on the supplied vector.
+        /// Performs vector negation between the specified <see cref="Vector3"/>.
         /// </summary>
         /// <param name="i_VectorToNegate"></param>
         /// <returns>A new vector which is the negation of the supplied vector.</returns>
         public static Vector3 operator -(Vector3 i_VectorToNegate)
         {
-            return new Vector3(-i_VectorToNegate.X, -i_VectorToNegate.Y, -i_VectorToNegate.Z);
+            return (-1) * i_VectorToNegate;
         }
 
         /// <summary>
-        /// Performs vector addition between two vectors.
+        /// Performs vector-vector addition between the specified <see cref="Vector3"/> and the second <see cref="Vector3"/>.
         /// </summary>
         /// <param name="i_FirstVector"></param>
         /// <param name="i_SecondVector"></param>
@@ -160,7 +229,7 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Performs vector subtraction between two vectors.
+        /// Performs vector-vector subtraction between the specified <see cref="Vector3"/> and the second <see cref="Vector3"/>.
         /// </summary>
         /// <param name="i_FirstVector"></param>
         /// <param name="i_SecondVector"></param>
@@ -176,7 +245,7 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Multiplies a vector by a scalar.
+        /// Performs scalar-vector multiplication between the specified <see cref="float"/> and <see cref="Vector3"/>.
         /// </summary>
         /// <param name="i_Scalar"></param>
         /// <param name="i_SecondVector"></param>
@@ -187,7 +256,7 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Divides a vector by a scalar.
+        /// Performs vector-scalar division between the specified  <see cref="Vector3"/> and <see cref="float"/>.
         /// </summary>
         /// <param name="i_Vector"></param>
         /// <param name="i_Scalar"></param>
@@ -198,7 +267,7 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Multiplies a vector by a scalar.
+        /// Performs scalar-vector multiplication between the specified <see cref="Vector3"/> and <see cref="float"/>.
         /// </summary>
         /// <param name="i_Vector"></param>
         /// <param name="i_Scalar"></param>
@@ -209,20 +278,29 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Performs the dot product on the calling vector with the supplied vector.
+        /// Performs a sum of all elements in this <see cref="Vector3"/> instance.
         /// </summary>
-        /// <param name="i_Vector"></param>
-        /// <returns>A new vector which is the dot product between the calling vector and the supplied vector.</returns>
-        public float DotProduct(Vector3 i_Vector)
+        /// <returns>A sum of the X, Y, and Z values.</returns>
+        public float Sum()
         {
-            return (X * i_Vector.X) + (Y * i_Vector.Y) + (Z * i_Vector.Z);
+            return X + Y + Z;
         }
 
         /// <summary>
-        /// Performs the cross product between the calling vector and the supplied vector.
+        /// Performs the dot product of this instance and specified <see cref="Vector3"/>.
         /// </summary>
         /// <param name="i_Vector"></param>
-        /// <returns>A new vector which is the cross product between the calling vector and the supplied vector.</returns>
+        /// <returns>A new vector which is the dot product of this instance and specified <see cref="Vector3"/>.</returns>
+        public float DotProduct(Vector3 i_Vector)
+        {
+            return (this * i_Vector).Sum();
+        }
+
+        /// <summary>
+        /// Performs the cross product of this instance and specified <see cref="Vector3"/>.
+        /// </summary>
+        /// <param name="i_Vector"></param>
+        /// <returns>A new vector which is the cross product of this instance and specified <see cref="Vector3"/>.</returns>
         public Vector3 CrossProduct(Vector3 i_Vector)
         {
             return new Vector3((Y * i_Vector.Z) - (Z * i_Vector.Y),
@@ -231,10 +309,10 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Calculates the angle between the calling vector and the supplied vector.
+        /// Calculates the angle between this instance and specified <see cref="Vector3"/>.
         /// </summary>
         /// <param name="i_Vector"></param>
-        /// <returns>The angle between the calling vector and the supplied vector.</returns>
+        /// <returns>The angle in degrees between this instance and specified <see cref="Vector3"/>.</returns>
         public float AngleWith(Vector3 i_Vector)
         {
             float dotProduct = DotProduct(i_Vector);
@@ -243,23 +321,23 @@ namespace OpenGLPractice.Utilities
         }
 
         /// <summary>
-        /// Calculates the squared distance between the calling vector and the supplied vector.
+        /// Calculates the squared distance between this instance and specified <see cref="Vector3"/>.
         /// </summary>
         /// <param name="i_Vector"></param>
-        /// <returns>The squared distance between the calling vector and the supplied vector.</returns>
+        /// <returns>The squared distance between this instance and specified <see cref="Vector3"/>.</returns>
         public float SquaredDistance(Vector3 i_Vector)
         {
-            Vector3 difference = this - i_Vector;
-            Vector3 squaredDifferences = difference * difference;
+            Vector3 vectorDifference = this - i_Vector;
+            Vector3 squaredDifferences = vectorDifference * vectorDifference;
 
-            return Sum(squaredDifferences);
+            return squaredDifferences.Sum();
         }
 
         /// <summary>
-        /// Calculates the euclidean distance between the calling vector and the supplied vector.
+        /// Calculates the euclidean distance between this instance and specified <see cref="Vector3"/>.
         /// </summary>
         /// <param name="i_Vector"></param>
-        /// <returns>The euclidean distance between the calling vector and the supplied vector.</returns>
+        /// <returns>The euclidean distance between this instance and the specified <see cref="Vector3"/></returns>
         public float Distance(Vector3 i_Vector)
         {
             float squaredDistance = SquaredDistance(i_Vector);
@@ -289,9 +367,8 @@ namespace OpenGLPractice.Utilities
         /// <returns><see langword="true" /> if the vectors have the same X, Y, an Z values; otherwise, <see langword="false" />.</returns>
         public bool Equals(Vector3 i_VectorToCompare)
         {
-            Vector3 difference = this - i_VectorToCompare;
-
-            return difference.X == 0 && difference.Y == 0 && difference.Z == 0;
+            return Math.Abs(X - i_VectorToCompare.X) < 0.01f && Math.Abs(Y - i_VectorToCompare.Y) < 0.01f &&
+                   Math.Abs(Z - i_VectorToCompare.Z) < 0.01f;
         }
 
         public override int GetHashCode()
@@ -306,9 +383,14 @@ namespace OpenGLPractice.Utilities
             }
         }
 
+        public Vector3 Clone()
+        {
+            return new Vector3(X, Y, Z);
+        }
+
         public override string ToString()
         {
-            return $"({X},{Y},{Z})";
+            return $"({X}, {Y}, {Z})";
         }
     }
 }

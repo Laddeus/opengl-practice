@@ -25,5 +25,9 @@ namespace OpenGLPractice.GameObjects
             GL.glColor3fv(Color.ToArray);
             GLU.gluSphere(r_GLUquadric, 0.5, 20, 20);
         }
+
+        public override void Tick(float i_DeltaTime)
+        {
+        }
     }
 }

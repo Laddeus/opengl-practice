@@ -37,8 +37,8 @@ namespace OpenGLPractice.GameObjects
             Transform = new Transform();
             r_gluQuadric = GLU.gluNewQuadric();
 
-            r_GLListID = GL.glGenLists(1);
-            r_LocalDirectionCoordinates = GL.glGenLists(1);
+            r_GLListID = GL.glGenLists(2);
+            r_LocalDirectionCoordinates = r_GLListID + 1;
 
             LocalCoordinatesActive = true;
             defineLocalCoordinateAxes();
@@ -52,6 +52,8 @@ namespace OpenGLPractice.GameObjects
         }
 
         protected abstract void DefineGameObject();
+
+        public abstract void Tick(float i_DeltaTime);
 
         public void Draw()
         {

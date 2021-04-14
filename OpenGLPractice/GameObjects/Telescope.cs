@@ -30,5 +30,9 @@
             r_MiddleRod.CallList();
             r_UpperRod.CallList();
         }
+
+        public override void Tick(float i_DeltaTime)
+        {
+        }
     }
 }

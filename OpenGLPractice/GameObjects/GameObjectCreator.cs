@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenGLPractice.GameObjects
 {
@@ -39,12 +37,12 @@ namespace OpenGLPractice.GameObjects
 
         public static GameObject CreateGameObjectDefault(eGameObjectTypes i_GameObjectType, string i_GameObjectName, params object[] i_Arguments)
         {
-            return CreateGameObjectDefault(i_GameObjectType.ToString(), i_GameObjectName);
+            return CreateGameObjectDefault(i_GameObjectType.ToString(), i_GameObjectName, i_Arguments);
         }
 
         public static GameObject CreateGameObjectDefault(Type i_ClassType, string i_GameObjectName, params object[] i_Arguments)
         {
-            return CreateGameObjectDefault(i_ClassType.Name, i_GameObjectName);
+            return CreateGameObjectDefault(i_ClassType.Name, i_GameObjectName, i_Arguments);
         }
 
         public static GameObject CreateGameObjectDefault(string i_ClassName, string i_GameObjectName, params object[] i_Arguments)

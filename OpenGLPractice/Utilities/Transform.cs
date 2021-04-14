@@ -38,7 +38,8 @@ namespace OpenGLPractice.Utilities
             UpVector = new Vector3(0, 1, 0);
 
             m_Position = Vector3.Zero;
-            m_Scale = new Vector3(1, 1, 1);
+            m_Scale = new Vector3(1.0f);
+            m_Rotation = Vector3.Zero;
             initializeAccumulatedMatrices();
         }
 
@@ -144,41 +145,16 @@ namespace OpenGLPractice.Utilities
             GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationMatrix);
         }
 
-        private float[] getObjectRotatioMatrix()
-        {
-            float[] rotationMatrixRelativeToObject = new float[TransformationMatrixSize];
-
-            GL.glPushMatrix();
-            GL.glLoadIdentity();
-
-            GL.glTranslatef(-Position.X, -Position.Y, -Position.Z);
-            GL.glMultMatrixf(r_AccumulatedTransformationMatrix);
-
-            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, rotationMatrixRelativeToObject);
-
-            GL.glPopMatrix();
-
-            return rotationMatrixRelativeToObject;
-        }
-
         private void calculateDirectionVectors()
         {
-            float[] rotationMatrixRelativeToObject = getObjectRotatioMatrix();
+            Matrix4 rotationMatrix = new Matrix4(r_AccumulatedRotationMatrix);
+            Vector4 forwardVector4 = new Vector4(0, 0, 1, 1);
+            Vector4 upVector4 = new Vector4(0, 1, 0, 1);
+            Vector4 rightVector4 = new Vector4(-1, 0, 0, 1);
 
-            float[] rightVector = { -1, 0, 0, 1 };
-            float[] upVector = { 0, 1, 0, 1 };
-            float[] forwardVector = { 0, 0, 1, 1 };
-
-            float[] rightVectorTransformed =
-                rotateVectorRelativeToOrigin(r_AccumulatedRotationMatrix, rightVector);
-            float[] upVectorTransformed =
-                rotateVectorRelativeToOrigin(r_AccumulatedRotationMatrix, upVector);
-            float[] forwardVectorTransformed =
-                rotateVectorRelativeToOrigin(r_AccumulatedRotationMatrix, forwardVector);
-
-            ForwardVector = new Vector3(forwardVectorTransformed).Normalized;
-            RightVector = new Vector3(rightVectorTransformed).Normalized;
-            UpVector = new Vector3(upVectorTransformed).Normalized;
+            ForwardVector = (rotationMatrix * forwardVector4).ToVector3.Normalized;
+            RightVector = (rotationMatrix * rightVector4).ToVector3.Normalized;
+            UpVector = (rotationMatrix * upVector4).ToVector3.Normalized;
 
             Debug.WriteLine("Using rotation matrix: ");
             Debug.WriteLine($"Forward Vector = {ForwardVector}");
@@ -186,6 +162,7 @@ namespace OpenGLPractice.Utilities
             Debug.WriteLine($"Up Vector = {UpVector}");
         }
 
+        /*
         private float[] rotateVectorRelativeToOrigin(float[] i_RotationMatrixRelativeToObject, float[] i_VectorToTransform)
         {
             const int k_MatrixDimension = 4;
@@ -203,23 +180,8 @@ namespace OpenGLPractice.Utilities
             }
 
             return vectorTransformed;
-        }
-
-        private float[] getObjectInverseRotationMatrix()
-        {
-            float[] rotationMatrix = getObjectRotatioMatrix();
-            const int k_MatrixDimension = 4;
-
-            for (int i = 0; i < k_MatrixDimension; i++)
-            {
-                for (int j = i; j < k_MatrixDimension; j++)
-                {
-                    rotationMatrix[(i * k_MatrixDimension) + j] = rotationMatrix[(j * k_MatrixDimension) + i];
-                }
-            }
-
-            return rotationMatrix;
-        }
+        } 
+        */
 
         private void accumulateTransformation(float[] i_AccumulatedTransformationMatrix)
         {

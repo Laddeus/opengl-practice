@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using OpenGLPractice.GameObjects;
 using OpenGLPractice.Utilities;
@@ -12,7 +10,7 @@ namespace OpenGLPractice
     {
         private readonly Queue<Keys> r_KeysPressed = new Queue<Keys>();
         private readonly Dictionary<Keys, Action> r_KeyActionDictionary;
-        private cOGL cGL;
+        private readonly cOGL cGL;
 
         public OpenGLForm()
         {
@@ -81,6 +79,11 @@ namespace OpenGLPractice
                     actionToPerform.Invoke();
                     gameObjectBindingSource.ResetCurrentItem();
                 }
+            }
+
+            foreach (GameObject gameObject in cGL.GameObjects)
+            {
+                gameObject.Tick(GameLoopTimer.Interval);
             }
         }
 

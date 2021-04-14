@@ -375,7 +375,7 @@ namespace OpenGLPractice
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.AccessibleName = "";
+            this.splitContainer1.Panel1.AccessibleName = string.Empty;
             this.splitContainer1.Panel1.Controls.Add(this.panelGameObjectsList);
             // 
             // splitContainer1.Panel2

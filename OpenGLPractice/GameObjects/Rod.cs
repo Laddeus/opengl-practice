@@ -28,5 +28,9 @@ namespace OpenGLPractice.GameObjects
             GL.glTranslatef(0, 0, r_Height);
             GLU.gluDisk(r_gluQuadric, r_InnerCylinderRadius, r_OuterCylinderRadius, 20, 20);
         }
+
+        public override void Tick(float i_DeltaTime)
+        {
+        }
     }
 }

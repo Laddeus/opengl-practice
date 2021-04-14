@@ -78,6 +78,10 @@ namespace OpenGLPractice.GameObjects
             GL.glEnd();
         }
 
+        public override void Tick(float i_DeltaTime)
+        {
+        }
+
         public void SetColorForAllFaces(Vector3 i_ColorToSet)
         {
             foreach (PropertyInfo propertyInfo in this.GetType().GetProperties())

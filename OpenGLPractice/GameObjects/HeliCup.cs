@@ -20,5 +20,9 @@
             r_Cup.CallList();
             r_Telescope.CallList();
         }
+
+        public override void Tick(float i_DeltaTime)
+        {
+        }
     }
 }

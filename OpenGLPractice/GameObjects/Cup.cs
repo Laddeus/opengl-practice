@@ -14,7 +14,7 @@ namespace OpenGLPractice.GameObjects
 
         public float Height => k_CupHeight * Transform.Scale.Z;
 
-        private Vector3 Color;
+        public Vector3 Color;
 
         public Cup(string i_Name) : base(i_Name)
         {
@@ -31,6 +31,10 @@ namespace OpenGLPractice.GameObjects
             GL.glTranslated(0, 0, k_CupHeight);
             GL.glColor3f(1, 1, 0);
             GLUT.glutSolidTorus(k_CupLipOuterRadius, k_CupLipInnerRadius, 20, 30);
+        }
+
+        public override void Tick(float i_DeltaTime)
+        {
         }
     }
 }
