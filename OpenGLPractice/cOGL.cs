@@ -119,9 +119,7 @@ namespace OpenGLPractice
 
             if (SelectedGameObjectForControl != null)
             {
-                Vector3 cameraYOffset = new Vector3(0, 3, 0);
                 Camera.LookAtPosition = SelectedGameObjectForControl.Transform.Position;
-                Camera.EyePosition = SelectedGameObjectForControl.Transform.Position + cameraYOffset;
             }
 
             Camera.ApplyChanges();
@@ -193,7 +191,7 @@ namespace OpenGLPractice
 
             GL.glMatrixMode(GL.GL_PROJECTION);
             GL.glLoadIdentity();
-            GLU.gluPerspective(45.0, ((double)m_Width) / m_Height, 1.0, 1000.0);
+            GLU.gluPerspective(60, ((double)m_Width) / m_Height, 1.0, 1000.0);
 
             GL.glMatrixMode(GL.GL_MODELVIEW);
             Draw();
@@ -224,6 +222,12 @@ namespace OpenGLPractice
 
             GL.glMatrixMode(GL.GL_MODELVIEW);
             GL.glLoadIdentity();
+
+            GL.glEnable(GL.GL_COLOR_MATERIAL);
+            GL.glEnable(GL.GL_LIGHTING);
+            GL.glEnable(GL.GL_LIGHT0);
+            GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, new float[] { 1, 1, 1, 0 });
+
         }
     }
 }

@@ -6,28 +6,33 @@ namespace OpenGLPractice.GameObjects
 {
     internal class Cube : GameObject
     {
-        public Vector3 FrontFaceColor { get; set; }
+        public Vector4 FrontFaceColor { get; set; }
 
-        public Vector3 BackFaceColor { get; set; }
+        public Vector4 BackFaceColor { get; set; }
 
-        public Vector3 RightFaceColor { get; set; }
+        public Vector4 RightFaceColor { get; set; }
 
-        public Vector3 LeftFaceColor { get; set; }
+        public Vector4 LeftFaceColor { get; set; }
 
-        public Vector3 TopFaceColor { get; set; }
+        public Vector4 TopFaceColor { get; set; }
 
-        public Vector3 BottomFaceColor { get; set; }
+        public Vector4 BottomFaceColor { get; set; }
 
         public Cube(string i_Name) : base(i_Name)
         {
-            SetColorForAllFaces(new Vector3(0.85f, 0.85f, 0.85f));
+            FrontFaceColor = new Vector4(1, 0, 0, 0.3f);
+            RightFaceColor = new Vector4(0, 1, 0, 0.3f);
+            BackFaceColor = new Vector4(0, 0, 1, 0.3f);
+            LeftFaceColor = new Vector4(1, 1, 0, 0.3f);
+            BottomFaceColor = new Vector4(1, 0, 1, 0.3f);
+            TopFaceColor = new Vector4(0, 1, 1, 0.3f);
         }
 
         protected override void DefineGameObject()
         {
             GL.glBegin(GL.GL_QUADS);
 
-            GL.glColor3f(FrontFaceColor.X, FrontFaceColor.Y, FrontFaceColor.Z);
+            GL.glColor4fv(FrontFaceColor.ToArray);
 
             // front face
             GL.glVertex3f(-0.5f, -0.5f, 0.5f);
@@ -35,7 +40,7 @@ namespace OpenGLPractice.GameObjects
             GL.glVertex3f(0.5f, 0.5f, 0.5f);
             GL.glVertex3f(-0.5f, 0.5f, 0.5f);
 
-            GL.glColor3f(RightFaceColor.X, RightFaceColor.Y, RightFaceColor.Z);
+            GL.glColor4fv(RightFaceColor.ToArray);
 
             // right face
             GL.glVertex3f(0.5f, -0.5f, 0.5f);
@@ -43,7 +48,7 @@ namespace OpenGLPractice.GameObjects
             GL.glVertex3f(0.5f, 0.5f, -0.5f);
             GL.glVertex3f(0.5f, 0.5f, 0.5f);
 
-            GL.glColor3f(BackFaceColor.X, BackFaceColor.Y, BackFaceColor.Z);
+            GL.glColor4fv(BackFaceColor.ToArray);
 
             // back face
             GL.glVertex3f(0.5f, -0.5f, -0.5f);
@@ -51,7 +56,7 @@ namespace OpenGLPractice.GameObjects
             GL.glVertex3f(-0.5f, 0.5f, -0.5f);
             GL.glVertex3f(0.5f, 0.5f, -0.5f);
 
-            GL.glColor3f(LeftFaceColor.X, LeftFaceColor.Y, LeftFaceColor.Z);
+            GL.glColor4fv(LeftFaceColor.ToArray);
 
             // left face
             GL.glVertex3f(-0.5f, -0.5f, -0.5f);
@@ -59,7 +64,7 @@ namespace OpenGLPractice.GameObjects
             GL.glVertex3f(-0.5f, 0.5f, 0.5f);
             GL.glVertex3f(-0.5f, 0.5f, -0.5f);
 
-            GL.glColor3f(TopFaceColor.X, TopFaceColor.Y, TopFaceColor.Z);
+            GL.glColor4fv(TopFaceColor.ToArray);
 
             // top face
             GL.glVertex3f(-0.5f, 0.5f, 0.5f);
@@ -67,7 +72,7 @@ namespace OpenGLPractice.GameObjects
             GL.glVertex3f(0.5f, 0.5f, -0.5f);
             GL.glVertex3f(-0.5f, 0.5f, -0.5f);
 
-            GL.glColor3f(BottomFaceColor.X, BottomFaceColor.Y, BottomFaceColor.Z);
+            GL.glColor4fv(BottomFaceColor.ToArray);
 
             // bottom face
             GL.glVertex3f(-0.5f, -0.5f, 0.5f);
@@ -82,7 +87,7 @@ namespace OpenGLPractice.GameObjects
         {
         }
 
-        public void SetColorForAllFaces(Vector3 i_ColorToSet)
+        public void SetColorForAllFaces(Vector4 i_ColorToSet)
         {
             foreach (PropertyInfo propertyInfo in this.GetType().GetProperties())
             {

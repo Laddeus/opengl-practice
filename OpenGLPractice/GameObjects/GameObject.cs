@@ -8,7 +8,7 @@ namespace OpenGLPractice.GameObjects
     {
         public Transform Transform { get; }
 
-        public GameObject Parent { get; private set; }
+        public GameObject Parent { get; set; }
 
         private string m_Name;
 
@@ -40,7 +40,6 @@ namespace OpenGLPractice.GameObjects
             r_GLListID = GL.glGenLists(2);
             r_LocalDirectionCoordinates = r_GLListID + 1;
 
-            LocalCoordinatesActive = true;
             defineLocalCoordinateAxes();
 
             m_Name = i_Name;

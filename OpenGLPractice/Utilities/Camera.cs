@@ -11,16 +11,18 @@ namespace OpenGLPractice.Utilities
 
         public Vector3 UpVector { get; set; }
 
-        public float LookAtAngle { get; set; }
+        public float LookAtHorizontalAngle { get; set; }
+
+        public float LookAtVerticalAngle { get; set; }
 
         public float LookAtDistance { get; set; }
 
         public Camera()
         {
             UpVector = new Vector3(0, 1, 0);
-            EyePosition = new Vector3(10, 10, 5);
+            EyePosition = new Vector3(1, 1, 1);
             LookAtPosition = Vector3.Zero;
-            LookAtAngle = 0;
+            LookAtHorizontalAngle = 0;
             LookAtDistance = 5;
         }
 
@@ -34,9 +36,10 @@ namespace OpenGLPractice.Utilities
 
         private void setEyePositionAroundLookAt()
         {
-            double radianAngle = LookAtAngle * Math.PI / 180.0;
-            EyePosition = new Vector3((LookAtDistance * (float)Math.Cos(radianAngle)) + LookAtPosition.X, EyePosition.Y,
-                (LookAtDistance * (float)Math.Sin(radianAngle)) + LookAtPosition.Z);
+            double radianHorizontalAngle = LookAtHorizontalAngle * Math.PI / 180.0;
+
+            EyePosition = new Vector3((LookAtDistance * (float)Math.Cos(radianHorizontalAngle)) + LookAtPosition.X, LookAtDistance + LookAtPosition.Y,
+                (LookAtDistance * (float)Math.Sin(radianHorizontalAngle)) + LookAtPosition.Z);
         }
     }
 }

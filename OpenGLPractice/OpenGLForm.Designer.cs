@@ -175,7 +175,7 @@ namespace OpenGLPractice
             // 
             // zScaleTextBox
             // 
-            this.zScaleTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Scale.Z", true));
+            this.zScaleTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Scale.Z", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             this.zScaleTextBox.Location = new System.Drawing.Point(61, 76);
             this.zScaleTextBox.Name = "zScaleTextBox";
             this.zScaleTextBox.Size = new System.Drawing.Size(100, 20);
@@ -200,7 +200,7 @@ namespace OpenGLPractice
             // 
             // yScaleTextBox
             // 
-            this.yScaleTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Scale.Y", true));
+            this.yScaleTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Scale.Y", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             this.yScaleTextBox.Location = new System.Drawing.Point(61, 50);
             this.yScaleTextBox.Name = "yScaleTextBox";
             this.yScaleTextBox.Size = new System.Drawing.Size(100, 20);
@@ -210,7 +210,7 @@ namespace OpenGLPractice
             // 
             // xScaleTextBox
             // 
-            this.xScaleTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Scale.X", true));
+            this.xScaleTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Scale.X", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             this.xScaleTextBox.Location = new System.Drawing.Point(61, 24);
             this.xScaleTextBox.Name = "xScaleTextBox";
             this.xScaleTextBox.Size = new System.Drawing.Size(100, 20);
@@ -244,7 +244,7 @@ namespace OpenGLPractice
             // 
             // zPositionTextBox
             // 
-            this.zPositionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Position.Z", true));
+            this.zPositionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Position.Z", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             this.zPositionTextBox.Location = new System.Drawing.Point(61, 76);
             this.zPositionTextBox.Name = "zPositionTextBox";
             this.zPositionTextBox.Size = new System.Drawing.Size(100, 20);
@@ -265,7 +265,7 @@ namespace OpenGLPractice
             // 
             // yPositionTextBox
             // 
-            this.yPositionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Position.Y", true));
+            this.yPositionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Position.Y", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             this.yPositionTextBox.Location = new System.Drawing.Point(61, 50);
             this.yPositionTextBox.Name = "yPositionTextBox";
             this.yPositionTextBox.Size = new System.Drawing.Size(100, 20);
@@ -275,7 +275,7 @@ namespace OpenGLPractice
             // 
             // xPositionTextBox
             // 
-            this.xPositionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Position.X", true));
+            this.xPositionTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.gameObjectBindingSource, "Transform.Position.X", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             this.xPositionTextBox.Location = new System.Drawing.Point(61, 24);
             this.xPositionTextBox.Name = "xPositionTextBox";
             this.xPositionTextBox.Size = new System.Drawing.Size(100, 20);
@@ -375,7 +375,7 @@ namespace OpenGLPractice
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.AccessibleName = string.Empty;
+            this.splitContainer1.Panel1.AccessibleName = "";
             this.splitContainer1.Panel1.Controls.Add(this.panelGameObjectsList);
             // 
             // splitContainer1.Panel2

@@ -53,6 +53,9 @@
     <Compile Include="GameObjects\Cup.cs" />
     <Compile Include="GameObjects\GameObjectCreator.cs" />
     <Compile Include="GameObjects\HeliCup.cs" />
+    <Compile Include="GameObjects\Particles.cs" />
+    <Compile Include="GameObjects\Propeller.cs" />
+    <Compile Include="GameObjects\PropellerWing.cs" />
     <Compile Include="GameObjects\Rod.cs" />
     <Compile Include="GameObjects\Telescope.cs" />
     <Compile Include="Utilities\Camera.cs" />

@@ -26,8 +26,10 @@ namespace OpenGLPractice
                 { Keys.S, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.BackwardVector) },
                 { Keys.A, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.LeftVector) },
                 { Keys.D, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.RightVector) },
-                { Keys.Q, () => cGL.Camera.LookAtAngle -= 2 },
-                { Keys.E, () => cGL.Camera.LookAtAngle += 2 },
+                { Keys.Q, () => cGL.Camera.LookAtHorizontalAngle -= 2 },
+                { Keys.E, () => cGL.Camera.LookAtHorizontalAngle += 2 },
+                { Keys.R, () => cGL.Camera.LookAtVerticalAngle -= 2 },
+                { Keys.F, () => cGL.Camera.LookAtVerticalAngle += 2 },
                 { Keys.Z, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.UpVector) },
                 { Keys.C, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.UpVector) },
                 { Keys.U, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.RightVector) },
@@ -83,7 +85,7 @@ namespace OpenGLPractice
 
             foreach (GameObject gameObject in cGL.GameObjects)
             {
-                gameObject.Tick(GameLoopTimer.Interval);
+                gameObject.Tick(GameLoopTimer.Interval / 1000.0f);
             }
         }
 

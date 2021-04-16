@@ -135,6 +135,8 @@ namespace OpenGLPractice.Utilities
             }
         }
 
+        public static explicit operator Vector3(float i_Scalar) => new Vector3(i_Scalar);
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Vector3" /> struct.
         /// </summary>

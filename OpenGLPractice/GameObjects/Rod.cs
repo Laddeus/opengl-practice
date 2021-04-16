@@ -19,9 +19,9 @@ namespace OpenGLPractice.GameObjects
 
         protected override void DefineGameObject()
         {
-            GL.glColor3f(1, 0, 0);
-            GLU.gluCylinder(r_gluQuadric, r_InnerCylinderRadius, r_InnerCylinderRadius, r_Height, 20, 20);
             GL.glColor3f(0, 0, 1);
+            GLU.gluCylinder(r_gluQuadric, r_InnerCylinderRadius, r_InnerCylinderRadius, r_Height, 20, 20);
+            GL.glColor3f(1, 0, 0);
             GLU.gluCylinder(r_gluQuadric, r_OuterCylinderRadius, r_OuterCylinderRadius, r_Height, 20, 20);
             GL.glColor3f(1, 1, 0);
             GLU.gluDisk(r_gluQuadric, r_InnerCylinderRadius, r_OuterCylinderRadius, 20, 20);

@@ -12,7 +12,7 @@ namespace OpenGLPractice.GameObjects
         private const double k_CupLipOuterRadius = 0.05;
         private const double k_CupLipInnerRadius = 0.7;
 
-        public float Height => k_CupHeight * Transform.Scale.Z;
+        public float Height => k_CupHeight;
 
         public Vector3 Color;
 

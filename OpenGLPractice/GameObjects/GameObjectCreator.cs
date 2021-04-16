@@ -14,6 +14,8 @@ namespace OpenGLPractice.GameObjects
         Cube,
         Sphere,
         Arrow,
+        PropellerWing,
+        Propeller
     }
 
     internal static class GameObjectCreator
