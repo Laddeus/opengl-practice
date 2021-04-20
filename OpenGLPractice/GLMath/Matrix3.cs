@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace OpenGLPractice.Utilities
+namespace OpenGLPractice.GLMath
 {
     internal struct Matrix3
     {

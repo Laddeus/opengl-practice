@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenGLPractice.Utilities
+namespace OpenGLPractice.GLMath
 {
     /// <summary>
     /// The <see cref="Vector3"/> struct.
@@ -45,34 +45,20 @@ namespace OpenGLPractice.Utilities
         /// </summary>
         public static Vector3 Backward => -Forward;
 
-        private readonly float[] r_VectorValues;
-
         /// <summary>
         /// The x coordinate of this <see cref="Vector3"/> instance.
         /// </summary>
-        public float X
-        {
-            get => r_VectorValues[0];
-            set => r_VectorValues[0] = value;
-        }
+        public float X { get; set; }
 
         /// <summary>
         /// The y coordinate of this <see cref="Vector3"/> instance.
         /// </summary>
-        public float Y
-        {
-            get => r_VectorValues[1];
-            set => r_VectorValues[1] = value;
-        }
+        public float Y { get; set; }
 
         /// <summary>
         /// The z coordinate of this <see cref="Vector3"/> instance.
         /// </summary>
-        public float Z
-        {
-            get => r_VectorValues[2];
-            set => r_VectorValues[2] = value;
-        }
+        public float Z { get; set; }
 
         /// <summary>
         /// The length or norm of this <see cref="Vector3"/> instance.
@@ -100,7 +86,9 @@ namespace OpenGLPractice.Utilities
         /// <param name="i_Scalar"></param>
         public Vector3(float i_Scalar)
         {
-            r_VectorValues = new float[] { i_Scalar, i_Scalar, i_Scalar };
+            X = i_Scalar;
+            Y = i_Scalar;
+            Z = i_Scalar;
         }
 
         /// <summary>
@@ -109,7 +97,7 @@ namespace OpenGLPractice.Utilities
         /// <param name="i_X"></param>
         /// <param name="i_Y"></param>
         /// <param name="i_Z"></param>
-        public Vector3(float i_X, float i_Y, float i_Z) : this(0)
+        public Vector3(float i_X, float i_Y, float i_Z)
         {
             X = i_X;
             Y = i_Y;
@@ -121,7 +109,7 @@ namespace OpenGLPractice.Utilities
         /// </summary>
         /// <param name="i_VectorArray"></param>
         /// <exception cref="Exception">Thrown when the length of <see cref="i_VectorArray"/> is less than 3</exception>
-        public Vector3(float[] i_VectorArray) : this(0)
+        public Vector3(float[] i_VectorArray)
         {
             if (i_VectorArray.Length >= k_VectorSize)
             {
@@ -135,13 +123,11 @@ namespace OpenGLPractice.Utilities
             }
         }
 
-        public static explicit operator Vector3(float i_Scalar) => new Vector3(i_Scalar);
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Vector3" /> struct.
         /// </summary>
         /// <param name="i_VectorToCopy"></param>
-        public Vector3(Vector3 i_VectorToCopy) : this(0)
+        public Vector3(Vector3 i_VectorToCopy)
         {
             X = i_VectorToCopy.X;
             Y = i_VectorToCopy.Y;
@@ -157,22 +143,35 @@ namespace OpenGLPractice.Utilities
         {
             get
             {
-                if (i_Row >= k_VectorSize)
+                switch (i_Row)
                 {
-                    throw new IndexOutOfRangeException($"{GetType().Name} is of size {k_VectorSize}");
+                    case 0:
+                        return X;
+                    case 1:
+                        return Y;
+                    case 2:
+                        return Z;
+                    default:
+                        throw new IndexOutOfRangeException($"{GetType().Name} is of size {k_VectorSize}");
                 }
-
-                return r_VectorValues[i_Row];
             }
 
             set
             {
-                if (i_Row >= k_VectorSize)
+                switch (i_Row)
                 {
-                    throw new IndexOutOfRangeException($"{GetType().Name} is of size {k_VectorSize}");
+                    case 0:
+                        X = value;
+                        break;
+                    case 1:
+                        Y = value;
+                        break;
+                    case 2:
+                        Z = value;
+                        break;
+                    default:
+                        throw new IndexOutOfRangeException($"{GetType().Name} is of size {k_VectorSize}");
                 }
-
-                r_VectorValues[i_Row] = value;
             }
         }
 
@@ -344,7 +343,7 @@ namespace OpenGLPractice.Utilities
         {
             float squaredDistance = SquaredDistance(i_Vector);
 
-            return (float)Math.Sqrt(squaredDistance);
+            return (float)System.Math.Sqrt(squaredDistance);
         }
 
         public override bool Equals(object i_ObjectToCompare)
@@ -369,8 +368,8 @@ namespace OpenGLPractice.Utilities
         /// <returns><see langword="true" /> if the vectors have the same X, Y, an Z values; otherwise, <see langword="false" />.</returns>
         public bool Equals(Vector3 i_VectorToCompare)
         {
-            return Math.Abs(X - i_VectorToCompare.X) < 0.01f && Math.Abs(Y - i_VectorToCompare.Y) < 0.01f &&
-                   Math.Abs(Z - i_VectorToCompare.Z) < 0.01f;
+            return System.Math.Abs(X - i_VectorToCompare.X) < 0.01f && System.Math.Abs(Y - i_VectorToCompare.Y) < 0.01f &&
+                   System.Math.Abs(Z - i_VectorToCompare.Z) < 0.01f;
         }
 
         public override int GetHashCode()

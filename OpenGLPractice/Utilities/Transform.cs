@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using OpenGL;
+using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.Utilities
 {

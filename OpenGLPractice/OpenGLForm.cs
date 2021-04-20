@@ -2,14 +2,33 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using OpenGLPractice.GameObjects;
-using OpenGLPractice.Utilities;
+using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice
 {
     public partial class OpenGLForm : Form
     {
         private readonly Queue<Keys> r_KeysPressed = new Queue<Keys>();
-        private readonly Dictionary<Keys, Action> r_KeyActionDictionary;
+        private readonly Dictionary<Keys, Action> r_GameObjectActionKeys;
+        private readonly Dictionary<Keys, Action> r_CameraActionKeys;
+        private readonly HashSet<Keys> r_AllowedKeys = new HashSet<Keys>()
+        {
+            Keys.W,
+            Keys.S,
+            Keys.A,
+            Keys.D,
+            Keys.Z,
+            Keys.C,
+            Keys.U,
+            Keys.J,
+            Keys.K,
+            Keys.H,
+            Keys.Q,
+            Keys.E,
+            Keys.R,
+            Keys.F
+        };
+
         private readonly cOGL cGL;
 
         public OpenGLForm()
@@ -20,16 +39,13 @@ namespace OpenGLPractice
             ActiveControl = GameScene;
             GameScene.KeyDown += GameScene_KeyDown;
             GameScene.MouseWheel += GameScene_MouseWheel;
-            r_KeyActionDictionary = new Dictionary<Keys, Action>()
+
+            r_GameObjectActionKeys = new Dictionary<Keys, Action>()
             {
                 { Keys.W, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.ForwardVector) },
                 { Keys.S, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.BackwardVector) },
                 { Keys.A, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.LeftVector) },
                 { Keys.D, () => cGL.SelectedGameObjectForControl.Transform.Translate(0.25f * cGL.SelectedGameObjectForControl.Transform.RightVector) },
-                { Keys.Q, () => cGL.Camera.LookAtHorizontalAngle -= 2 },
-                { Keys.E, () => cGL.Camera.LookAtHorizontalAngle += 2 },
-                { Keys.R, () => cGL.Camera.LookAtVerticalAngle -= 2 },
-                { Keys.F, () => cGL.Camera.LookAtVerticalAngle += 2 },
                 { Keys.Z, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.UpVector) },
                 { Keys.C, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.UpVector) },
                 { Keys.U, () => cGL.SelectedGameObjectForControl.Transform.Rotate(2, cGL.SelectedGameObjectForControl.Transform.RightVector) },
@@ -38,10 +54,44 @@ namespace OpenGLPractice
                 { Keys.H, () => cGL.SelectedGameObjectForControl.Transform.Rotate(-2, cGL.SelectedGameObjectForControl.Transform.ForwardVector) },
             };
 
+            r_CameraActionKeys = new Dictionary<Keys, Action>()
+            {
+                {Keys.Q, () => updateHorizontalAngle(-2)},
+                {Keys.E, () => updateHorizontalAngle(2)},
+                {Keys.R, () => cGL.Camera.LookAtVerticalAngle -= 2},
+                {Keys.F, () => cGL.Camera.LookAtVerticalAngle += 2},
+            };
+
             object[] allGameObjectTypeNames = GameObjectCreator.GetAllGameObjectTypeNames();
             comboBoxGameObjects.Items.AddRange(allGameObjectTypeNames);
 
             gameObjectBindingSource.DataSource = cGL.GameObjects;
+        }
+
+        private void updateHorizontalAngle(float i_AngleToMoveBy)
+        {
+            cGL.Camera.LookAtHorizontalAngle += i_AngleToMoveBy;
+
+            sortObjectsByDistanceFromCameraEye();
+        }
+
+        private void sortObjectsByDistanceFromCameraEye()
+        {
+            Vector3 cameraEyePosition = cGL.Camera.EyePosition;
+
+            cGL.GameObjects.Sort(((i_FirstGameObject, i_SecondGameObject) =>
+            {
+                Vector3 firstGameObjectPosition = i_FirstGameObject.Transform.Position;
+                Vector3 secondGameObjectPosition = i_SecondGameObject.Transform.Position;
+
+                if (firstGameObjectPosition.SquaredDistance(cameraEyePosition) <
+                    secondGameObjectPosition.SquaredDistance(cameraEyePosition))
+                {
+                    return 1;
+                }
+
+                return -1;
+            }));
         }
 
         private void GameScene_MouseWheel(object i_Sender, MouseEventArgs i_MouseEventArgs)
@@ -51,7 +101,12 @@ namespace OpenGLPractice
 
         private void GameScene_KeyDown(object i_Sender, KeyEventArgs i_KeyEventArgs)
         {
-            r_KeysPressed.Enqueue(i_KeyEventArgs.KeyCode);
+            Keys currentlyPressedKey = i_KeyEventArgs.KeyCode;
+
+            if (r_AllowedKeys.Contains(currentlyPressedKey))
+            {
+                r_KeysPressed.Enqueue(i_KeyEventArgs.KeyCode);
+            }
 
             i_KeyEventArgs.Handled = true;
         }
@@ -72,20 +127,36 @@ namespace OpenGLPractice
             if (r_KeysPressed.Count != 0)
             {
                 Keys lastKeyPressed = r_KeysPressed.Dequeue();
-
-                Action actionToPerform;
-                bool KeyHasAction = r_KeyActionDictionary.TryGetValue(lastKeyPressed, out actionToPerform);
-
-                if (KeyHasAction && cGL.SelectedGameObjectForControl != null)
-                {
-                    actionToPerform.Invoke();
-                    gameObjectBindingSource.ResetCurrentItem();
-                }
+                updateGameObjectActions(lastKeyPressed);
+                updateCameraActions(lastKeyPressed);
             }
 
             foreach (GameObject gameObject in cGL.GameObjects)
             {
                 gameObject.Tick(GameLoopTimer.Interval / 1000.0f);
+            }
+        }
+
+        private void updateCameraActions(Keys i_LastKeyPressed)
+        {
+            Action cameraAction;
+            bool KeyHasAction = r_CameraActionKeys.TryGetValue(i_LastKeyPressed, out cameraAction);
+
+            if (KeyHasAction && cGL.Camera != null)
+            {
+                cameraAction.Invoke();
+            }
+        }
+
+        private void updateGameObjectActions(Keys i_LastKeyPressed)
+        {
+            Action gameObjectAction;
+            bool KeyHasAction = r_GameObjectActionKeys.TryGetValue(i_LastKeyPressed, out gameObjectAction);
+
+            if (KeyHasAction && cGL.SelectedGameObjectForControl != null)
+            {
+                gameObjectAction.Invoke();
+                gameObjectBindingSource.ResetCurrentItem();
             }
         }
 

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenGLPractice.GameObjects
+﻿namespace OpenGLPractice.GameObjects
 {
     internal class Propeller : GameObject
     {
+
         public enum ePropellerState
         {
             Folded,

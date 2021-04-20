@@ -1,29 +1,23 @@
 ﻿using OpenGL;
-using OpenGLPractice.Utilities;
+using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.GameObjects
 {
     internal class Sphere : GameObject
     {
-        private readonly GLUquadric r_GLUquadric;
-
         public Vector3 Color { get; set; }
 
         public Sphere(string i_Name) : base(i_Name)
         {
-            r_GLUquadric = GLU.gluNewQuadric();
-            Color = new Vector3(0.85f, 0.85f, 0.85f);
-        }
-
-        ~Sphere()
-        {
-            GLU.gluDeleteQuadric(r_GLUquadric);
+            Material.Ambient = new Vector4(0.10f, 0.19f, 0.17f, 1.0f);
+            Material.Diffuse = new Vector4(0.40f, 0.74f, 0.69f, 1.0f);
+            Material.Specular = new Vector4(0.31f, 0.31f, 0.31f, 1.0f);
+            Material.Shininess = 13;
         }
 
         protected override void DefineGameObject()
         {
-            GL.glColor3fv(Color.ToArray);
-            GLU.gluSphere(r_GLUquadric, 0.5, 20, 20);
+            GLU.gluSphere(r_gluQuadric, 0.5, 20, 20);
         }
 
         public override void Tick(float i_DeltaTime)

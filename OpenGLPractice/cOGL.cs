@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using OpenGL;
 using OpenGLPractice.GameObjects;
+using OpenGLPractice.GLMath;
 using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice
@@ -14,6 +15,10 @@ namespace OpenGLPractice
         private GLUquadric obj;
 
         public Camera Camera { get; }
+
+        public Light Light { get; }
+
+        private Vector3 lightPosition;
 
         public List<GameObject> GameObjects { get; set; }
 
@@ -29,6 +34,8 @@ namespace OpenGLPractice
             GameObjects = new List<GameObject>();
             obj = GLU.gluNewQuadric();
             Camera = new Camera();
+            Light = Light.CreateLight(Light.eLightTypes.Point);
+            lightPosition = new Vector3(2f, 0f, 0);
         }
 
         ~cOGL()
@@ -123,7 +130,12 @@ namespace OpenGLPractice
             }
 
             Camera.ApplyChanges();
+            Light.Position = lightPosition;
             DrawOldAxes();
+
+            //GL.glEnable(GL.GL_BLEND);
+            //drawNormalObjects();
+            //drawTransparentObjects();
 
             foreach (GameObject gameObject in GameObjects)
             {
@@ -132,6 +144,78 @@ namespace OpenGLPractice
 
             GL.glFlush();
             WGL.wglSwapBuffers(m_uint_DC);
+        }
+
+        private void drawNormalObjects()
+        {
+            GL.glTranslatef(1, 0, 0);
+            GL.glColor4f(1, 0, 0, 0.3f);
+            //GLUT.glutSolidCube(1);
+            drawCube();
+            GL.glTranslatef(0, 0, 1.01f);
+            GL.glColor4f(0, 1, 0, 0.7f);
+            //GLUT.glutSolidCube(1);
+            drawCube();
+        }
+
+        private void drawTransparentObjects()
+        {
+
+            GL.glTranslatef(-1.01f, 0, 0);
+            GL.glTranslatef(0, 0, -1);
+            GL.glEnable(GL.GL_CULL_FACE);
+            GL.glColor4f(0, 1, 1, 0.5f);
+            GL.glCullFace(GL.GL_FRONT);
+            //GLUT.glutSolidCube(1);
+            drawCube();
+            GL.glCullFace(GL.GL_BACK);
+            //GLUT.glutSolidCube(1);
+            drawCube();
+            GL.glDisable(GL.GL_BLEND);
+            GL.glDisable(GL.GL_CULL_FACE);
+        }
+
+        private void drawCube()
+        {
+            GL.glBegin(GL.GL_QUADS);
+
+            // front face
+            GL.glVertex3f(-0.5f, -0.5f, 0.5f);
+            GL.glVertex3f(0.5f, -0.5f, 0.5f);
+            GL.glVertex3f(0.5f, 0.5f, 0.5f);
+            GL.glVertex3f(-0.5f, 0.5f, 0.5f);
+
+            // right face
+            GL.glVertex3f(0.5f, -0.5f, 0.5f);
+            GL.glVertex3f(0.5f, -0.5f, -0.5f);
+            GL.glVertex3f(0.5f, 0.5f, -0.5f);
+            GL.glVertex3f(0.5f, 0.5f, 0.5f);
+
+            // back face
+            GL.glVertex3f(0.5f, -0.5f, -0.5f);
+            GL.glVertex3f(-0.5f, -0.5f, -0.5f);
+            GL.glVertex3f(-0.5f, 0.5f, -0.5f);
+            GL.glVertex3f(0.5f, 0.5f, -0.5f);
+
+            // left face
+            GL.glVertex3f(-0.5f, -0.5f, -0.5f);
+            GL.glVertex3f(-0.5f, -0.5f, 0.5f);
+            GL.glVertex3f(-0.5f, 0.5f, 0.5f);
+            GL.glVertex3f(-0.5f, 0.5f, -0.5f);
+
+            // top face
+            GL.glVertex3f(-0.5f, 0.5f, 0.5f);
+            GL.glVertex3f(0.5f, 0.5f, 0.5f);
+            GL.glVertex3f(0.5f, 0.5f, -0.5f);
+            GL.glVertex3f(-0.5f, 0.5f, -0.5f);
+
+            // bottom face
+            GL.glVertex3f(-0.5f, -0.5f, 0.5f);
+            GL.glVertex3f(-0.5f, -0.5f, -0.5f);
+            GL.glVertex3f(0.5f, -0.5f, -0.5f);
+            GL.glVertex3f(0.5f, -0.5f, 0.5f);
+
+            GL.glEnd();
         }
 
         protected virtual void InitializeGL()
@@ -225,9 +309,7 @@ namespace OpenGLPractice
 
             GL.glEnable(GL.GL_COLOR_MATERIAL);
             GL.glEnable(GL.GL_LIGHTING);
-            GL.glEnable(GL.GL_LIGHT0);
-            GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, new float[] { 1, 1, 1, 0 });
-
+            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         }
     }
 }

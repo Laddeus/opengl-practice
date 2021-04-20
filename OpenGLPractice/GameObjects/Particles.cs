@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
-using OpenGL;
-using OpenGLPractice.Utilities;
+using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.GameObjects
 {
@@ -21,7 +20,7 @@ namespace OpenGLPractice.GameObjects
                     Cube particle =
                         (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, $"Particle{i_Inedx}");
                     particle.Transform.ChangeScale(new Vector3(k_ParticleSize));
-                    particle.SetColorForAllFaces(new Vector4(0.2f, 0.2f, 0.2f, 0.2f));
+                    particle.Color = new Vector4(0.2f);
 
                     return particle;
                 }).
@@ -32,7 +31,7 @@ namespace OpenGLPractice.GameObjects
         {
             foreach (Cube cubeParticle in r_CubeParticles)
             {
-                cubeParticle.CallList();
+                cubeParticle.Draw();
             }
         }
 

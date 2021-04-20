@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenGL;
+using OpenGLPractice.GLMath;
 using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice.GameObjects
@@ -9,6 +10,8 @@ namespace OpenGLPractice.GameObjects
         public Transform Transform { get; }
 
         public GameObject Parent { get; set; }
+
+        public Material Material { get; set; }
 
         private string m_Name;
 
@@ -35,6 +38,7 @@ namespace OpenGLPractice.GameObjects
         {
             Children = new List<GameObject>();
             Transform = new Transform();
+            Material = new Material();
             r_gluQuadric = GLU.gluNewQuadric();
 
             r_GLListID = GL.glGenLists(2);
@@ -81,6 +85,7 @@ namespace OpenGLPractice.GameObjects
             }
 
             GL.glDepthRange(0.01, 1.0);
+            Material.ApplyMaterial();
             DefineGameObject();
         }
 
