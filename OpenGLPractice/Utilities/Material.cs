@@ -15,14 +15,22 @@ namespace OpenGLPractice.Utilities
 
         public float Shininess { get; set; }
 
+        public Material()
+        {
+            Ambient = new Vector4(0.2f, 0.2f, 0.2f, 1.0f);
+            Diffuse = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+            Specular = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+            Emission = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+            Shininess = 0.0f;
+        }
+
         public void ApplyMaterial()
         {
-            GL.glColor3fv(Diffuse.ToArray);
-            GL.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, Ambient.ToArray);
-            GL.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, Diffuse.ToArray);
-            GL.glMaterialfv(GL.GL_FRONT, GL.GL_SPECULAR, Specular.ToArray);
-            GL.glMaterialfv(GL.GL_FRONT, GL.GL_EMISSION, Emission.ToArray);
-            GL.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, Shininess);
+            GLErrorCatcher.TryGLCall(() => GL.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT, Ambient.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE, Diffuse.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_SPECULAR, Specular.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_EMISSION, Emission.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glMaterialf(GL.GL_FRONT_AND_BACK, GL.GL_SHININESS, Shininess));
         }
     }
 }

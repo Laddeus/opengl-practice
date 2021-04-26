@@ -164,6 +164,7 @@ namespace OpenGLPractice
         {
             string gameObjectName = textBoxGameObjectName.Text;
             string gameObjectSelected = comboBoxGameObjects.SelectedItem.ToString();
+
             GameObject gameObjectCreated = GameObjectCreator.CreateGameObjectDefault(gameObjectSelected, gameObjectName);
 
             gameObjectBindingSource.Add(gameObjectCreated);

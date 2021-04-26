@@ -12,7 +12,7 @@ namespace OpenGLPractice.Utilities
         {
             Point,
             Directional,
-            Spot,
+            Spotlight,
             Area
         }
 
@@ -52,7 +52,9 @@ namespace OpenGLPractice.Utilities
         private Vector4 m_Ambient;
         private Vector4 m_Diffuse;
         private Vector4 m_Specular;
-        private Vector4 m_Emission;
+        private Vector3 m_SpotlightDirection;
+        private float m_SpotlightCutoff;
+        private float m_SpotlightExponent;
         private float m_ConstantAttenuation;
         private float m_LinearAttenuation;
         private float m_QuadraticAttenuation;
@@ -75,7 +77,7 @@ namespace OpenGLPractice.Utilities
                 float lightTypeValue = m_LightType == eLightTypes.Directional ? 0.0f : 1.0f;
                 m_Position = new Vector4(value.X, value.Y, value.Z, lightTypeValue);
 
-                GL.glLightfv(r_LightSourceId, GL.GL_POSITION, m_Position.ToArray);
+                GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_POSITION, m_Position.ToArray));
             }
         }
 
@@ -85,7 +87,7 @@ namespace OpenGLPractice.Utilities
             set
             {
                 m_Ambient = value;
-                GL.glLightfv(r_LightSourceId, GL.GL_AMBIENT, m_Ambient.ToArray);
+                GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_AMBIENT, m_Ambient.ToArray));
             }
         }
 
@@ -95,7 +97,7 @@ namespace OpenGLPractice.Utilities
             set
             {
                 m_Diffuse = value;
-                GL.glLightfv(r_LightSourceId, GL.GL_DIFFUSE, m_Diffuse.ToArray);
+                GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_DIFFUSE, m_Diffuse.ToArray));
             }
         }
 
@@ -105,17 +107,37 @@ namespace OpenGLPractice.Utilities
             set
             {
                 m_Specular = value;
-                GL.glLightfv(r_LightSourceId, GL.GL_SPECULAR, m_Specular.ToArray);
+                GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_SPECULAR, m_Specular.ToArray));
             }
         }
 
-        public Vector4 Emission
+        public Vector3 SpotlightDirection
         {
-            get => m_Emission;
+            get => m_SpotlightDirection;
             set
             {
-                m_Emission = value;
-                GL.glLightfv(r_LightSourceId, GL.GL_EMISSION, m_Emission.ToArray);
+                m_SpotlightDirection = value;
+                GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_SPOT_DIRECTION, m_SpotlightDirection.ToArray));
+            }
+        }
+
+        public float SpotlightCutoff
+        {
+            get => m_SpotlightCutoff;
+            set
+            {
+                m_SpotlightCutoff = value;
+                GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_SPOT_CUTOFF, m_SpotlightCutoff));
+            }
+        }
+
+        public float SpotlightExponent
+        {
+            get => m_SpotlightExponent;
+            set
+            {
+                m_SpotlightExponent = value;
+                GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_SPOT_EXPONENT, m_SpotlightExponent));
             }
         }
 
@@ -125,7 +147,7 @@ namespace OpenGLPractice.Utilities
             set
             {
                 m_ConstantAttenuation = value;
-                GL.glLightf(r_LightSourceId, GL.GL_CONSTANT_ATTENUATION, m_ConstantAttenuation);
+                GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_CONSTANT_ATTENUATION, m_ConstantAttenuation));
             }
         }
 
@@ -135,7 +157,7 @@ namespace OpenGLPractice.Utilities
             set
             {
                 m_LinearAttenuation = value;
-                GL.glLightf(r_LightSourceId, GL.GL_LINEAR_ATTENUATION, m_LinearAttenuation);
+                GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_LINEAR_ATTENUATION, m_LinearAttenuation));
             }
         }
 
@@ -145,7 +167,7 @@ namespace OpenGLPractice.Utilities
             set
             {
                 m_QuadraticAttenuation = value;
-                GL.glLightf(r_LightSourceId, GL.GL_QUADRATIC_ATTENUATION, m_QuadraticAttenuation);
+                GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_QUADRATIC_ATTENUATION, m_QuadraticAttenuation));
             }
         }
 
@@ -155,20 +177,18 @@ namespace OpenGLPractice.Utilities
             r_LightSourceId = i_LightSourceId;
             m_LightType = i_LightType;
 
-            setDefaultLightParameters();
+            initializeDefaultLightParameters();
+
+            if (m_LightType == eLightTypes.Spotlight)
+            {
+                initializeSpotlightDefaultParameters();
+            }
+            else
+            {
+                SpotlightCutoff = 180.0f; // 180 means spotlight is off 
+            }
 
             TurnOn();
-        }
-
-        private void setDefaultLightParameters()
-        {
-            Ambient = new Vector4(0.2f, 0.2f, 0.2f, 1.0f);
-            Diffuse = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-            Specular = new Vector4(1.0f);
-            Emission = new Vector4(0.0f);
-            ConstantAttenuation = 0.0f;
-            LinearAttenuation = 1.0f;
-            QuadraticAttenuation = 0.0f;
         }
 
         ~Light()
@@ -177,14 +197,52 @@ namespace OpenGLPractice.Utilities
             sr_AvailableLights[r_LightSourceId] = true;
         }
 
+        public void ApplyPositionsAndDirection()
+        {
+            GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_POSITION, m_Position.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_SPOT_DIRECTION, m_SpotlightDirection.ToArray));
+        }
+
+        public void ApplyLight()
+        {
+            GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_POSITION, m_Position.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_AMBIENT, m_Ambient.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_DIFFUSE, m_Diffuse.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_SPECULAR, m_Specular.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_SPOT_DIRECTION, m_SpotlightDirection.ToArray));
+            GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_SPOT_CUTOFF, m_SpotlightCutoff));
+            GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_SPOT_EXPONENT, m_SpotlightExponent));
+            GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_CONSTANT_ATTENUATION, m_ConstantAttenuation));
+            GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_LINEAR_ATTENUATION, m_LinearAttenuation));
+            GLErrorCatcher.TryGLCall(() => GL.glLightf(r_LightSourceId, GL.GL_QUADRATIC_ATTENUATION, m_QuadraticAttenuation));
+        }
+
+        private void initializeSpotlightDefaultParameters()
+        {
+            SpotlightDirection = new Vector3(0, 0, -1f);
+            SpotlightCutoff = 10.0f;
+            SpotlightExponent = 30.0f;
+        }
+
+        private void initializeDefaultLightParameters()
+        {
+            Position = new Vector3(0, 0, 1);
+            Ambient = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+            Diffuse = new Vector4(1.0f);
+            Specular = new Vector4(1.0f);
+            ConstantAttenuation = 1.0f;
+            LinearAttenuation = 0.35f;
+            QuadraticAttenuation = 0.44f;
+        }
+
         public void TurnOn()
         {
-            GL.glEnable(r_LightSourceId);
+            GLErrorCatcher.TryGLCall(() => GL.glEnable(r_LightSourceId));
         }
 
         public void TurnOff()
         {
-            GL.glDisable(r_LightSourceId);
+            GLErrorCatcher.TryGLCall(() => GL.glDisable(r_LightSourceId));
         }
     }
 }

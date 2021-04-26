@@ -14,7 +14,7 @@
 
         protected override void DefineGameObject()
         {
-            r_FirstWing.Draw();
+            r_FirstWing.Draw(!k_UseDisplayList);
         }
 
         public override void Tick(float i_DeltaTime)

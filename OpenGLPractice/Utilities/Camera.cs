@@ -6,6 +6,8 @@ namespace OpenGLPractice.Utilities
 {
     internal class Camera
     {
+        public event Action CameraUpdated;
+
         private Vector3 m_LookAtPosition;
 
         public Vector3 LookAtPosition
@@ -63,6 +65,8 @@ namespace OpenGLPractice.Utilities
             GLU.gluLookAt(EyePosition.X, EyePosition.Y, EyePosition.Z,
                 LookAtPosition.X, LookAtPosition.Y, LookAtPosition.Z,
                 UpVector.X, UpVector.Y, UpVector.Z);
+
+            OnCameraUpdated();
         }
 
         private void setEyePositionAroundLookAt()
@@ -71,6 +75,14 @@ namespace OpenGLPractice.Utilities
 
             EyePosition = new Vector3((LookAtDistance * (float)Math.Cos(radianHorizontalAngle)) + LookAtPosition.X, LookAtDistance + LookAtPosition.Y,
                 (LookAtDistance * (float)Math.Sin(radianHorizontalAngle)) + LookAtPosition.Z);
+        }
+
+        protected virtual void OnCameraUpdated()
+        {
+            if (CameraUpdated != null)
+            {
+                CameraUpdated.Invoke();
+            }
         }
     }
 }

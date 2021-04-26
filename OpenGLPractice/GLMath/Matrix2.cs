@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Drawing2D;
 using System.Text;
 
 namespace OpenGLPractice.GLMath
@@ -20,6 +21,12 @@ namespace OpenGLPractice.GLMath
         /// Gets the transpose of this <see cref="Matrix2"/> instance.
         /// </summary>
         public Matrix2 Transpose => transpose();
+
+        public float Determinant => calculateDeterminant();
+
+        public Matrix2 Inverse => inverse();
+
+        public bool IsInvertible => Determinant != 0;
 
         /// <summary>
         /// Gets the <see cref="float"/> array representation of this <see cref="Matrix2"/> instance.
@@ -209,6 +216,29 @@ namespace OpenGLPractice.GLMath
             }
 
             return transposedMatrix;
+        }
+
+        private float calculateDeterminant()
+        {
+            return this[0][0] * this[1][1] - this[0][1] * this[1][0];
+        }
+
+        private Matrix2 inverse()
+        {
+            Matrix2 inverseMatrix = this;
+
+            if (IsInvertible)
+            {
+                Matrix2 adjunctMatrix = new Matrix2(new Vector2[]
+                {
+                    new Vector2(this[1][1], -this[0][1]),
+                    new Vector2(-this[1][0], this[0][0])
+                });
+
+                inverseMatrix = adjunctMatrix * (1.0f / Determinant);
+            }
+
+            return inverseMatrix;
         }
 
         /// <summary>

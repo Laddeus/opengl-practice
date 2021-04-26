@@ -40,6 +40,13 @@ namespace OpenGLPractice
             this.label3 = new System.Windows.Forms.Label();
             this.GameLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.panelGameObjectDetailsView = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.labelAddGameObject = new System.Windows.Forms.Label();
+            this.comboBoxGameObjects = new System.Windows.Forms.ComboBox();
+            this.buttonAddGameObjectToScene = new System.Windows.Forms.Button();
+            this.labelGameObjectType = new System.Windows.Forms.Label();
+            this.textBoxGameObjectName = new System.Windows.Forms.TextBox();
+            this.labelGameObjectName = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.zScaleTextBox = new System.Windows.Forms.TextBox();
             this.gameObjectBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -54,18 +61,13 @@ namespace OpenGLPractice
             this.xPositionTextBox = new System.Windows.Forms.TextBox();
             this.labelObjectPosition = new System.Windows.Forms.Label();
             this.localCoordinatesActiveCheckBox = new System.Windows.Forms.CheckBox();
-            this.labelGameObjectType = new System.Windows.Forms.Label();
-            this.labelGameObjectName = new System.Windows.Forms.Label();
-            this.textBoxGameObjectName = new System.Windows.Forms.TextBox();
-            this.buttonAddGameObjectToScene = new System.Windows.Forms.Button();
-            this.comboBoxGameObjects = new System.Windows.Forms.ComboBox();
-            this.labelAddGameObject = new System.Windows.Forms.Label();
             this.GameScene = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelGameObjectsList = new System.Windows.Forms.Panel();
             this.listBoxGameObjects = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panelGameObjectDetailsView.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameObjectBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
@@ -143,23 +145,87 @@ namespace OpenGLPractice
             // panelGameObjectDetailsView
             // 
             this.panelGameObjectDetailsView.AutoScroll = true;
+            this.panelGameObjectDetailsView.Controls.Add(this.panel3);
             this.panelGameObjectDetailsView.Controls.Add(this.panel2);
             this.panelGameObjectDetailsView.Controls.Add(this.panel1);
             this.panelGameObjectDetailsView.Controls.Add(this.localCoordinatesActiveCheckBox);
-            this.panelGameObjectDetailsView.Controls.Add(this.labelGameObjectType);
-            this.panelGameObjectDetailsView.Controls.Add(this.labelGameObjectName);
-            this.panelGameObjectDetailsView.Controls.Add(this.textBoxGameObjectName);
-            this.panelGameObjectDetailsView.Controls.Add(this.buttonAddGameObjectToScene);
-            this.panelGameObjectDetailsView.Controls.Add(this.comboBoxGameObjects);
-            this.panelGameObjectDetailsView.Controls.Add(this.labelAddGameObject);
             this.panelGameObjectDetailsView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGameObjectDetailsView.Location = new System.Drawing.Point(0, 0);
             this.panelGameObjectDetailsView.Name = "panelGameObjectDetailsView";
             this.panelGameObjectDetailsView.Size = new System.Drawing.Size(196, 506);
             this.panelGameObjectDetailsView.TabIndex = 24;
             // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.Controls.Add(this.labelAddGameObject);
+            this.panel3.Controls.Add(this.comboBoxGameObjects);
+            this.panel3.Controls.Add(this.buttonAddGameObjectToScene);
+            this.panel3.Controls.Add(this.labelGameObjectType);
+            this.panel3.Controls.Add(this.textBoxGameObjectName);
+            this.panel3.Controls.Add(this.labelGameObjectName);
+            this.panel3.Location = new System.Drawing.Point(12, 364);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(172, 130);
+            this.panel3.TabIndex = 19;
+            // 
+            // labelAddGameObject
+            // 
+            this.labelAddGameObject.AutoSize = true;
+            this.labelAddGameObject.Location = new System.Drawing.Point(20, 16);
+            this.labelAddGameObject.Name = "labelAddGameObject";
+            this.labelAddGameObject.Size = new System.Drawing.Size(94, 13);
+            this.labelAddGameObject.TabIndex = 9;
+            this.labelAddGameObject.Text = "Add Game Object:";
+            // 
+            // comboBoxGameObjects
+            // 
+            this.comboBoxGameObjects.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxGameObjects.FormattingEnabled = true;
+            this.comboBoxGameObjects.Location = new System.Drawing.Point(72, 69);
+            this.comboBoxGameObjects.Name = "comboBoxGameObjects";
+            this.comboBoxGameObjects.Size = new System.Drawing.Size(89, 21);
+            this.comboBoxGameObjects.TabIndex = 10;
+            // 
+            // buttonAddGameObjectToScene
+            // 
+            this.buttonAddGameObjectToScene.AutoSize = true;
+            this.buttonAddGameObjectToScene.Location = new System.Drawing.Point(76, 96);
+            this.buttonAddGameObjectToScene.Name = "buttonAddGameObjectToScene";
+            this.buttonAddGameObjectToScene.Size = new System.Drawing.Size(86, 23);
+            this.buttonAddGameObjectToScene.TabIndex = 11;
+            this.buttonAddGameObjectToScene.Text = "Add To Scene";
+            this.buttonAddGameObjectToScene.UseVisualStyleBackColor = true;
+            this.buttonAddGameObjectToScene.Click += new System.EventHandler(this.buttonAddGameObjectToScene_Click);
+            // 
+            // labelGameObjectType
+            // 
+            this.labelGameObjectType.AutoSize = true;
+            this.labelGameObjectType.Location = new System.Drawing.Point(20, 72);
+            this.labelGameObjectType.Name = "labelGameObjectType";
+            this.labelGameObjectType.Size = new System.Drawing.Size(31, 13);
+            this.labelGameObjectType.TabIndex = 14;
+            this.labelGameObjectType.Text = "Type";
+            // 
+            // textBoxGameObjectName
+            // 
+            this.textBoxGameObjectName.Location = new System.Drawing.Point(72, 43);
+            this.textBoxGameObjectName.Name = "textBoxGameObjectName";
+            this.textBoxGameObjectName.Size = new System.Drawing.Size(89, 20);
+            this.textBoxGameObjectName.TabIndex = 12;
+            // 
+            // labelGameObjectName
+            // 
+            this.labelGameObjectName.AutoSize = true;
+            this.labelGameObjectName.Location = new System.Drawing.Point(20, 46);
+            this.labelGameObjectName.Name = "labelGameObjectName";
+            this.labelGameObjectName.Size = new System.Drawing.Size(38, 13);
+            this.labelGameObjectName.TabIndex = 13;
+            this.labelGameObjectName.Text = "Name:";
+            // 
             // panel2
             // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Controls.Add(this.zScaleTextBox);
             this.panel2.Controls.Add(this.buttonResetScale);
             this.panel2.Controls.Add(this.label1);
@@ -229,6 +295,7 @@ namespace OpenGLPractice
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.zPositionTextBox);
             this.panel1.Controls.Add(this.buttonResetPosition);
             this.panel1.Controls.Add(this.zLabel);
@@ -294,67 +361,15 @@ namespace OpenGLPractice
             // 
             // localCoordinatesActiveCheckBox
             // 
+            this.localCoordinatesActiveCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.localCoordinatesActiveCheckBox.AutoSize = true;
             this.localCoordinatesActiveCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("CheckState", this.gameObjectBindingSource, "LocalCoordinatesActive", true));
-            this.localCoordinatesActiveCheckBox.Location = new System.Drawing.Point(15, 341);
+            this.localCoordinatesActiveCheckBox.Location = new System.Drawing.Point(12, 332);
             this.localCoordinatesActiveCheckBox.Name = "localCoordinatesActiveCheckBox";
             this.localCoordinatesActiveCheckBox.Size = new System.Drawing.Size(111, 17);
             this.localCoordinatesActiveCheckBox.TabIndex = 15;
             this.localCoordinatesActiveCheckBox.Text = "Local Coordinates";
             this.localCoordinatesActiveCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // labelGameObjectType
-            // 
-            this.labelGameObjectType.AutoSize = true;
-            this.labelGameObjectType.Location = new System.Drawing.Point(32, 428);
-            this.labelGameObjectType.Name = "labelGameObjectType";
-            this.labelGameObjectType.Size = new System.Drawing.Size(31, 13);
-            this.labelGameObjectType.TabIndex = 14;
-            this.labelGameObjectType.Text = "Type";
-            // 
-            // labelGameObjectName
-            // 
-            this.labelGameObjectName.AutoSize = true;
-            this.labelGameObjectName.Location = new System.Drawing.Point(32, 402);
-            this.labelGameObjectName.Name = "labelGameObjectName";
-            this.labelGameObjectName.Size = new System.Drawing.Size(38, 13);
-            this.labelGameObjectName.TabIndex = 13;
-            this.labelGameObjectName.Text = "Name:";
-            // 
-            // textBoxGameObjectName
-            // 
-            this.textBoxGameObjectName.Location = new System.Drawing.Point(84, 399);
-            this.textBoxGameObjectName.Name = "textBoxGameObjectName";
-            this.textBoxGameObjectName.Size = new System.Drawing.Size(89, 20);
-            this.textBoxGameObjectName.TabIndex = 12;
-            // 
-            // buttonAddGameObjectToScene
-            // 
-            this.buttonAddGameObjectToScene.AutoSize = true;
-            this.buttonAddGameObjectToScene.Location = new System.Drawing.Point(88, 464);
-            this.buttonAddGameObjectToScene.Name = "buttonAddGameObjectToScene";
-            this.buttonAddGameObjectToScene.Size = new System.Drawing.Size(86, 23);
-            this.buttonAddGameObjectToScene.TabIndex = 11;
-            this.buttonAddGameObjectToScene.Text = "Add To Scene";
-            this.buttonAddGameObjectToScene.UseVisualStyleBackColor = true;
-            this.buttonAddGameObjectToScene.Click += new System.EventHandler(this.buttonAddGameObjectToScene_Click);
-            // 
-            // comboBoxGameObjects
-            // 
-            this.comboBoxGameObjects.FormattingEnabled = true;
-            this.comboBoxGameObjects.Location = new System.Drawing.Point(84, 425);
-            this.comboBoxGameObjects.Name = "comboBoxGameObjects";
-            this.comboBoxGameObjects.Size = new System.Drawing.Size(89, 21);
-            this.comboBoxGameObjects.TabIndex = 10;
-            // 
-            // labelAddGameObject
-            // 
-            this.labelAddGameObject.AutoSize = true;
-            this.labelAddGameObject.Location = new System.Drawing.Point(32, 372);
-            this.labelAddGameObject.Name = "labelAddGameObject";
-            this.labelAddGameObject.Size = new System.Drawing.Size(94, 13);
-            this.labelAddGameObject.TabIndex = 9;
-            this.labelAddGameObject.Text = "Add Game Object:";
             // 
             // GameScene
             // 
@@ -433,6 +448,8 @@ namespace OpenGLPractice
             this.Text = "Form1";
             this.panelGameObjectDetailsView.ResumeLayout(false);
             this.panelGameObjectDetailsView.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameObjectBindingSource)).EndInit();
@@ -485,5 +502,6 @@ namespace OpenGLPractice
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel panel3;
     }
 }

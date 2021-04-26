@@ -8,14 +8,16 @@ namespace OpenGLPractice.GameObjects
     internal enum eGameObjectTypes
     {
         Cup,
-        Telescope,
+        TelescopicPropeller,
         HeliCup,
         Rod,
         Cube,
+        Plane,
         Sphere,
         Arrow,
         PropellerWing,
-        Propeller
+        Propeller,
+        Particle
     }
 
     internal static class GameObjectCreator

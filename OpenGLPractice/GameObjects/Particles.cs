@@ -31,7 +31,7 @@ namespace OpenGLPractice.GameObjects
         {
             foreach (Cube cubeParticle in r_CubeParticles)
             {
-                cubeParticle.Draw();
+                cubeParticle.Draw(!k_UseDisplayList);
             }
         }
 

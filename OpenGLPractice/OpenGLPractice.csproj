@@ -56,10 +56,11 @@
     <Compile Include="GameObjects\GameObjectCreator.cs" />
     <Compile Include="GameObjects\HeliCup.cs" />
     <Compile Include="GameObjects\Particles.cs" />
+    <Compile Include="GameObjects\Plane.cs" />
     <Compile Include="GameObjects\Propeller.cs" />
     <Compile Include="GameObjects\PropellerWing.cs" />
     <Compile Include="GameObjects\Rod.cs" />
-    <Compile Include="GameObjects\Telescope.cs" />
+    <Compile Include="GameObjects\TelescopicPropeller.cs" />
     <Compile Include="Utilities\Camera.cs" />
     <Compile Include="cOGL.cs" />
     <Compile Include="OpenGLForm.cs">
@@ -74,7 +75,7 @@
     <Compile Include="GameObjects\Sphere.cs" />
     <Compile Include="GLMath\Matrix3.cs" />
     <Compile Include="GLMath\Matrix4.cs" />
-    <Compile Include="Utilities\GLUtilities.cs" />
+    <Compile Include="Utilities\GLErrorCatcher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GLMath\Matrix2.cs" />

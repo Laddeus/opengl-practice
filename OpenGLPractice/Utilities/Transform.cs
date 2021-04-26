@@ -72,15 +72,15 @@ namespace OpenGLPractice.Utilities
 
         private void initializeAccumulatedMatrices()
         {
-            GL.glPushMatrix();
-            GL.glLoadIdentity();
+            GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
+            GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
 
-            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationMatrix);
-            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTranslationMatrix);
-            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedScaleMatrix);
-            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedRotationMatrix);
+            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTranslationMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedScaleMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedRotationMatrix));
 
-            GL.glPopMatrix();
+            GLErrorCatcher.TryGLCall(() => GL.glPopMatrix());
         }
 
         public void Translate(Vector3 i_TranslateVector)
@@ -103,7 +103,7 @@ namespace OpenGLPractice.Utilities
         {
             performTransformation(() =>
             {
-                GL.glRotatef(i_RotationAngle, i_X, i_Y, i_Z);
+                GLErrorCatcher.TryGLCall(() => GL.glRotatef(i_RotationAngle, i_X, i_Y, i_Z));
             }, r_AccumulatedRotationMatrix);
 
             calculateDirectionVectors();
@@ -118,7 +118,7 @@ namespace OpenGLPractice.Utilities
         {
             performTransformation(() =>
             {
-                GL.glScalef(i_X, i_Y, i_Z);
+                GLErrorCatcher.TryGLCall(() => GL.glScalef(i_X, i_Y, i_Z));
             }, r_AccumulatedScaleMatrix);
 
             m_Scale *= new Vector3(i_X, i_Y, i_Z);
@@ -126,24 +126,24 @@ namespace OpenGLPractice.Utilities
 
         private void performTransformation(Action i_TransformationAction, float[] i_AccumulatedTransformationMatrix)
         {
-            GL.glPushMatrix();
-            GL.glLoadIdentity();
+            GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
+            GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
 
             i_TransformationAction.Invoke();
 
             accumulateTransformation(i_AccumulatedTransformationMatrix);
             updateAccumulatedTransformationMatrix();
-            GL.glPopMatrix();
+            GLErrorCatcher.TryGLCall(() => GL.glPopMatrix());
         }
 
         private void updateAccumulatedTransformationMatrix()
         {
-            GL.glLoadIdentity();
-            GL.glLoadMatrixf(r_AccumulatedTranslationMatrix);
-            GL.glMultMatrixf(r_AccumulatedRotationMatrix);
-            GL.glMultMatrixf(r_AccumulatedScaleMatrix);
+            GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
+            GLErrorCatcher.TryGLCall(() => GL.glLoadMatrixf(r_AccumulatedTranslationMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(r_AccumulatedRotationMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(r_AccumulatedScaleMatrix));
 
-            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationMatrix);
+            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationMatrix));
         }
 
         private void calculateDirectionVectors()
@@ -163,31 +163,10 @@ namespace OpenGLPractice.Utilities
             Debug.WriteLine($"Up Vector = {UpVector}");
         }
 
-        /*
-        private float[] rotateVectorRelativeToOrigin(float[] i_RotationMatrixRelativeToObject, float[] i_VectorToTransform)
-        {
-            const int k_MatrixDimension = 4;
-            float[] vectorTransformed = new float[k_MatrixDimension];
-
-            for (int i = 0; i < k_MatrixDimension; i++)
-            {
-                float rowResult = 0;
-                for (int j = 0; j < k_MatrixDimension; j++)
-                {
-                    rowResult += i_RotationMatrixRelativeToObject[(j * k_MatrixDimension) + i] * i_VectorToTransform[j];
-                }
-
-                vectorTransformed[i] = rowResult;
-            }
-
-            return vectorTransformed;
-        } 
-        */
-
         private void accumulateTransformation(float[] i_AccumulatedTransformationMatrix)
         {
-            GL.glMultMatrixf(i_AccumulatedTransformationMatrix);
-            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, i_AccumulatedTransformationMatrix);
+            GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(i_AccumulatedTransformationMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, i_AccumulatedTransformationMatrix));
         }
     }
 }

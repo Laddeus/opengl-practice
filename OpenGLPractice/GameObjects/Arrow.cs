@@ -1,5 +1,6 @@
 ﻿using OpenGL;
 using OpenGLPractice.GLMath;
+using OpenGLPractice.Utilities;
 
 namespace OpenGLPractice.GameObjects
 {
@@ -21,7 +22,7 @@ namespace OpenGLPractice.GameObjects
 
         protected override void DefineGameObject()
         {
-            GL.glColor3fv(Color.ToArray);
+            GLErrorCatcher.TryGLCall(() => GL.glColor3fv(Color.ToArray));
             GLU.gluCylinder(m_QuadricObject, 0.2, 0, 0.5, 20, 20);
         }
 
