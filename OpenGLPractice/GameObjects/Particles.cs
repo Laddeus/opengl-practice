@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.GameObjects
@@ -31,7 +32,7 @@ namespace OpenGLPractice.GameObjects
         {
             foreach (Cube cubeParticle in r_CubeParticles)
             {
-                cubeParticle.Draw(!k_UseDisplayList);
+                cubeParticle.Draw();
             }
         }
 

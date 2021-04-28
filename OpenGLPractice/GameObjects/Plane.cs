@@ -1,4 +1,4 @@
-﻿using OpenGLPractice.GLMath;
+﻿using OpenGLPractice.Game;
 
 namespace OpenGLPractice.GameObjects
 {
@@ -10,14 +10,12 @@ namespace OpenGLPractice.GameObjects
         {
             r_CubePlane = (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, "Ground");
             r_CubePlane.Transform.ChangeScale(5.0f, 0.01f, 5.0f);
+            DisplayShadow = false;
+
+            Children.Add(r_CubePlane);
         }
 
         protected override void DefineGameObject()
-        {
-            r_CubePlane.Draw(k_UseDisplayList);
-        }
-
-        public override void Tick(float i_DeltaTime)
         {
         }
     }

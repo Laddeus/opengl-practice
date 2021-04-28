@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using OpenGLPractice.GameObjects;
+using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice
@@ -72,7 +72,7 @@ namespace OpenGLPractice
         {
             cGL.Camera.LookAtHorizontalAngle += i_AngleToMoveBy;
 
-            sortObjectsByDistanceFromCameraEye();
+            //sortObjectsByDistanceFromCameraEye();
         }
 
         private void sortObjectsByDistanceFromCameraEye()
@@ -124,6 +124,8 @@ namespace OpenGLPractice
 
         private void update()
         {
+            Vector3 gameObjectPosition = cGL.SelectedGameObjectForControl.Transform.Position;
+
             if (r_KeysPressed.Count != 0)
             {
                 Keys lastKeyPressed = r_KeysPressed.Dequeue();
@@ -134,6 +136,11 @@ namespace OpenGLPractice
             foreach (GameObject gameObject in cGL.GameObjects)
             {
                 gameObject.Tick(GameLoopTimer.Interval / 1000.0f);
+            }
+
+            if (cGL.SelectedGameObjectForControl.Transform.Position != gameObjectPosition)
+            {
+                gameObjectBindingSource.ResetCurrentItem();
             }
         }
 

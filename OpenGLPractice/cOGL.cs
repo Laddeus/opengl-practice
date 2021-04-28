@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Forms;
 using OpenGL;
+using OpenGLPractice.Game;
 using OpenGLPractice.GameObjects;
 using OpenGLPractice.GLMath;
-using OpenGLPractice.Utilities;
+using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice
 {
@@ -13,15 +13,14 @@ namespace OpenGLPractice
         private readonly Control r_Panel;
         private int m_Width;
         private int m_Height;
-        private GLUquadric obj;
 
-        public Camera Camera { get; }
+        public GameEnvironment GameEnvironment { get; private set; }
 
-        public Light Light { get; }
+        public List<GameObject> GameObjects => GameEnvironment.GameObjects;
 
-        private Vector3 lightPosition;
+        public Light Light => GameEnvironment.Light;
 
-        public List<GameObject> GameObjects { get; set; }
+        public Camera Camera => GameEnvironment.Camera;
 
         public GameObject SelectedGameObjectForControl { get; set; }
 
@@ -33,22 +32,54 @@ namespace OpenGLPractice
 
             InitializeGL();
 
-            GameObjects = new List<GameObject>();
-            obj = GLU.gluNewQuadric();
-            Camera = new Camera();
+            GameEnvironment = new GameEnvironment()
+            {
+                DrawShadows = true,
+                UseLight = true
+            };
 
-            Light = Light.CreateLight(Light.eLightTypes.Point);
-            Light.Position = new Vector3(0, 0.5f, 2.3f);
-            Camera.CameraUpdated += Light.ApplyPositionsAndDirection;
+            GameEnvironment.Light.Position = new Vector3(0, 1.5f, 1.0f);
+            GameEnvironment.Camera.CameraUpdated += Light.ApplyPositionsAndDirection;
 
-            Plane ground = (Plane)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Plane, "Ground");
-            ground.Transform.Translate(0, -1, 0);
+            Plane ground = (Plane)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Plane, "Plane");
+            Axes axes = (Axes)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Axes, "Axes");
+            //Plane wall = (Plane)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Plane, "Wall");
+            //wall.Transform.Rotate(18.43f, 1, 0, 0);
+            //wall.Transform.Translate(0, -0.05f, 0);
+            ground.Transform.Translate(0, -0.01f, 0);
+            GameObjects.Add(axes);
             GameObjects.Add(ground);
+            //GameObjects.Add(wall);
+
+            ShadowSurface groundSurface = new ShadowSurface()
+            {
+                SurfacePoints = new Matrix3(new Vector3[]
+                {
+                    new Vector3(0, -0, 0),
+                    new Vector3(-1, -0, 1),
+                    new Vector3(1, -0, 1)
+                }),
+                ClippingSurface = ground
+            };
+
+            //ShadowSurface slopeSurface = new ShadowSurface()
+            //{
+            //    SurfacePoints = new Matrix3(new Vector3[]
+            //    {
+            //        new Vector3(0, 0, 0),
+            //        new Vector3(1, 1, -3),
+            //        new Vector3(-1, 1, -3),
+            //    }),
+            //    ClippingSurface = wall
+            //};
+
+
+            GameEnvironment.ShadowSurfaces.Add(groundSurface);
+            //GameEnvironment.ShadowSurfaces.Add(slopeSurface);
         }
 
         ~cOGL()
         {
-            GLU.gluDeleteQuadric(obj);
             WGL.wglDeleteContext(m_uint_RC);
         }
 
@@ -73,60 +104,6 @@ namespace OpenGLPractice
             get { return m_uint_RC; }
         }
 
-        private void DrawOldAxes()
-        {
-            // INITIAL axes
-            GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_LINE_STIPPLE));
-            GLErrorCatcher.TryGLCall(() => GL.glLineStipple(1, 0xFF00));
-
-            // ted   
-            GLErrorCatcher.TryGLCall(() => GL.glBegin(GL.GL_LINES));
-
-            // x  RED
-            GL.glColor3f(1.0f, 0.0f, 0.0f);
-            GL.glVertex3f(-5.0f, 0.0f, 0.0f);
-            GL.glVertex3f(5.0f, 0.0f, 0.0f);
-
-            // y  GREEN 
-            GL.glColor3f(0.0f, 1.0f, 0.0f);
-            GL.glVertex3f(0.0f, -5.0f, 0.0f);
-            GL.glVertex3f(0.0f, 5.0f, 0.0f);
-
-            // z  BLUE
-            GL.glColor3f(0.0f, 0.0f, 1.0f);
-            GL.glVertex3f(0.0f, 0.0f, -5.0f);
-            GL.glVertex3f(0.0f, 0.0f, 5.0f);
-
-            GL.glEnd();
-
-            GLErrorCatcher.TryGLCall(() => GL.glColor3f(0.0f, 0.0f, 1.0f));
-
-            GLErrorCatcher.TryGLCall(() => GL.glTranslatef(0, 0, 5));
-
-            GLU.gluCylinder(obj, 0.2, 0, 1, 20, 20);
-
-            GLErrorCatcher.TryGLCall(() => GL.glTranslatef(0, 0, -5));
-
-            GLErrorCatcher.TryGLCall(() => GL.glColor3f(1.0f, 0.0f, 0.0f));
-            GLErrorCatcher.TryGLCall(() => GL.glTranslatef(5, 0, 0));
-            GLErrorCatcher.TryGLCall(() => GL.glRotatef(90, 0, 1, 0));
-
-            GLU.gluCylinder(obj, 0.2, 0, 1, 20, 20);
-
-            GLErrorCatcher.TryGLCall(() => GL.glRotatef(-90, 0, 1, 0));
-            GLErrorCatcher.TryGLCall(() => GL.glTranslatef(-5, 0, 0));
-
-            GLErrorCatcher.TryGLCall(() => GL.glColor3f(0, 1, 0));
-            GLErrorCatcher.TryGLCall(() => GL.glTranslatef(0, 5, 0));
-            GLErrorCatcher.TryGLCall(() => GL.glRotatef(-90, 1, 0, 0));
-
-            GLU.gluCylinder(obj, 0.2, 0, 1, 20, 20);
-
-            GLErrorCatcher.TryGLCall(() => GL.glRotatef(90, 1, 0, 0));
-            GLErrorCatcher.TryGLCall(() => GL.glTranslatef(0, -5, 0));
-            GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_LINE_STIPPLE));
-        }
-
         public void Draw()
         {
             if (m_uint_DC == 0 || m_uint_RC == 0)
@@ -134,7 +111,7 @@ namespace OpenGLPractice
                 return;
             }
 
-            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
 
             GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
 
@@ -143,14 +120,7 @@ namespace OpenGLPractice
                 Camera.LookAtPosition = SelectedGameObjectForControl.Transform.Position;
             }
 
-            Camera.ApplyChanges();
-
-            DrawOldAxes();
-
-            foreach (GameObject gameObject in GameObjects)
-            {
-                gameObject.Draw(!GameObject.k_UseDisplayList);
-            }
+            GameEnvironment.DrawScene();
 
             GLErrorCatcher.TryGLCall(() => GL.glFlush());
             WGL.wglSwapBuffers(m_uint_DC);
@@ -172,6 +142,7 @@ namespace OpenGLPractice
             pfd.iPixelType = (byte)WGL.PFD_TYPE_RGBA;
             pfd.cColorBits = 32;
             pfd.cDepthBits = 32;
+            pfd.cStencilBits = 32;
             pfd.iLayerType = (byte)WGL.PFD_MAIN_PLANE;
 
             int pixelFormatIndex = 0;
@@ -231,7 +202,8 @@ namespace OpenGLPractice
                 return;
             }
 
-            GLErrorCatcher.TryGLCall(() => GL.glClearColor(0.5f, 0.5f, 0.5f, 0.0f));
+            GLErrorCatcher.TryGLCall(() => GL.glShadeModel(GL.GL_SMOOTH));
+            GLErrorCatcher.TryGLCall(() => GL.glClearColor(0.2f, 0.2f, 0.2f, 0.0f));
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_DEPTH_TEST));
             GLErrorCatcher.TryGLCall(() => GL.glDepthFunc(GL.GL_LEQUAL));
 
@@ -247,7 +219,7 @@ namespace OpenGLPractice
 
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_LIGHTING));
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_COLOR_MATERIAL));
-            GLErrorCatcher.TryGLCall(() => GL.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, new float[] { 0.20f, 0.20f, 0.20f, 1.0f }));
+            GLErrorCatcher.TryGLCall(() => GL.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, new float[] { 0.05f, 0.05f, 0.05f, 1.0f }));
             GLErrorCatcher.TryGLCall(() => GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA));
         }
     }

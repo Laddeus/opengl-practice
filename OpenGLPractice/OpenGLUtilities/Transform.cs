@@ -3,7 +3,7 @@ using System.Diagnostics;
 using OpenGL;
 using OpenGLPractice.GLMath;
 
-namespace OpenGLPractice.Utilities
+namespace OpenGLPractice.OpenGLUtilities
 {
     internal class Transform
     {
@@ -167,6 +167,41 @@ namespace OpenGLPractice.Utilities
         {
             GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(i_AccumulatedTransformationMatrix));
             GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, i_AccumulatedTransformationMatrix));
+        }
+
+        public static float[] CalculateShadowMatrix(Matrix3 i_PlaneCoordinates, Vector4 i_LightPosition)
+        {
+            float[] shadowMatrix = new float[TransformationMatrixSize];
+
+            Vector3 planeNormal = getPlaneNormal(i_PlaneCoordinates);
+            float planeDistance = (-1) * planeNormal.DotProduct(i_PlaneCoordinates[0]);
+            Vector4 planeCoefficients = new Vector4(planeNormal.X, planeNormal.Y, planeNormal.Z, planeDistance);
+            float planeLightDotProduct = i_LightPosition.DotProduct(planeCoefficients);
+
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (i == j)
+                    {
+                        shadowMatrix[i * 4 + j] = planeLightDotProduct - i_LightPosition[j] * planeCoefficients[i];
+                    }
+                    else
+                    {
+                        shadowMatrix[i * 4 + j] = 0.0f - i_LightPosition[j] * planeCoefficients[i];
+                    }
+                }
+            }
+
+            return shadowMatrix;
+        }
+
+        private static Vector3 getPlaneNormal(Matrix3 i_PlaneCoordinates)
+        {
+            Vector3 firstVector = i_PlaneCoordinates[0] - i_PlaneCoordinates[1];
+            Vector3 secondVector = i_PlaneCoordinates[1] - i_PlaneCoordinates[2];
+
+            return firstVector.CrossProduct(secondVector).Normalized;
         }
     }
 }

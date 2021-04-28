@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using OpenGLPractice.GameObjects;
 
-namespace OpenGLPractice.GameObjects
+namespace OpenGLPractice.Game
 {
     internal enum eGameObjectTypes
     {
+        Axes,
         Cup,
         TelescopicPropeller,
         HeliCup,

@@ -1,4 +1,5 @@
-﻿using OpenGLPractice.GameObjects;
+﻿using OpenGLPractice.Game;
+using OpenGLPractice.GameObjects;
 
 namespace OpenGLPractice
 {
@@ -251,7 +252,7 @@ namespace OpenGLPractice
             // 
             // gameObjectBindingSource
             // 
-            this.gameObjectBindingSource.DataSource = typeof(OpenGLPractice.GameObjects.GameObject);
+            this.gameObjectBindingSource.DataSource = typeof(GameObject);
             // 
             // buttonResetScale
             // 

@@ -1,23 +1,21 @@
-﻿namespace OpenGLPractice.GameObjects
+﻿using OpenGLPractice.Game;
+
+namespace OpenGLPractice.GameObjects
 {
     internal class PropellerWing : GameObject
     {
-        private Sphere r_FirstWing;
+        private readonly Sphere r_Wing;
 
         public PropellerWing(string i_Name) : base(i_Name)
         {
-            r_FirstWing = new Sphere("Wing1");
+            r_Wing = (Sphere)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Sphere, "Wing");
+            r_Wing.Transform.Translate(0, 0, 0.25f);
+            r_Wing.Transform.ChangeScale(0.15f, 0.01f, 0.5f);
 
-            r_FirstWing.Transform.Translate(0, 0, 0.25f);
-            r_FirstWing.Transform.ChangeScale(0.15f, 0.01f, 0.5f);
+            Children.Add(r_Wing);
         }
 
         protected override void DefineGameObject()
-        {
-            r_FirstWing.Draw(!k_UseDisplayList);
-        }
-
-        public override void Tick(float i_DeltaTime)
         {
         }
     }

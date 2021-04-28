@@ -1,7 +1,7 @@
 ﻿using OpenGL;
 using OpenGLPractice.GLMath;
 
-namespace OpenGLPractice.Utilities
+namespace OpenGLPractice.OpenGLUtilities
 {
     internal class Material
     {

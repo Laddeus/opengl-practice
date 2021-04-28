@@ -1,9 +1,10 @@
-﻿using OpenGL;
+﻿using System;
+using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.GameObjects
 {
-    internal class Propeller : GameObject
+    internal class Propeller : GameObject, IFoldable
     {
         public enum ePropellerState
         {
@@ -13,6 +14,10 @@ namespace OpenGLPractice.GameObjects
             Opening,
             Spinning
         };
+
+        public event Action Folded;
+
+        public event Action Opened;
 
         private PropellerWing r_FirstPropellerWing;
         private PropellerWing r_SecondPropellerWing;
@@ -25,7 +30,7 @@ namespace OpenGLPractice.GameObjects
 
         public ePropellerState State { get; private set; } = ePropellerState.Folded;
 
-        public Propeller(string i_Name, float i_NoseRadius) : base(i_Name)
+        public Propeller(string i_Name, float i_NoseRadius = 0.25f) : base(i_Name)
         {
             r_FirstPropellerWing = (PropellerWing)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.PropellerWing, "Wing1");
             r_SecondPropellerWing = (PropellerWing)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.PropellerWing, "Wing2");
@@ -60,16 +65,16 @@ namespace OpenGLPractice.GameObjects
                     openWings(i_DeltaTime);
                     break;
                 case ePropellerState.Spinning:
-                    spin(i_DeltaTime);
+                    spinTick(i_DeltaTime);
                     break;
                 default:
                     break;
             }
         }
 
-        private void spin(float i_DeltaTime)
+        private void spinTick(float i_DeltaTime)
         {
-            Transform.Rotate(1800 * i_DeltaTime, 0, 1, 0);
+            Transform.Rotate(k_RotationsPerSecond * 360.0f * i_DeltaTime, 0, 1, 0);
         }
 
         public void Spin()
@@ -101,6 +106,7 @@ namespace OpenGLPractice.GameObjects
             if (m_CurrentWingsAngle >= k_WingsFoldAngle)
             {
                 State = ePropellerState.Folded;
+                OnFolded();
             }
         }
 
@@ -114,6 +120,23 @@ namespace OpenGLPractice.GameObjects
             if (m_CurrentWingsAngle <= k_WingsOpenedAngle)
             {
                 State = ePropellerState.Opened;
+                OnOpened();
+            }
+        }
+
+        public void OnFolded()
+        {
+            if (Folded != null)
+            {
+                Folded.Invoke();
+            }
+        }
+
+        public void OnOpened()
+        {
+            if (Opened != null)
+            {
+                Opened.Invoke();
             }
         }
     }

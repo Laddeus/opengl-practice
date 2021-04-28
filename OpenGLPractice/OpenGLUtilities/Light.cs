@@ -4,7 +4,7 @@ using System.Linq;
 using OpenGL;
 using OpenGLPractice.GLMath;
 
-namespace OpenGLPractice.Utilities
+namespace OpenGLPractice.OpenGLUtilities
 {
     internal class Light
     {
@@ -80,6 +80,8 @@ namespace OpenGLPractice.Utilities
                 GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_POSITION, m_Position.ToArray));
             }
         }
+
+        public Vector4 Position4 => m_Position;
 
         public Vector4 Ambient
         {
@@ -231,8 +233,8 @@ namespace OpenGLPractice.Utilities
             Diffuse = new Vector4(1.0f);
             Specular = new Vector4(1.0f);
             ConstantAttenuation = 1.0f;
-            LinearAttenuation = 0.35f;
-            QuadraticAttenuation = 0.44f;
+            LinearAttenuation = 0.14f;
+            QuadraticAttenuation = 0.07f;
         }
 
         public void TurnOn()

@@ -1,5 +1,6 @@
 ﻿using OpenGL;
-using OpenGLPractice.Utilities;
+using OpenGLPractice.Game;
+using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice.GameObjects
 {
@@ -25,14 +26,14 @@ namespace OpenGLPractice.GameObjects
         protected override void DefineGameObject()
         {
             GLErrorCatcher.TryGLCall(() => GL.glRotatef(-90, 1, 0, 0));
-            GLErrorCatcher.TryGLCall(() => GL.glColor3f(0, 0, 1));
-            GLU.gluCylinder(r_gluQuadric, r_InnerCylinderRadius, r_InnerCylinderRadius, r_Height, 20, 20);
-            GLErrorCatcher.TryGLCall(() => GL.glColor3f(1, 0, 0));
-            GLU.gluCylinder(r_gluQuadric, r_OuterCylinderRadius, r_OuterCylinderRadius, r_Height, 20, 20);
-            GLErrorCatcher.TryGLCall(() => GL.glColor3f(1, 1, 0));
-            GLU.gluDisk(r_gluQuadric, r_InnerCylinderRadius, r_OuterCylinderRadius, 20, 20);
+            //GLErrorCatcher.TryGLCall(() => GL.glColor3f(0, 0, 1));
+            GLU.gluCylinder(sr_GluQuadric, r_InnerCylinderRadius, r_InnerCylinderRadius, r_Height, 20, 20);
+            //GLErrorCatcher.TryGLCall(() => GL.glColor3f(1, 0, 0));
+            GLU.gluCylinder(sr_GluQuadric, r_OuterCylinderRadius, r_OuterCylinderRadius, r_Height, 20, 20);
+            //GLErrorCatcher.TryGLCall(() => GL.glColor3f(1, 1, 0));
+            GLU.gluDisk(sr_GluQuadric, r_InnerCylinderRadius, r_OuterCylinderRadius, 20, 20);
             GLErrorCatcher.TryGLCall(() => GL.glTranslatef(0, 0, r_Height));
-            GLU.gluDisk(r_gluQuadric, r_InnerCylinderRadius, r_OuterCylinderRadius, 20, 20);
+            GLU.gluDisk(sr_GluQuadric, r_InnerCylinderRadius, r_OuterCylinderRadius, 20, 20);
         }
 
         public override void Tick(float i_DeltaTime)

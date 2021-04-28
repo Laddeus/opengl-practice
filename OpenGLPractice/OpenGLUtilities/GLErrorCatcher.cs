@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using OpenGL;
 
-namespace OpenGLPractice.Utilities
+namespace OpenGLPractice.OpenGLUtilities
 {
     internal static class GLErrorCatcher
     {

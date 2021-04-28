@@ -68,7 +68,7 @@ namespace OpenGLPractice.GLMath
         /// <summary>
         /// This <see cref="Vector3"/> instance normalized.
         /// </summary>
-        public Vector3 Normalized => this / Norm;
+        public Vector3 Normalized => this / (Norm != 0 ? Norm : 1);
 
         /// <summary>
         /// This <see cref="Vector3"/> instance represented with an array of floats of size 3.
@@ -343,7 +343,7 @@ namespace OpenGLPractice.GLMath
         {
             float squaredDistance = SquaredDistance(i_Vector);
 
-            return (float)System.Math.Sqrt(squaredDistance);
+            return squaredDistance == 0 ? 0 : (float)Math.Sqrt(squaredDistance);
         }
 
         public override bool Equals(object i_ObjectToCompare)

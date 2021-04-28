@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing.Drawing2D;
 using System.Text;
 
 namespace OpenGLPractice.GLMath

@@ -1,6 +1,9 @@
-﻿namespace OpenGLPractice.GameObjects
+﻿using System;
+using OpenGLPractice.Game;
+
+namespace OpenGLPractice.GameObjects
 {
-    internal class TelescopicPropeller : GameObject
+    internal class TelescopicPropeller : GameObject, IFoldable
     {
         public enum eTelescopeState
         {
@@ -9,6 +12,10 @@
             Folding,
             Opening
         };
+
+        public event Action Folded;
+
+        public event Action Opened;
 
         private const float k_InitialRodRadius = 0.1f;
         private const float k_InitialRodOuterRingWidth = 0.1f;
@@ -38,7 +45,6 @@
             r_UpperRod.Transform.Translate(0, -0.25f * k_InitialRodHeight, 0);
 
             r_Propeller = new Propeller("Propeller", r_MiddleRod.RodRadius);
-            r_Propeller.UseDisplayList = !k_UseDisplayList;
 
             Children.AddRange(new GameObject[] { r_BottomRod, r_MiddleRod, r_UpperRod, r_Propeller });
         }
@@ -51,23 +57,16 @@
         {
             base.Tick(i_DeltaTime);
 
-            if (State == eTelescopeState.Folding)
+            switch (State)
             {
-                if (r_Propeller.State == Propeller.ePropellerState.Folded)
-                {
-                    foldTelescope(i_DeltaTime);
-                }
-            }
-            else if (State == eTelescopeState.Opening)
-            {
-                if (r_Propeller.State == Propeller.ePropellerState.Folded)
-                {
-                    openTelescope(i_DeltaTime);
-                }
-                else if (r_Propeller.State == Propeller.ePropellerState.Opened)
-                {
-                    State = eTelescopeState.Opened;
-                }
+                case eTelescopeState.Folding:
+                    foldTelescopeTick(i_DeltaTime);
+                    break;
+                case eTelescopeState.Opening:
+                    openTelescopeTick(i_DeltaTime);
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -82,56 +81,92 @@
             r_Propeller.FoldWings();
         }
 
-        private void openTelescope(float i_DeltaTime)
+        private void openTelescopeTick(float i_DeltaTime)
         {
-            if (r_BottomRod.Transform.Position.Y < 0.0f)
+            if (r_Propeller.State == Propeller.ePropellerState.Folded)
             {
-                r_Propeller.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-                r_UpperRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-                r_MiddleRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-                r_BottomRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-            }
-            else if (r_MiddleRod.Transform.Position.Y < k_InitialRodHeight)
-            {
-                r_Propeller.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-                r_UpperRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-                r_MiddleRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-            }
-            else if (r_UpperRod.Transform.Position.Y < 1.5f * k_InitialRodHeight)
-            {
-                r_Propeller.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-                r_UpperRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
-            }
-            else
-            {
-                r_Propeller.OpenWings();
+                if (r_BottomRod.Transform.Position.Y < 0.0f)
+                {
+                    r_Propeller.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                    r_MiddleRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                    r_BottomRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                }
+                else if (r_MiddleRod.Transform.Position.Y < k_InitialRodHeight)
+                {
+                    r_Propeller.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                    r_MiddleRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                }
+                else if (r_UpperRod.Transform.Position.Y < 1.5f * k_InitialRodHeight)
+                {
+                    r_Propeller.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, 0.25f * i_DeltaTime, 0);
+                }
+                else
+                {
+                    r_Propeller.OpenWings();
+                    r_Propeller.Opened += Propeller_Opened;
+                }
             }
         }
 
-        private void foldTelescope(float i_DeltaTime)
+        private void Propeller_Opened()
         {
-            if (r_UpperRod.Transform.Position.Y > 1.25f * k_InitialRodHeight)
+            State = eTelescopeState.Opened;
+            OnOpened();
+            r_Propeller.Opened -= Propeller_Opened;
+        }
+
+        private void foldTelescopeTick(float i_DeltaTime)
+        {
+            if (r_Propeller.State == Propeller.ePropellerState.Folded)
             {
-                r_Propeller.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
-                r_UpperRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                if (r_UpperRod.Transform.Position.Y > 1.25f * k_InitialRodHeight)
+                {
+                    r_Propeller.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                }
+                else if (r_MiddleRod.Transform.Position.Y > 0.5f * k_InitialRodHeight)
+                {
+                    r_Propeller.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                    r_MiddleRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                }
+                else if (r_BottomRod.Transform.Position.Y > -k_InitialRodHeight)
+                {
+                    r_Propeller.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                    r_MiddleRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                    r_BottomRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                }
+                else
+                {
+                    State = eTelescopeState.Folded;
+                    OnFolded();
+                }
             }
-            else if (r_MiddleRod.Transform.Position.Y > 0.5f * k_InitialRodHeight)
+        }
+
+        public void OnOpened()
+        {
+            if (Opened != null)
             {
-                r_Propeller.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
-                r_UpperRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
-                r_MiddleRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                Opened.Invoke();
             }
-            else if (r_BottomRod.Transform.Position.Y > -k_InitialRodHeight)
+        }
+
+        public void OnFolded()
+        {
+            if (Folded != null)
             {
-                r_Propeller.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
-                r_UpperRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
-                r_MiddleRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
-                r_BottomRod.Transform.Translate(0, -0.25f * i_DeltaTime, 0);
+                Folded.Invoke();
             }
-            else
-            {
-                State = eTelescopeState.Folded;
-            }
+        }
+
+        public void Spin()
+        {
+            r_Propeller.Spin();
         }
     }
 }
