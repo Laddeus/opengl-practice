@@ -7,25 +7,24 @@ namespace OpenGLPractice.GameObjects
 {
     internal class Particles : GameObject
     {
-        private readonly Cube[] r_CubeParticles;
         private const int k_ParticleCount = 10;
         private const float k_ParticleTravelDistance = 5.0f;
         private const float k_ParticleSize = 0.25f;
+
         private static readonly Random sr_Random = new Random();
+        private readonly Cube[] r_CubeParticles;
 
         public Particles(string i_Name) : base(i_Name)
         {
-            r_CubeParticles = Enumerable.Range(1, k_ParticleCount).
-                Select(i_Inedx =>
-                {
-                    Cube particle =
-                        (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, $"Particle{i_Inedx}");
-                    particle.Transform.ChangeScale(new Vector3(k_ParticleSize));
-                    particle.Color = new Vector4(0.2f);
+            r_CubeParticles = Enumerable.Range(1, k_ParticleCount).Select(i_Inedx =>
+            {
+                Cube particle =
+                    (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, $"Particle{i_Inedx}");
+                particle.Transform.ChangeScale(new Vector3(k_ParticleSize));
+                particle.Color = new Vector4(0.2f);
 
-                    return particle;
-                }).
-                ToArray();
+                return particle;
+            }).ToArray();
         }
 
         protected override void DefineGameObject()

@@ -34,7 +34,7 @@ namespace OpenGLPractice.Game
 
             foreach (Type type in currentAssembly.GetTypes())
             {
-                if (type.Namespace == currentNamespace && type.IsSubclassOf(typeof(GameObject)))
+                if (type.Namespace == "OpenGLPractice.GameObjects" && type.IsSubclassOf(typeof(GameObject)))
                 {
                     sr_NameToGameObjectTypeDictionary.Add(type.Name, type);
                 }
@@ -86,10 +86,20 @@ namespace OpenGLPractice.Game
             float i_Height = 1)
         {
             Rod rodCreated = new Rod(i_Name, i_InnerRodRadius, i_OuterRingWidth, i_Height);
+
             rodCreated.InitializeList();
 
             return rodCreated;
         }
+
+        ////public static WorldCube CreateWorldCube(string i_Name, Bitmap[] i_CubemapTextureImages)
+        ////{
+        ////    WorldCube worldCubeCreated = new WorldCube(i_Name, i_CubemapTextureImages);
+
+        ////    worldCubeCreated.InitializeList();
+
+        ////    return worldCubeCreated;
+        ////}
 
         public static string[] GetAllGameObjectTypeNames()
         {

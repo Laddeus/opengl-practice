@@ -41,21 +41,27 @@ namespace OpenGLPractice
             this.label3 = new System.Windows.Forms.Label();
             this.GameLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.panelGameObjectDetailsView = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.panelCubemapSelection = new System.Windows.Forms.Panel();
+            this.buttonApplyCubemap = new System.Windows.Forms.Button();
+            this.comboBoxCubemapSelection = new System.Windows.Forms.ComboBox();
+            this.labelSelectSkybox = new System.Windows.Forms.Label();
+            this.lockCameraOnSelectedCheckBox = new System.Windows.Forms.CheckBox();
+            this.cOGLBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.panelGameObjectSceneAdd = new System.Windows.Forms.Panel();
             this.labelAddGameObject = new System.Windows.Forms.Label();
             this.comboBoxGameObjects = new System.Windows.Forms.ComboBox();
             this.buttonAddGameObjectToScene = new System.Windows.Forms.Button();
             this.labelGameObjectType = new System.Windows.Forms.Label();
             this.textBoxGameObjectName = new System.Windows.Forms.TextBox();
             this.labelGameObjectName = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.panelScaleInfoView = new System.Windows.Forms.Panel();
             this.zScaleTextBox = new System.Windows.Forms.TextBox();
             this.gameObjectBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.buttonResetScale = new System.Windows.Forms.Button();
             this.yScaleTextBox = new System.Windows.Forms.TextBox();
             this.xScaleTextBox = new System.Windows.Forms.TextBox();
             this.labelScale = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panelPositionInfoView = new System.Windows.Forms.Panel();
             this.zPositionTextBox = new System.Windows.Forms.TextBox();
             this.buttonResetPosition = new System.Windows.Forms.Button();
             this.yPositionTextBox = new System.Windows.Forms.TextBox();
@@ -68,10 +74,12 @@ namespace OpenGLPractice
             this.listBoxGameObjects = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panelGameObjectDetailsView.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.panelCubemapSelection.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cOGLBindingSource)).BeginInit();
+            this.panelGameObjectSceneAdd.SuspendLayout();
+            this.panelScaleInfoView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameObjectBindingSource)).BeginInit();
-            this.panel1.SuspendLayout();
+            this.panelPositionInfoView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -146,44 +154,103 @@ namespace OpenGLPractice
             // panelGameObjectDetailsView
             // 
             this.panelGameObjectDetailsView.AutoScroll = true;
-            this.panelGameObjectDetailsView.Controls.Add(this.panel3);
-            this.panelGameObjectDetailsView.Controls.Add(this.panel2);
-            this.panelGameObjectDetailsView.Controls.Add(this.panel1);
+            this.panelGameObjectDetailsView.Controls.Add(this.panelCubemapSelection);
+            this.panelGameObjectDetailsView.Controls.Add(this.lockCameraOnSelectedCheckBox);
+            this.panelGameObjectDetailsView.Controls.Add(this.panelGameObjectSceneAdd);
+            this.panelGameObjectDetailsView.Controls.Add(this.panelScaleInfoView);
+            this.panelGameObjectDetailsView.Controls.Add(this.panelPositionInfoView);
             this.panelGameObjectDetailsView.Controls.Add(this.localCoordinatesActiveCheckBox);
             this.panelGameObjectDetailsView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGameObjectDetailsView.Location = new System.Drawing.Point(0, 0);
             this.panelGameObjectDetailsView.Name = "panelGameObjectDetailsView";
-            this.panelGameObjectDetailsView.Size = new System.Drawing.Size(196, 506);
+            this.panelGameObjectDetailsView.Size = new System.Drawing.Size(172, 622);
             this.panelGameObjectDetailsView.TabIndex = 24;
             // 
-            // panel3
+            // panelCubemapSelection
             // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.Controls.Add(this.labelAddGameObject);
-            this.panel3.Controls.Add(this.comboBoxGameObjects);
-            this.panel3.Controls.Add(this.buttonAddGameObjectToScene);
-            this.panel3.Controls.Add(this.labelGameObjectType);
-            this.panel3.Controls.Add(this.textBoxGameObjectName);
-            this.panel3.Controls.Add(this.labelGameObjectName);
-            this.panel3.Location = new System.Drawing.Point(12, 364);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(172, 130);
-            this.panel3.TabIndex = 19;
+            this.panelCubemapSelection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelCubemapSelection.Controls.Add(this.buttonApplyCubemap);
+            this.panelCubemapSelection.Controls.Add(this.comboBoxCubemapSelection);
+            this.panelCubemapSelection.Controls.Add(this.labelSelectSkybox);
+            this.panelCubemapSelection.Location = new System.Drawing.Point(3, 511);
+            this.panelCubemapSelection.Name = "panelCubemapSelection";
+            this.panelCubemapSelection.Size = new System.Drawing.Size(160, 99);
+            this.panelCubemapSelection.TabIndex = 21;
+            // 
+            // buttonApplyCubemap
+            // 
+            this.buttonApplyCubemap.AutoSize = true;
+            this.buttonApplyCubemap.Location = new System.Drawing.Point(58, 59);
+            this.buttonApplyCubemap.Name = "buttonApplyCubemap";
+            this.buttonApplyCubemap.Size = new System.Drawing.Size(91, 23);
+            this.buttonApplyCubemap.TabIndex = 12;
+            this.buttonApplyCubemap.Text = "Apply Cubemap";
+            this.buttonApplyCubemap.UseVisualStyleBackColor = true;
+            this.buttonApplyCubemap.Click += new System.EventHandler(this.buttonApplyCubemap_Click);
+            // 
+            // comboBoxCubemapSelection
+            // 
+            this.comboBoxCubemapSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCubemapSelection.FormattingEnabled = true;
+            this.comboBoxCubemapSelection.Location = new System.Drawing.Point(58, 32);
+            this.comboBoxCubemapSelection.MaxDropDownItems = 16;
+            this.comboBoxCubemapSelection.Name = "comboBoxCubemapSelection";
+            this.comboBoxCubemapSelection.Size = new System.Drawing.Size(89, 21);
+            this.comboBoxCubemapSelection.TabIndex = 11;
+            // 
+            // labelSelectSkybox
+            // 
+            this.labelSelectSkybox.AutoSize = true;
+            this.labelSelectSkybox.Location = new System.Drawing.Point(4, 0);
+            this.labelSelectSkybox.Name = "labelSelectSkybox";
+            this.labelSelectSkybox.Size = new System.Drawing.Size(88, 13);
+            this.labelSelectSkybox.TabIndex = 0;
+            this.labelSelectSkybox.Text = "Select Cubemap:";
+            // 
+            // lockCameraOnSelectedCheckBox
+            // 
+            this.lockCameraOnSelectedCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lockCameraOnSelectedCheckBox.AutoSize = true;
+            this.lockCameraOnSelectedCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("CheckState", this.cOGLBindingSource, "LockCameraOnSelected", true));
+            this.lockCameraOnSelectedCheckBox.Location = new System.Drawing.Point(38, 315);
+            this.lockCameraOnSelectedCheckBox.Name = "lockCameraOnSelectedCheckBox";
+            this.lockCameraOnSelectedCheckBox.Size = new System.Drawing.Size(112, 17);
+            this.lockCameraOnSelectedCheckBox.TabIndex = 20;
+            this.lockCameraOnSelectedCheckBox.Text = "Lock GameObject";
+            this.lockCameraOnSelectedCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // cOGLBindingSource
+            // 
+            this.cOGLBindingSource.DataSource = typeof(OpenGLPractice.cOGL);
+            // 
+            // panelGameObjectSceneAdd
+            // 
+            this.panelGameObjectSceneAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelGameObjectSceneAdd.Controls.Add(this.labelAddGameObject);
+            this.panelGameObjectSceneAdd.Controls.Add(this.comboBoxGameObjects);
+            this.panelGameObjectSceneAdd.Controls.Add(this.buttonAddGameObjectToScene);
+            this.panelGameObjectSceneAdd.Controls.Add(this.labelGameObjectType);
+            this.panelGameObjectSceneAdd.Controls.Add(this.textBoxGameObjectName);
+            this.panelGameObjectSceneAdd.Controls.Add(this.labelGameObjectName);
+            this.panelGameObjectSceneAdd.Location = new System.Drawing.Point(4, 361);
+            this.panelGameObjectSceneAdd.Name = "panelGameObjectSceneAdd";
+            this.panelGameObjectSceneAdd.Size = new System.Drawing.Size(160, 130);
+            this.panelGameObjectSceneAdd.TabIndex = 19;
             // 
             // labelAddGameObject
             // 
             this.labelAddGameObject.AutoSize = true;
-            this.labelAddGameObject.Location = new System.Drawing.Point(20, 16);
+            this.labelAddGameObject.Location = new System.Drawing.Point(3, 0);
             this.labelAddGameObject.Name = "labelAddGameObject";
-            this.labelAddGameObject.Size = new System.Drawing.Size(94, 13);
+            this.labelAddGameObject.Size = new System.Drawing.Size(91, 13);
             this.labelAddGameObject.TabIndex = 9;
-            this.labelAddGameObject.Text = "Add Game Object:";
+            this.labelAddGameObject.Text = "Add Game Object";
             // 
             // comboBoxGameObjects
             // 
             this.comboBoxGameObjects.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxGameObjects.FormattingEnabled = true;
-            this.comboBoxGameObjects.Location = new System.Drawing.Point(72, 69);
+            this.comboBoxGameObjects.Location = new System.Drawing.Point(61, 55);
             this.comboBoxGameObjects.Name = "comboBoxGameObjects";
             this.comboBoxGameObjects.Size = new System.Drawing.Size(89, 21);
             this.comboBoxGameObjects.TabIndex = 10;
@@ -191,7 +258,7 @@ namespace OpenGLPractice
             // buttonAddGameObjectToScene
             // 
             this.buttonAddGameObjectToScene.AutoSize = true;
-            this.buttonAddGameObjectToScene.Location = new System.Drawing.Point(76, 96);
+            this.buttonAddGameObjectToScene.Location = new System.Drawing.Point(65, 82);
             this.buttonAddGameObjectToScene.Name = "buttonAddGameObjectToScene";
             this.buttonAddGameObjectToScene.Size = new System.Drawing.Size(86, 23);
             this.buttonAddGameObjectToScene.TabIndex = 11;
@@ -202,7 +269,7 @@ namespace OpenGLPractice
             // labelGameObjectType
             // 
             this.labelGameObjectType.AutoSize = true;
-            this.labelGameObjectType.Location = new System.Drawing.Point(20, 72);
+            this.labelGameObjectType.Location = new System.Drawing.Point(9, 58);
             this.labelGameObjectType.Name = "labelGameObjectType";
             this.labelGameObjectType.Size = new System.Drawing.Size(31, 13);
             this.labelGameObjectType.TabIndex = 14;
@@ -210,7 +277,7 @@ namespace OpenGLPractice
             // 
             // textBoxGameObjectName
             // 
-            this.textBoxGameObjectName.Location = new System.Drawing.Point(72, 43);
+            this.textBoxGameObjectName.Location = new System.Drawing.Point(61, 29);
             this.textBoxGameObjectName.Name = "textBoxGameObjectName";
             this.textBoxGameObjectName.Size = new System.Drawing.Size(89, 20);
             this.textBoxGameObjectName.TabIndex = 12;
@@ -218,27 +285,27 @@ namespace OpenGLPractice
             // labelGameObjectName
             // 
             this.labelGameObjectName.AutoSize = true;
-            this.labelGameObjectName.Location = new System.Drawing.Point(20, 46);
+            this.labelGameObjectName.Location = new System.Drawing.Point(9, 32);
             this.labelGameObjectName.Name = "labelGameObjectName";
             this.labelGameObjectName.Size = new System.Drawing.Size(38, 13);
             this.labelGameObjectName.TabIndex = 13;
             this.labelGameObjectName.Text = "Name:";
             // 
-            // panel2
+            // panelScaleInfoView
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.zScaleTextBox);
-            this.panel2.Controls.Add(this.buttonResetScale);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.yScaleTextBox);
-            this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.xScaleTextBox);
-            this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.labelScale);
-            this.panel2.Location = new System.Drawing.Point(12, 170);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(181, 139);
-            this.panel2.TabIndex = 18;
+            this.panelScaleInfoView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelScaleInfoView.Controls.Add(this.zScaleTextBox);
+            this.panelScaleInfoView.Controls.Add(this.buttonResetScale);
+            this.panelScaleInfoView.Controls.Add(this.label1);
+            this.panelScaleInfoView.Controls.Add(this.yScaleTextBox);
+            this.panelScaleInfoView.Controls.Add(this.label2);
+            this.panelScaleInfoView.Controls.Add(this.xScaleTextBox);
+            this.panelScaleInfoView.Controls.Add(this.label3);
+            this.panelScaleInfoView.Controls.Add(this.labelScale);
+            this.panelScaleInfoView.Location = new System.Drawing.Point(3, 170);
+            this.panelScaleInfoView.Name = "panelScaleInfoView";
+            this.panelScaleInfoView.Size = new System.Drawing.Size(166, 139);
+            this.panelScaleInfoView.TabIndex = 18;
             // 
             // zScaleTextBox
             // 
@@ -252,7 +319,7 @@ namespace OpenGLPractice
             // 
             // gameObjectBindingSource
             // 
-            this.gameObjectBindingSource.DataSource = typeof(GameObject);
+            this.gameObjectBindingSource.DataSource = typeof(OpenGLPractice.Game.GameObject);
             // 
             // buttonResetScale
             // 
@@ -288,27 +355,27 @@ namespace OpenGLPractice
             // labelScale
             // 
             this.labelScale.AutoSize = true;
-            this.labelScale.Location = new System.Drawing.Point(20, 8);
+            this.labelScale.Location = new System.Drawing.Point(4, 0);
             this.labelScale.Name = "labelScale";
             this.labelScale.Size = new System.Drawing.Size(37, 13);
             this.labelScale.TabIndex = 8;
             this.labelScale.Text = "Scale:";
             // 
-            // panel1
+            // panelPositionInfoView
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.zPositionTextBox);
-            this.panel1.Controls.Add(this.buttonResetPosition);
-            this.panel1.Controls.Add(this.zLabel);
-            this.panel1.Controls.Add(this.yPositionTextBox);
-            this.panel1.Controls.Add(this.yLabel);
-            this.panel1.Controls.Add(this.xPositionTextBox);
-            this.panel1.Controls.Add(this.xLabel);
-            this.panel1.Controls.Add(this.labelObjectPosition);
-            this.panel1.Location = new System.Drawing.Point(12, 12);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(181, 139);
-            this.panel1.TabIndex = 17;
+            this.panelPositionInfoView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelPositionInfoView.Controls.Add(this.zPositionTextBox);
+            this.panelPositionInfoView.Controls.Add(this.buttonResetPosition);
+            this.panelPositionInfoView.Controls.Add(this.zLabel);
+            this.panelPositionInfoView.Controls.Add(this.yPositionTextBox);
+            this.panelPositionInfoView.Controls.Add(this.yLabel);
+            this.panelPositionInfoView.Controls.Add(this.xPositionTextBox);
+            this.panelPositionInfoView.Controls.Add(this.xLabel);
+            this.panelPositionInfoView.Controls.Add(this.labelObjectPosition);
+            this.panelPositionInfoView.Location = new System.Drawing.Point(4, 12);
+            this.panelPositionInfoView.Name = "panelPositionInfoView";
+            this.panelPositionInfoView.Size = new System.Drawing.Size(165, 139);
+            this.panelPositionInfoView.TabIndex = 17;
             // 
             // zPositionTextBox
             // 
@@ -354,7 +421,7 @@ namespace OpenGLPractice
             // labelObjectPosition
             // 
             this.labelObjectPosition.AutoSize = true;
-            this.labelObjectPosition.Location = new System.Drawing.Point(20, 8);
+            this.labelObjectPosition.Location = new System.Drawing.Point(2, 0);
             this.labelObjectPosition.Name = "labelObjectPosition";
             this.labelObjectPosition.Size = new System.Drawing.Size(47, 13);
             this.labelObjectPosition.TabIndex = 8;
@@ -365,7 +432,7 @@ namespace OpenGLPractice
             this.localCoordinatesActiveCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.localCoordinatesActiveCheckBox.AutoSize = true;
             this.localCoordinatesActiveCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("CheckState", this.gameObjectBindingSource, "LocalCoordinatesActive", true));
-            this.localCoordinatesActiveCheckBox.Location = new System.Drawing.Point(12, 332);
+            this.localCoordinatesActiveCheckBox.Location = new System.Drawing.Point(39, 338);
             this.localCoordinatesActiveCheckBox.Name = "localCoordinatesActiveCheckBox";
             this.localCoordinatesActiveCheckBox.Size = new System.Drawing.Size(111, 17);
             this.localCoordinatesActiveCheckBox.TabIndex = 15;
@@ -378,9 +445,12 @@ namespace OpenGLPractice
             this.GameScene.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GameScene.Location = new System.Drawing.Point(0, 0);
             this.GameScene.Name = "GameScene";
-            this.GameScene.Size = new System.Drawing.Size(476, 506);
+            this.GameScene.Size = new System.Drawing.Size(525, 622);
             this.GameScene.TabIndex = 6;
             this.GameScene.Click += new System.EventHandler(this.GameScene_Click);
+            this.GameScene.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GameScene_MouseDown);
+            this.GameScene.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GameScene_MouseMove);
+            this.GameScene.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GameScene_MouseUp);
             this.GameScene.Resize += new System.EventHandler(this.GameCanvas_Resize);
             // 
             // splitContainer1
@@ -391,14 +461,14 @@ namespace OpenGLPractice
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.AccessibleName = "";
+            this.splitContainer1.Panel1.AccessibleName = string.Empty;
             this.splitContainer1.Panel1.Controls.Add(this.panelGameObjectsList);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(860, 506);
-            this.splitContainer1.SplitterDistance = 180;
+            this.splitContainer1.Size = new System.Drawing.Size(784, 622);
+            this.splitContainer1.SplitterDistance = 79;
             this.splitContainer1.TabIndex = 0;
             // 
             // panelGameObjectsList
@@ -407,7 +477,7 @@ namespace OpenGLPractice
             this.panelGameObjectsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGameObjectsList.Location = new System.Drawing.Point(0, 0);
             this.panelGameObjectsList.Name = "panelGameObjectsList";
-            this.panelGameObjectsList.Size = new System.Drawing.Size(180, 506);
+            this.panelGameObjectsList.Size = new System.Drawing.Size(79, 622);
             this.panelGameObjectsList.TabIndex = 0;
             // 
             // listBoxGameObjects
@@ -418,7 +488,7 @@ namespace OpenGLPractice
             this.listBoxGameObjects.FormattingEnabled = true;
             this.listBoxGameObjects.Location = new System.Drawing.Point(0, 0);
             this.listBoxGameObjects.Name = "listBoxGameObjects";
-            this.listBoxGameObjects.Size = new System.Drawing.Size(180, 506);
+            this.listBoxGameObjects.Size = new System.Drawing.Size(79, 622);
             this.listBoxGameObjects.TabIndex = 0;
             this.listBoxGameObjects.SelectedIndexChanged += new System.EventHandler(this.listBoxGameObjects_SelectedIndexChanged);
             // 
@@ -435,27 +505,31 @@ namespace OpenGLPractice
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.panelGameObjectDetailsView);
-            this.splitContainer2.Size = new System.Drawing.Size(676, 506);
-            this.splitContainer2.SplitterDistance = 476;
+            this.splitContainer2.Size = new System.Drawing.Size(701, 622);
+            this.splitContainer2.SplitterDistance = 525;
             this.splitContainer2.TabIndex = 0;
             // 
             // OpenGLForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(860, 506);
+            this.ClientSize = new System.Drawing.Size(784, 622);
             this.Controls.Add(this.splitContainer1);
             this.Name = "OpenGLForm";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.OpenGLForm_Load);
             this.panelGameObjectDetailsView.ResumeLayout(false);
             this.panelGameObjectDetailsView.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.panelCubemapSelection.ResumeLayout(false);
+            this.panelCubemapSelection.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cOGLBindingSource)).EndInit();
+            this.panelGameObjectSceneAdd.ResumeLayout(false);
+            this.panelGameObjectSceneAdd.PerformLayout();
+            this.panelScaleInfoView.ResumeLayout(false);
+            this.panelScaleInfoView.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameObjectBindingSource)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.panelPositionInfoView.ResumeLayout(false);
+            this.panelPositionInfoView.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -490,19 +564,25 @@ namespace OpenGLPractice
         private System.Windows.Forms.TextBox textBoxGameObjectName;
         private System.Windows.Forms.CheckBox localCoordinatesActiveCheckBox;
         private System.Windows.Forms.Button buttonResetPosition;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panelScaleInfoView;
         private System.Windows.Forms.TextBox zScaleTextBox;
         private System.Windows.Forms.Button buttonResetScale;
         private System.Windows.Forms.TextBox yScaleTextBox;
         private System.Windows.Forms.TextBox xScaleTextBox;
         private System.Windows.Forms.Label labelScale;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelPositionInfoView;
         private System.Windows.Forms.Label xLabel;
         private System.Windows.Forms.Label yLabel;
         private System.Windows.Forms.Label zLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panelGameObjectSceneAdd;
+        private System.Windows.Forms.BindingSource cOGLBindingSource;
+        private System.Windows.Forms.CheckBox lockCameraOnSelectedCheckBox;
+        private System.Windows.Forms.Panel panelCubemapSelection;
+        private System.Windows.Forms.Label labelSelectSkybox;
+        private System.Windows.Forms.Button buttonApplyCubemap;
+        private System.Windows.Forms.ComboBox comboBoxCubemapSelection;
     }
 }

@@ -25,11 +25,11 @@ namespace OpenGLPractice.GameObjects
         {
             GLErrorCatcher.TryGLCall(() => GL.glTranslatef(0, k_CupHeight, 0));
             GLErrorCatcher.TryGLCall(() => GL.glRotatef(90, 1, 0, 0));
-            GLErrorCatcher.TryGLCall(() => GL.glColor3fv(Color.ToArray));
+            ////GLErrorCatcher.TryGLCall(() => GL.glColor3fv(Color.ToArray));
             GLU.gluDisk(sr_GluQuadric, k_CupBottomInnerRadius, k_CupBaseRadius, 20, 20);
             GLU.gluCylinder(sr_GluQuadric, k_CupBaseRadius, k_CupTopRadius, k_CupHeight, 20, 20);
             GLErrorCatcher.TryGLCall(() => GL.glTranslated(0, 0, k_CupHeight));
-            //GLErrorCatcher.TryGLCall(() => GL.glColor3f(1, 1, 0));
+            ////GLErrorCatcher.TryGLCall(() => GL.glColor3f(1, 1, 0));
             GLUT.glutSolidTorus(k_CupLipOuterRadius, k_CupLipInnerRadius, 20, 30);
         }
 

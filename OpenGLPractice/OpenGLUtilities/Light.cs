@@ -195,7 +195,7 @@ namespace OpenGLPractice.OpenGLUtilities
 
         ~Light()
         {
-            //TurnOff();
+            ////TurnOff();
             sr_AvailableLights[r_LightSourceId] = true;
         }
 

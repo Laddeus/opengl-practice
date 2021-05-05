@@ -11,15 +11,18 @@ namespace OpenGLPractice.GameObjects
             Opened,
             Folding,
             Opening
-        };
+        }
 
-        public event Action Folded;
+        private const float k_InitialRodRadius = 0.1f;
+
+        private const float k_InitialRodOuterRingWidth = 0.1f;
+
+        private const float k_InitialRodHeight = 1.0f;
 
         public event Action Opened;
 
-        private const float k_InitialRodRadius = 0.1f;
-        private const float k_InitialRodOuterRingWidth = 0.1f;
-        private const float k_InitialRodHeight = 1.0f;
+        public event Action Folded;
+
         private readonly Rod r_BottomRod;
         private readonly Rod r_MiddleRod;
         private readonly Rod r_UpperRod;

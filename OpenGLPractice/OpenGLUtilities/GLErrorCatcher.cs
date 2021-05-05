@@ -7,37 +7,12 @@ namespace OpenGLPractice.OpenGLUtilities
 {
     internal static class GLErrorCatcher
     {
-        //private static bool s_IsBetweenglBeginGLEnd = false;
-
         public static void TryGLCall(Action i_GLCall, [CallerLineNumber] int i_ExecutionLineNumber = 0,
             [CallerMemberName] string i_MemberName = "", [CallerFilePath] string i_Filename = "")
         {
             clearGLErrors();
             i_GLCall.Invoke();
             checkForGLErrors(i_ExecutionLineNumber, i_MemberName, i_Filename);
-
-            //string glMethodName = ((MethodCallExpression)i_GLExpression.Body).Method.Name;
-            //Action glCall = i_GLExpression.Compile();
-
-            //if (!s_IsBetweenglBeginGLEnd)
-            //{
-            //    clearGLErrors();
-            //    glCall.Invoke();
-            //    checkForGLErrors(i_ExecutionLineNumber, i_MemberName, i_Filename);
-            //}
-            //else
-            //{
-            //    glCall.Invoke();
-            //}
-
-            //if (glMethodName == "glBegin")
-            //{
-            //    s_IsBetweenglBeginGLEnd = true;
-            //}
-            //else if (glMethodName == "glEnd")
-            //{
-            //    s_IsBetweenglBeginGLEnd = false;
-            //}
         }
 
         private static void checkForGLErrors(int i_ExecutionLineNumber, string i_MemberName, string i_Filename)

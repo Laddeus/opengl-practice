@@ -1,4 +1,6 @@
-﻿using OpenGLPractice.Game;
+﻿using System;
+using OpenGLPractice.Game;
+using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.GameObjects
 {
@@ -10,13 +12,15 @@ namespace OpenGLPractice.GameObjects
             Ascending,
             Descending,
             Hovering
-        };
+        }
 
-        private const float k_HoverRange = 0.5f;
+        private const float k_HoverRange = 0.35f;
         private const float k_FlyingSpeed = 5.0f;
         private const float k_HoverSpeed = 1.5f;
+
         private readonly Cup r_Cup;
         private readonly TelescopicPropeller r_TelescopicPropeller;
+
         private float m_FlyingDistance;
 
         public eHeliCupFlyingStates State { get; set; }
@@ -61,37 +65,24 @@ namespace OpenGLPractice.GameObjects
             }
         }
 
-
         // TODO: fix hovering
         private bool m_IsHoveringUp = true;
-        private float m_Ease = 1.0f;
+        private float m_HoverStartHeight;
+        ////private float m_Ease = 1.0f;
         private void hoverTick(float i_DeltaTime)
         {
-            if (m_IsHoveringUp)
+            Vector3 endHoverPosition = m_IsHoveringUp
+                ? new Vector3(0, m_HoverStartHeight + k_HoverRange, 0)
+                : new Vector3(0, m_HoverStartHeight - k_HoverRange, 0);
+
+            if (Math.Abs(Transform.Position.Y - m_HoverStartHeight) < k_HoverRange - 0.1f)
             {
-                if (Transform.Position.Y < m_FlyingDistance + k_HoverRange)
-                {
-                    Transform.Translate(k_HoverSpeed * m_Ease * i_DeltaTime * Transform.UpVector);
-                    m_Ease -= 0.01f;
-                }
-                else
-                {
-                    m_Ease = 1.0f;
-                    m_IsHoveringUp = false;
-                }
+                Transform.Position = Vector3.LinearlyInterpolate(Transform.Position, endHoverPosition, 0.06f);
             }
             else
             {
-                if (Transform.Position.Y > m_FlyingDistance - k_HoverRange)
-                {
-                    Transform.Translate(k_HoverSpeed * m_Ease * i_DeltaTime * -Transform.UpVector);
-                    m_Ease -= 0.01f;
-                }
-                else
-                {
-                    m_Ease = 1.0f;
-                    m_IsHoveringUp = true;
-                }
+                m_IsHoveringUp = !m_IsHoveringUp;
+                m_HoverStartHeight = Transform.Position.Y;
             }
         }
 
@@ -108,6 +99,7 @@ namespace OpenGLPractice.GameObjects
             else
             {
                 State = eHeliCupFlyingStates.Hovering;
+                m_HoverStartHeight = Transform.Position.Y;
             }
         }
 

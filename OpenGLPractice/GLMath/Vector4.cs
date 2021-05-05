@@ -157,6 +157,18 @@ namespace OpenGLPractice.GLMath
         }
 
         /// <summary>
+        /// Linearly interpolates between two vectors.
+        /// </summary>
+        /// <param name="i_SourceVector"></param>
+        /// <param name="i_DestinationVector"></param>
+        /// <param name="i_InterpolationRatio"></param>
+        /// <returns>A <see cref="Vector4"/> interpolated value</returns>
+        public static Vector4 LinearlyInterpolate(Vector4 i_SourceVector, Vector4 i_DestinationVector, float i_InterpolationRatio)
+        {
+            return i_SourceVector * (1.0f - i_InterpolationRatio) + i_DestinationVector * i_InterpolationRatio;
+        }
+
+        /// <summary>
         /// Performs a sum of all elements in the specified <see cref="Vector4"/> instance.
         /// </summary>
         /// <param name="i_Vector"></param>

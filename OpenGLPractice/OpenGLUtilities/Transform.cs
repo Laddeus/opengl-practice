@@ -9,7 +9,7 @@ namespace OpenGLPractice.OpenGLUtilities
     {
         public static int TransformationMatrixSize { get; } = 16;
 
-        private readonly float[] r_AccumulatedTransformationMatrix = new float[TransformationMatrixSize];
+        private readonly float[] r_AccumulatedTransformationsMatrix = new float[TransformationMatrixSize];
         private readonly float[] r_AccumulatedTranslationMatrix = new float[TransformationMatrixSize];
         private readonly float[] r_AccumulatedScaleMatrix = new float[TransformationMatrixSize];
         private readonly float[] r_AccumulatedRotationMatrix = new float[TransformationMatrixSize];
@@ -18,7 +18,9 @@ namespace OpenGLPractice.OpenGLUtilities
         private Vector3 m_Scale;
         private Vector3 m_Rotation;
 
-        public float[] TransformationMatrix => r_AccumulatedTransformationMatrix;
+        public float[] TransformationsMatrix => r_AccumulatedTransformationsMatrix;
+
+        public float[] RotationMatrix => r_AccumulatedRotationMatrix;
 
         public Vector3 ForwardVector { get; private set; }
 
@@ -32,6 +34,30 @@ namespace OpenGLPractice.OpenGLUtilities
 
         public Vector3 DownVector => -UpVector;
 
+        public Vector3 Position
+        {
+            get => m_Position;
+
+            set
+            {
+                Translate(value - m_Position);
+                m_Position = value;
+            }
+        }
+
+        public Vector3 Scale
+        {
+            get => m_Scale;
+
+            set
+            {
+                ChangeScale(value.X / m_Scale.X, value.Y / m_Scale.Y, value.Z / m_Scale.Z);
+                m_Scale = value;
+            }
+        }
+
+        public Vector3 Rotation => m_Rotation;
+
         public Transform()
         {
             ForwardVector = new Vector3(0, 0, 1);
@@ -44,38 +70,47 @@ namespace OpenGLPractice.OpenGLUtilities
             initializeAccumulatedMatrices();
         }
 
-        public Vector3 Position
+        public static float[] CalculateShadowMatrix(Matrix3 i_PlaneCoordinates, Vector4 i_LightPosition)
         {
-            get => m_Position;
+            float[] shadowMatrix = new float[TransformationMatrixSize];
 
-            set
+            Vector3 planeNormal = getPlaneNormal(i_PlaneCoordinates);
+            float planeDistance = (-1) * planeNormal.DotProduct(i_PlaneCoordinates[0]);
+            Vector4 planeCoefficients = new Vector4(planeNormal.X, planeNormal.Y, planeNormal.Z, planeDistance);
+            float planeLightDotProduct = i_LightPosition.DotProduct(planeCoefficients);
+
+            for (int i = 0; i < 4; i++)
             {
-                Translate(-m_Position);
-                Translate(value);
-                m_Position = value;
+                for (int j = 0; j < 4; j++)
+                {
+                    if (i == j)
+                    {
+                        shadowMatrix[i * 4 + j] = planeLightDotProduct - i_LightPosition[j] * planeCoefficients[i];
+                    }
+                    else
+                    {
+                        shadowMatrix[i * 4 + j] = 0.0f - i_LightPosition[j] * planeCoefficients[i];
+                    }
+                }
             }
+
+            return shadowMatrix;
         }
 
-        public Vector3 Scale
+        private static Vector3 getPlaneNormal(Matrix3 i_PlaneCoordinates)
         {
-            get => m_Scale;
+            Vector3 firstVector = i_PlaneCoordinates[0] - i_PlaneCoordinates[1];
+            Vector3 secondVector = i_PlaneCoordinates[1] - i_PlaneCoordinates[2];
 
-            set
-            {
-                ChangeScale(1.0f / m_Scale.X, 1.0f / m_Scale.Y, 1.0f / m_Scale.Z);
-                ChangeScale(value);
-                m_Scale = value;
-            }
+            return firstVector.CrossProduct(secondVector).Normalized;
         }
-
-        public Vector3 Rotation => m_Rotation;
 
         private void initializeAccumulatedMatrices()
         {
             GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
             GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
 
-            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationsMatrix));
             GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTranslationMatrix));
             GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedScaleMatrix));
             GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedRotationMatrix));
@@ -143,7 +178,7 @@ namespace OpenGLPractice.OpenGLUtilities
             GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(r_AccumulatedRotationMatrix));
             GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(r_AccumulatedScaleMatrix));
 
-            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, r_AccumulatedTransformationsMatrix));
         }
 
         private void calculateDirectionVectors()
@@ -167,41 +202,6 @@ namespace OpenGLPractice.OpenGLUtilities
         {
             GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(i_AccumulatedTransformationMatrix));
             GLErrorCatcher.TryGLCall(() => GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, i_AccumulatedTransformationMatrix));
-        }
-
-        public static float[] CalculateShadowMatrix(Matrix3 i_PlaneCoordinates, Vector4 i_LightPosition)
-        {
-            float[] shadowMatrix = new float[TransformationMatrixSize];
-
-            Vector3 planeNormal = getPlaneNormal(i_PlaneCoordinates);
-            float planeDistance = (-1) * planeNormal.DotProduct(i_PlaneCoordinates[0]);
-            Vector4 planeCoefficients = new Vector4(planeNormal.X, planeNormal.Y, planeNormal.Z, planeDistance);
-            float planeLightDotProduct = i_LightPosition.DotProduct(planeCoefficients);
-
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    if (i == j)
-                    {
-                        shadowMatrix[i * 4 + j] = planeLightDotProduct - i_LightPosition[j] * planeCoefficients[i];
-                    }
-                    else
-                    {
-                        shadowMatrix[i * 4 + j] = 0.0f - i_LightPosition[j] * planeCoefficients[i];
-                    }
-                }
-            }
-
-            return shadowMatrix;
-        }
-
-        private static Vector3 getPlaneNormal(Matrix3 i_PlaneCoordinates)
-        {
-            Vector3 firstVector = i_PlaneCoordinates[0] - i_PlaneCoordinates[1];
-            Vector3 secondVector = i_PlaneCoordinates[1] - i_PlaneCoordinates[2];
-
-            return firstVector.CrossProduct(secondVector).Normalized;
         }
     }
 }

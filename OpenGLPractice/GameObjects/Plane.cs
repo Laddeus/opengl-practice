@@ -1,22 +1,24 @@
-﻿using OpenGLPractice.Game;
+﻿using OpenGL;
+using OpenGLPractice.Game;
+using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.GameObjects
 {
     internal class Plane : GameObject
     {
-        private readonly Cube r_CubePlane;
-
         public Plane(string i_Name) : base(i_Name)
         {
-            r_CubePlane = (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, "Ground");
-            r_CubePlane.Transform.ChangeScale(5.0f, 0.01f, 5.0f);
-            DisplayShadow = false;
-
-            Children.Add(r_CubePlane);
+            Transform.Scale = new Vector3(5.0f, 1, 5.0f);
         }
 
         protected override void DefineGameObject()
         {
+            GL.glBegin(GL.GL_QUADS);
+            GL.glVertex3f(-1.0f, 0.0f, 1.0f);
+            GL.glVertex3f(1.0f, 0.0f, 1.0f);
+            GL.glVertex3f(1.0f, 0.0f, -1.0f);
+            GL.glVertex3f(-1.0f, 0.0f, -1.0f);
+            GL.glEnd();
         }
     }
 }

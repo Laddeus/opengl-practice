@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="GameObjects\Axes.cs" />
     <Compile Include="GameObjects\Cup.cs" />
+    <Compile Include="GameObjects\WorldCube.cs" />
     <Compile Include="Game\GameObjectCollection.cs" />
     <Compile Include="Game\GameObjectCreator.cs" />
     <Compile Include="GameObjects\HeliCup.cs" />
@@ -79,7 +80,9 @@
     <Compile Include="GLMath\Matrix3.cs" />
     <Compile Include="GLMath\Matrix4.cs" />
     <Compile Include="Game\GameEnvironment.cs" />
+    <Compile Include="OpenGLUtilities\CubemapTexture.cs" />
     <Compile Include="OpenGLUtilities\GLErrorCatcher.cs" />
+    <Compile Include="OpenGLUtilities\Texture.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GLMath\Matrix2.cs" />
@@ -95,17 +98,19 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <None Include="Properties\DataSources\cOGL.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -114,6 +119,126 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\back.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\front.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\bottom.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\right.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\top.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\skydome.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\rainbow\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\rainbow\bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\rainbow\front.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\rainbow\left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\rainbow\right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\rainbow\top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\city\city_back.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\city\city_bottom.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\city\city_front.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\city\city_left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\city\city_right.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\city\city_top.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\mountain\mountain_back.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\mountain\mountain_bottom.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\mountain\mountain_front.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\mountain\mountain_left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\mountain\mountain_right.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\mountain\mountain_top.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\skybox\skybox_back.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\skybox\skybox_bottom.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\skybox\skybox_front.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\skybox\skybox_left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\skybox\skybox_right.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\skybox\skybox_top.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\tropical_sunny\TropicalSunnyDay_back.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\tropical_sunny\TropicalSunnyDay_bottom.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\tropical_sunny\TropicalSunnyDay_front.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\tropical_sunny\TropicalSunnyDay_left.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\tropical_sunny\TropicalSunnyDay_right.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\tropical_sunny\TropicalSunnyDay_top.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\SpaceSkybox\texture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\NormalSkybox\normalSkybox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Textures\Cubemaps\SpaceSkybox\spaceSkybox.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

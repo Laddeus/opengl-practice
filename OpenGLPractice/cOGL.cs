@@ -22,7 +22,11 @@ namespace OpenGLPractice
 
         public Camera Camera => GameEnvironment.Camera;
 
+        public WorldCube WorldCube => GameEnvironment.WorldCube;
+
         public GameObject SelectedGameObjectForControl { get; set; }
+
+        public bool LockCameraOnSelected { get; set; }
 
         public cOGL(Control i_Panel)
         {
@@ -35,47 +39,12 @@ namespace OpenGLPractice
             GameEnvironment = new GameEnvironment()
             {
                 DrawShadows = true,
-                UseLight = true
+                UseLight = true,
+                DrawReflections = true
             };
 
             GameEnvironment.Light.Position = new Vector3(0, 1.5f, 1.0f);
             GameEnvironment.Camera.CameraUpdated += Light.ApplyPositionsAndDirection;
-
-            Plane ground = (Plane)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Plane, "Plane");
-            Axes axes = (Axes)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Axes, "Axes");
-            //Plane wall = (Plane)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Plane, "Wall");
-            //wall.Transform.Rotate(18.43f, 1, 0, 0);
-            //wall.Transform.Translate(0, -0.05f, 0);
-            ground.Transform.Translate(0, -0.01f, 0);
-            GameObjects.Add(axes);
-            GameObjects.Add(ground);
-            //GameObjects.Add(wall);
-
-            ShadowSurface groundSurface = new ShadowSurface()
-            {
-                SurfacePoints = new Matrix3(new Vector3[]
-                {
-                    new Vector3(0, -0, 0),
-                    new Vector3(-1, -0, 1),
-                    new Vector3(1, -0, 1)
-                }),
-                ClippingSurface = ground
-            };
-
-            //ShadowSurface slopeSurface = new ShadowSurface()
-            //{
-            //    SurfacePoints = new Matrix3(new Vector3[]
-            //    {
-            //        new Vector3(0, 0, 0),
-            //        new Vector3(1, 1, -3),
-            //        new Vector3(-1, 1, -3),
-            //    }),
-            //    ClippingSurface = wall
-            //};
-
-
-            GameEnvironment.ShadowSurfaces.Add(groundSurface);
-            //GameEnvironment.ShadowSurfaces.Add(slopeSurface);
         }
 
         ~cOGL()
@@ -112,13 +81,9 @@ namespace OpenGLPractice
             }
 
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
-
             GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
 
-            if (SelectedGameObjectForControl != null)
-            {
-                Camera.LookAtPosition = SelectedGameObjectForControl.Transform.Position;
-            }
+            Camera.ApplyCameraView();
 
             GameEnvironment.DrawScene();
 
@@ -184,7 +149,7 @@ namespace OpenGLPractice
 
             GLErrorCatcher.TryGLCall(() => GL.glMatrixMode(GL.GL_PROJECTION));
             GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
-            GLU.gluPerspective(60, ((double)m_Width) / m_Height, 1.0, 1000.0);
+            GLU.gluPerspective(90, ((double)m_Width) / m_Height, 1.0, 1000.0);
 
             GLErrorCatcher.TryGLCall(() => GL.glMatrixMode(GL.GL_MODELVIEW));
             Draw();
@@ -212,7 +177,7 @@ namespace OpenGLPractice
             GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
 
             // nice 3D
-            GLU.gluPerspective(60, ((double)m_Width) / m_Height, 1.0, 1000.0);
+            GLU.gluPerspective(90, ((double)m_Width) / m_Height, 1.0, 1000.0);
 
             GLErrorCatcher.TryGLCall(() => GL.glMatrixMode(GL.GL_MODELVIEW));
             GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());

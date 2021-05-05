@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
+using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice
 {
     public partial class OpenGLForm : Form
     {
+        private const string k_CubemapTexturePath = @"Resources/Textures/Cubemaps";
+        private const float k_MouseMovementSensitivity = 1.25f;
         private readonly Queue<Keys> r_KeysPressed = new Queue<Keys>();
+        private readonly string r_ProjectDirectoryLocation;
         private readonly Dictionary<Keys, Action> r_GameObjectActionKeys;
         private readonly Dictionary<Keys, Action> r_CameraActionKeys;
+        private readonly Dictionary<Keys, Action> r_FreeMovementActionKeys;
         private readonly HashSet<Keys> r_AllowedKeys = new HashSet<Keys>()
         {
             Keys.W,
@@ -30,6 +36,9 @@ namespace OpenGLPractice
         };
 
         private readonly cOGL cGL;
+        private bool m_IsMousePressed = false;
+        private Vector2 m_LastGameSceneClickPosition;
+        private Vector3 m_LastPositionOfSelectedGameObject;
 
         public OpenGLForm()
         {
@@ -56,30 +65,125 @@ namespace OpenGLPractice
 
             r_CameraActionKeys = new Dictionary<Keys, Action>()
             {
-                {Keys.Q, () => updateHorizontalAngle(-2)},
-                {Keys.E, () => updateHorizontalAngle(2)},
-                {Keys.R, () => cGL.Camera.LookAtVerticalAngle -= 2},
-                {Keys.F, () => cGL.Camera.LookAtVerticalAngle += 2},
+                { Keys.Q, () => cGL.Camera.YawAngle -= 2 },
+                { Keys.E, () => cGL.Camera.YawAngle += 2 },
+                { Keys.R, () => cGL.Camera.PitchAngle -= 2 },
+                { Keys.F, () => cGL.Camera.PitchAngle += 2 }
             };
 
-            object[] allGameObjectTypeNames = GameObjectCreator.GetAllGameObjectTypeNames();
-            comboBoxGameObjects.Items.AddRange(allGameObjectTypeNames);
+            r_FreeMovementActionKeys = new Dictionary<Keys, Action>()
+            {
+                { Keys.W, () => cGL.Camera.EyePosition += 0.25f * cGL.Camera.Direction },
+                { Keys.S, () => cGL.Camera.EyePosition += 0.25f * -cGL.Camera.Direction },
+                { Keys.A, () => cGL.Camera.EyePosition += 0.25f * cGL.Camera.UpVector.CrossProduct(cGL.Camera.Direction).Normalized },
+                { Keys.D, () => cGL.Camera.EyePosition += 0.25f * cGL.Camera.Direction.CrossProduct(cGL.Camera.UpVector).Normalized }
+            };
+
+            r_ProjectDirectoryLocation = getProjectDirectory();
 
             gameObjectBindingSource.DataSource = cGL.GameObjects;
+            cOGLBindingSource.DataSource = cGL;
+
+            m_LastGameSceneClickPosition = new Vector2(GameScene.Width / 2.0f, GameScene.Height / 2.0f);
         }
 
-        private void updateHorizontalAngle(float i_AngleToMoveBy)
+        // EVENTS
+        private void OpenGLForm_Load(object sender, EventArgs e)
         {
-            cGL.Camera.LookAtHorizontalAngle += i_AngleToMoveBy;
+            loadGameObjectsCombobox();
+            loadCubemapCombobox();
+        }
 
-            //sortObjectsByDistanceFromCameraEye();
+        private void GameScene_MouseWheel(object i_Sender, MouseEventArgs i_MouseEventArgs)
+        {
+            changeSelectedGameObjectZoomLevel(i_MouseEventArgs);
+        }
+
+        private void GameScene_KeyDown(object i_Sender, KeyEventArgs i_KeyEventArgs)
+        {
+            addPressedKeyToQueue(i_KeyEventArgs);
+        }
+
+        private void GameCanvas_Resize(object sender, EventArgs e)
+        {
+            cGL.OnResize();
+        }
+
+        private void GameLoopTimer_Tick(object sender, EventArgs e)
+        {
+            update(5.0f);
+            cGL.Draw();
+        }
+
+        private void buttonAddGameObjectToScene_Click(object sender, EventArgs e)
+        {
+            addSelectedGameObjectToScene();
+        }
+
+        private void listBoxGameObjects_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            changeSelectedGameObject();
+        }
+
+        private void GameScene_Click(object sender, EventArgs e)
+        {
+            GameScene.Focus();
+        }
+
+        private void buttonResetPosition_Click(object sender, EventArgs e)
+        {
+            resetSelectedGameObjectPosition();
+        }
+
+        private void buttonResetScale_Click(object sender, EventArgs e)
+        {
+            resetSelectedGameObjectScale();
+        }
+
+        private void GameScene_MouseDown(object sender, MouseEventArgs e)
+        {
+            m_IsMousePressed = true;
+        }
+
+        private void GameScene_MouseUp(object sender, MouseEventArgs e)
+        {
+            m_IsMousePressed = false;
+        }
+
+        private void GameScene_MouseMove(object sender, MouseEventArgs e)
+        {
+            updateMouseMovement(e);
+        }
+
+        private void buttonApplyCubemap_Click(object sender, EventArgs e)
+        {
+            applySelectedCubemapToWorldCube();
+        }
+
+        // PRIVATE METHODS
+        private void loadGameObjectsCombobox()
+        {
+            object[] allGameObjectTypeNames = GameObjectCreator.GetAllGameObjectTypeNames();
+            comboBoxGameObjects.Items.AddRange(allGameObjectTypeNames);
+        }
+
+        private void loadCubemapCombobox()
+        {
+            string cubemapTexturesDirectory = $"{r_ProjectDirectoryLocation}/{k_CubemapTexturePath}";
+            DirectoryInfo cubemapDirectoryInfo = new DirectoryInfo(cubemapTexturesDirectory);
+
+            foreach (DirectoryInfo textureDirectory in cubemapDirectoryInfo.GetDirectories())
+            {
+                FileInfo firstFileInfo = textureDirectory.GetFiles()[0];
+                comboBoxCubemapSelection.Items.Add(new CubemapTexture(textureDirectory.Name, textureDirectory.FullName, firstFileInfo.Extension));
+            }
         }
 
         private void sortObjectsByDistanceFromCameraEye()
         {
             Vector3 cameraEyePosition = cGL.Camera.EyePosition;
 
-            cGL.GameObjects.Sort(((i_FirstGameObject, i_SecondGameObject) =>
+            cGL.GameObjects.Sort((i_FirstGameObject, i_SecondGameObject) =>
             {
                 Vector3 firstGameObjectPosition = i_FirstGameObject.Transform.Position;
                 Vector3 secondGameObjectPosition = i_SecondGameObject.Transform.Position;
@@ -91,15 +195,15 @@ namespace OpenGLPractice
                 }
 
                 return -1;
-            }));
+            });
         }
 
-        private void GameScene_MouseWheel(object i_Sender, MouseEventArgs i_MouseEventArgs)
+        private void changeSelectedGameObjectZoomLevel(MouseEventArgs i_MouseEventArgs)
         {
-            cGL.Camera.LookAtDistance += 0.25f * (i_MouseEventArgs.Delta / -120.0f);
+            cGL.Camera.Radius += 0.25f * (i_MouseEventArgs.Delta / -120.0f);
         }
 
-        private void GameScene_KeyDown(object i_Sender, KeyEventArgs i_KeyEventArgs)
+        private void addPressedKeyToQueue(KeyEventArgs i_KeyEventArgs)
         {
             Keys currentlyPressedKey = i_KeyEventArgs.KeyCode;
 
@@ -111,36 +215,79 @@ namespace OpenGLPractice
             i_KeyEventArgs.Handled = true;
         }
 
-        private void GameCanvas_Resize(object sender, EventArgs e)
+        private void update(float i_DeltaTime)
         {
-            cGL.OnResize();
-        }
+            updateKeyPress();
 
-        private void GameLoopTimer_Tick(object sender, EventArgs e)
-        {
-            update();
-            cGL.Draw();
-        }
+            updateCameraView();
 
-        private void update()
-        {
-            Vector3 gameObjectPosition = cGL.SelectedGameObjectForControl.Transform.Position;
-
-            if (r_KeysPressed.Count != 0)
-            {
-                Keys lastKeyPressed = r_KeysPressed.Dequeue();
-                updateGameObjectActions(lastKeyPressed);
-                updateCameraActions(lastKeyPressed);
-            }
+            keepCubemapCenteredAroundView();
 
             foreach (GameObject gameObject in cGL.GameObjects)
             {
                 gameObject.Tick(GameLoopTimer.Interval / 1000.0f);
             }
+        }
 
-            if (cGL.SelectedGameObjectForControl.Transform.Position != gameObjectPosition)
+        private void keepCubemapCenteredAroundView()
+        {
+            if (lockCameraOnSelectedCheckBox.Checked)
+            {
+                cGL.WorldCube.Transform.Position = cGL.Camera.LookAtPosition;
+            }
+            else
+            {
+                cGL.WorldCube.Transform.Position = cGL.Camera.EyePosition;
+            }
+        }
+
+        private void updateCameraView()
+        {
+            if (lockCameraOnSelectedCheckBox.Checked && cGL.SelectedGameObjectForControl != null)
+            {
+                cGL.Camera.LookAtPosition = cGL.SelectedGameObjectForControl.Transform.Position;
+                cGL.Camera.UpdateCameraPositionAroundLockedObject();
+            }
+            else
+            {
+                cGL.Camera.UpdateCameraFreeMovementDirection();
+            }
+        }
+
+        private void updateKeyPress()
+        {
+            if (r_KeysPressed.Count > 0)
+            {
+                Keys lastKeyPressed = r_KeysPressed.Dequeue();
+
+                if (lockCameraOnSelectedCheckBox.Checked)
+                {
+                    updateGameObjectActions(lastKeyPressed);
+                }
+                else
+                {
+                    updateFreeMovementActions(lastKeyPressed);
+                }
+
+                updateCameraActions(lastKeyPressed);
+            }
+
+            if (m_LastPositionOfSelectedGameObject != cGL.SelectedGameObjectForControl?.Transform.Position)
             {
                 gameObjectBindingSource.ResetCurrentItem();
+            }
+
+            m_LastPositionOfSelectedGameObject = cGL.SelectedGameObjectForControl.Transform.Position;
+        }
+
+        private void updateFreeMovementActions(Keys i_LastKeyPressed)
+        {
+            Action freeMovementAction;
+            bool KeyHasAction = r_FreeMovementActionKeys.TryGetValue(i_LastKeyPressed, out freeMovementAction);
+
+            if (KeyHasAction && cGL.Camera != null)
+            {
+                freeMovementAction.Invoke();
             }
         }
 
@@ -167,31 +314,33 @@ namespace OpenGLPractice
             }
         }
 
-        private void buttonAddGameObjectToScene_Click(object sender, EventArgs e)
+        private void addSelectedGameObjectToScene()
         {
             string gameObjectName = textBoxGameObjectName.Text;
-            string gameObjectSelected = comboBoxGameObjects.SelectedItem.ToString();
+            string gameObjectSelected = comboBoxGameObjects.SelectedItem?.ToString();
 
-            GameObject gameObjectCreated = GameObjectCreator.CreateGameObjectDefault(gameObjectSelected, gameObjectName);
-
-            gameObjectBindingSource.Add(gameObjectCreated);
+            try
+            {
+                GameObject gameObjectCreated = GameObjectCreator.CreateGameObjectDefault(gameObjectSelected, gameObjectName);
+                gameObjectBindingSource.Add(gameObjectCreated);
+            }
+            catch
+            {
+                MessageBox.Show($"Cannot create default GameObject {gameObjectName}");
+            }
         }
 
-        private void listBoxGameObjects_SelectedIndexChanged(object sender, EventArgs e)
+        private void changeSelectedGameObject()
         {
             if (cGL != null && gameObjectBindingSource.Current != null)
             {
                 cGL.SelectedGameObjectForControl = gameObjectBindingSource.Current as GameObject;
+                m_LastPositionOfSelectedGameObject = cGL.SelectedGameObjectForControl.Transform.Position;
                 GameScene.Focus();
             }
         }
 
-        private void GameScene_Click(object sender, EventArgs e)
-        {
-            GameScene.Focus();
-        }
-
-        private void buttonResetPosition_Click(object sender, EventArgs e)
+        private void resetSelectedGameObjectPosition()
         {
             if (cGL.SelectedGameObjectForControl != null)
             {
@@ -204,13 +353,18 @@ namespace OpenGLPractice
         {
             TextBox textBox = sender as TextBox;
 
-            if (textBox != null && textBox.Focused && cGL.SelectedGameObjectForControl != null)
+            applyTransformationOnSelectedGameObject(textBox);
+        }
+
+        private void applyTransformationOnSelectedGameObject(TextBox i_TextBox)
+        {
+            if (i_TextBox != null && i_TextBox.Focused && cGL.SelectedGameObjectForControl != null)
             {
-                bool isValidNumber = float.TryParse(textBox.Text, out float result);
+                bool isValidNumber = float.TryParse(i_TextBox.Text, out float result);
 
                 if (isValidNumber && result != 0)
                 {
-                    switch (textBox.Tag.ToString())
+                    switch (i_TextBox.Tag.ToString())
                     {
                         case "Position":
                             cGL.SelectedGameObjectForControl.Transform.Position = getPositionFromTextBoxes();
@@ -245,15 +399,66 @@ namespace OpenGLPractice
             return new Vector3(x, y, z);
         }
 
-        private void buttonResetScale_Click(object sender, EventArgs e)
+        private void resetSelectedGameObjectScale()
         {
             if (cGL.SelectedGameObjectForControl != null)
             {
-                Vector3 currentScale = cGL.SelectedGameObjectForControl.Transform.Scale;
-                cGL.SelectedGameObjectForControl.Transform.ChangeScale(1.0f / currentScale.X, 1.0f / currentScale.Y,
-                    1.0f / currentScale.Z);
-
+                cGL.SelectedGameObjectForControl.Transform.Scale = new Vector3(1.0f);
                 gameObjectBindingSource.ResetCurrentItem();
+            }
+        }
+
+        private void updateMouseMovement(MouseEventArgs e)
+        {
+            if (m_IsMousePressed)
+            {
+                Vector2 mouseOffsetFromLastClicked =
+                    new Vector2(e.X - m_LastGameSceneClickPosition.X, m_LastGameSceneClickPosition.Y - e.Y).Normalized *
+                    k_MouseMovementSensitivity;
+
+                m_LastGameSceneClickPosition.X = e.X;
+                m_LastGameSceneClickPosition.Y = e.Y;
+
+                cGL.Camera.YawAngle += mouseOffsetFromLastClicked.X;
+                cGL.Camera.PitchAngle += mouseOffsetFromLastClicked.Y;
+
+                preventHighPitchCameraMovement();
+            }
+        }
+
+        private void preventHighPitchCameraMovement()
+        {
+            if (cGL.Camera.PitchAngle > 89.0f)
+            {
+                cGL.Camera.PitchAngle = 89.0f;
+            }
+
+            if (cGL.Camera.PitchAngle < -89.0f)
+            {
+                cGL.Camera.PitchAngle = -89.0f;
+            }
+        }
+
+        private string getProjectDirectory()
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+            string projectDirectory = Directory.GetParent(workingDirectory)?.Parent?.FullName;
+
+            return projectDirectory;
+        }
+
+        private void applySelectedCubemapToWorldCube()
+        {
+            CubemapTexture selectedCubemapTexture = comboBoxCubemapSelection.SelectedItem as CubemapTexture;
+
+            if (selectedCubemapTexture != null)
+            {
+                if (!selectedCubemapTexture.IsLoaded)
+                {
+                    selectedCubemapTexture.LoadTextures();
+                }
+
+                cGL.WorldCube.UseTexture(selectedCubemapTexture);
             }
         }
     }

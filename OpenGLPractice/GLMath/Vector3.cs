@@ -176,6 +176,18 @@ namespace OpenGLPractice.GLMath
         }
 
         /// <summary>
+        /// Linearly interpolates between two vectors.
+        /// </summary>
+        /// <param name="i_SourceVector"></param>
+        /// <param name="i_DestinationVector"></param>
+        /// <param name="i_InterpolationRatio"></param>
+        /// <returns>A <see cref="Vector3"/> interpolated value</returns>
+        public static Vector3 LinearlyInterpolate(Vector3 i_SourceVector, Vector3 i_DestinationVector, float i_InterpolationRatio)
+        {
+            return i_SourceVector * (1.0f - i_InterpolationRatio) + i_DestinationVector * i_InterpolationRatio;
+        }
+
+        /// <summary>
         /// Performs a sum of all elements in the specified <see cref="Vector3"/> instance.
         /// </summary>
         /// <param name="i_Vector"></param>
@@ -382,11 +394,6 @@ namespace OpenGLPractice.GLMath
 
                 return hashCode;
             }
-        }
-
-        public Vector3 Clone()
-        {
-            return new Vector3(X, Y, Z);
         }
 
         public override string ToString()

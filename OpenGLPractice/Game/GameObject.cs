@@ -7,8 +7,16 @@ namespace OpenGLPractice.Game
 {
     internal abstract class GameObject
     {
+        public enum eDrawMode
+        {
+            Shadow,
+            Normal
+        }
+
         public const bool k_UseDisplayList = true;
-        private static readonly Vector4 r_ShadowColor = new Vector4(0.35f, 0.35f, 0.35f, 1.0f);
+
+        public static Vector4 ShadowColor { get; set; } = new Vector4(0.35f, 0.35f, 0.35f, 1.0f);
+
         protected static readonly GLUquadric sr_GluQuadric;
         private readonly uint r_GLListID;
         private readonly uint r_LocalDirectionCoordinates;
@@ -42,6 +50,8 @@ namespace OpenGLPractice.Game
             }
         }
 
+        public GameObjectCollection Children { get; }
+
         static GameObject()
         {
             sr_GluQuadric = GLU.gluNewQuadric();
@@ -49,8 +59,6 @@ namespace OpenGLPractice.Game
             // clean up statically created memory when on process exit...
             AppDomain.CurrentDomain.ProcessExit += (i_Sender, i_Args) => GLU.gluDeleteQuadric(sr_GluQuadric);
         }
-
-        public GameObjectCollection Children { get; }
 
         protected GameObject(string i_Name)
         {
@@ -67,6 +75,16 @@ namespace OpenGLPractice.Game
             m_Name = i_Name;
         }
 
+        protected static void UpdateShadowsDescent(GameObject i_RootGameObject)
+        {
+            foreach (GameObject gameObject in i_RootGameObject.Children)
+            {
+                gameObject.DisplayShadow = i_RootGameObject.DisplayShadow;
+
+                UpdateShadowsDescent(gameObject);
+            }
+        }
+
         protected abstract void DefineGameObject();
 
         public virtual void Tick(float i_DeltaTime)
@@ -77,27 +95,16 @@ namespace OpenGLPractice.Game
             }
         }
 
-        public void Draw(bool i_IsShadow = false)
+        public void Draw(eDrawMode i_DrawMode = eDrawMode.Normal)
         {
             GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
 
-            if (i_IsShadow)
-            {
-                Vector4 oldColor = Color;
-                Color = r_ShadowColor;
-                applyAccumulatedTransformations();
-                drawGameObject();
-                Color = oldColor;
-            }
-            else
-            {
-                applyAccumulatedTransformations();
-                drawGameObject();
-            }
+            applyAccumulatedTransformations();
+            drawGameObject(i_DrawMode);
 
             foreach (GameObject gameObject in Children)
             {
-                gameObject.Draw(i_IsShadow);
+                gameObject.Draw(i_DrawMode);
             }
 
             GLErrorCatcher.TryGLCall(() => GL.glPopMatrix());
@@ -105,10 +112,10 @@ namespace OpenGLPractice.Game
 
         private void applyAccumulatedTransformations()
         {
-            GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(Transform.TransformationMatrix));
+            GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(Transform.TransformationsMatrix));
         }
 
-        private void drawGameObject()
+        private void drawGameObject(eDrawMode i_DrawMode)
         {
             Action drawMethod = UseDisplayList
                 ? new Action(() => GLErrorCatcher.TryGLCall(() => GL.glCallList(r_GLListID)))
@@ -116,32 +123,48 @@ namespace OpenGLPractice.Game
 
             GLErrorCatcher.TryGLCall(() => GL.glColor4fv(Color.ToArray));
 
-            if (UseMaterial)
+            switch (i_DrawMode)
             {
-                defineGameObjectWithMaterial(drawMethod);
-            }
-            else if (IsTransparent)
-            {
-                defineGameObjectWithTransparency(drawMethod);
-            }
-            else
-            {
-                drawMethod.Invoke();
+                case eDrawMode.Shadow:
+                    GLErrorCatcher.TryGLCall(() => GL.glColor4fv(ShadowColor.ToArray));
+                    drawMethod.Invoke();
+                    break;
+                case eDrawMode.Normal:
+                    if (UseMaterial)
+                    {
+                        drawGameObjectWithMaterial(drawMethod);
+                    }
+                    else if (IsTransparent)
+                    {
+                        drawGameObjectWithTransparency(drawMethod);
+                    }
+                    else
+                    {
+                        drawMethod.Invoke();
+                    }
+
+                    break;
+                default:
+                    break;
             }
 
             if (LocalCoordinatesActive)
             {
-                Vector3 currentScale = Transform.Scale;
-                GL.glScalef(1.0f / currentScale.X, 1.0f / currentScale.Y, 1.0f / currentScale.Z);
-                //GLErrorCatcher.TryGLCall(() => GL.glDepthRange(0.0, 0.01));
-                GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_DEPTH_TEST));
-                GLErrorCatcher.TryGLCall(() => GL.glCallList(r_LocalDirectionCoordinates));
-                GLErrorCatcher.TryGLCall(() => GL.glScalef(currentScale.X, currentScale.Y, currentScale.Z));
-                GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_DEPTH_TEST));
+                drawLocalCoordinates();
             }
         }
 
-        private void defineGameObjectWithTransparency(Action i_DrawMethod)
+        private void drawLocalCoordinates()
+        {
+            Vector3 currentScale = Transform.Scale;
+            GL.glScalef(1.0f / currentScale.X, 1.0f / currentScale.Y, 1.0f / currentScale.Z);
+            GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_DEPTH_TEST));
+            GLErrorCatcher.TryGLCall(() => GL.glCallList(r_LocalDirectionCoordinates));
+            GLErrorCatcher.TryGLCall(() => GL.glScalef(currentScale.X, currentScale.Y, currentScale.Z));
+            GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_DEPTH_TEST));
+        }
+
+        private void drawGameObjectWithTransparency(Action i_DrawMethod)
         {
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_BLEND));
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_CULL_FACE));
@@ -156,7 +179,7 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_CULL_FACE));
         }
 
-        private void defineGameObjectWithMaterial(Action i_DrawMethod)
+        private void drawGameObjectWithMaterial(Action i_DrawMethod)
         {
             GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_COLOR_MATERIAL));
             GLErrorCatcher.TryGLCall(() => GL.glPushAttrib(GL.GL_LIGHTING_BIT));
@@ -235,25 +258,5 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glEndList());
             GLErrorCatcher.TryGLCall(() => GL.glPopMatrix());
         }
-
-        protected static void UpdateShadowsDescent(GameObject i_RootGameObject)
-        {
-            foreach (GameObject gameObject in i_RootGameObject.Children)
-            {
-                gameObject.DisplayShadow = i_RootGameObject.DisplayShadow;
-
-                UpdateShadowsDescent(gameObject);
-            }
-        }
-
-        //public void CallList()
-        //{
-        //    GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
-
-        //    applyAccumulatedTransformations();
-        //    GLErrorCatcher.TryGLCall(() => GL.glCallList(r_GLListID));
-
-        //    GLErrorCatcher.TryGLCall(() => GL.glPopMatrix());
-        //}
     }
 }

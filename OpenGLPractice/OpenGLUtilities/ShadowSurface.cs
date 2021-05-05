@@ -7,7 +7,7 @@ namespace OpenGLPractice.OpenGLUtilities
     {
         public Matrix3 SurfacePoints { get; set; }
 
-        public GameObject ClippingSurface { get; set; }
+        public GameObject ClippingObject { get; set; }
 
         public ShadowSurface()
         {

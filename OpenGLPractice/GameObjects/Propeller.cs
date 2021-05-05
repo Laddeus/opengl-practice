@@ -13,7 +13,12 @@ namespace OpenGLPractice.GameObjects
             Folding,
             Opening,
             Spinning
-        };
+        }
+
+        private const float k_RotationsPerSecond = 5.0f;
+        private const float k_WingsFoldAngle = 80.0f;
+        private const float k_WingsOpenedAngle = 0.0f;
+        private const float k_FoldOpenSpeed = 10.0f;
 
         public event Action Folded;
 
@@ -22,10 +27,6 @@ namespace OpenGLPractice.GameObjects
         private PropellerWing r_FirstPropellerWing;
         private PropellerWing r_SecondPropellerWing;
         private Sphere r_PropellerNose;
-        private const float k_RotationsPerSecond = 5.0f;
-        private const float k_WingsFoldAngle = 80.0f;
-        private const float k_WingsOpenedAngle = 0.0f;
-        private const float k_FoldOpenSpeed = 10.0f;
         private float m_CurrentWingsAngle;
 
         public ePropellerState State { get; private set; } = ePropellerState.Folded;
