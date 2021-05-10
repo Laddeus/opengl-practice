@@ -26,8 +26,6 @@ namespace OpenGLPractice
 
         public GameObject SelectedGameObjectForControl { get; set; }
 
-        public bool LockCameraOnSelected { get; set; }
-
         public cOGL(Control i_Panel)
         {
             r_Panel = i_Panel;

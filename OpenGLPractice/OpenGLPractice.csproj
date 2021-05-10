@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="GameObjects\Axes.cs" />
     <Compile Include="GameObjects\Cup.cs" />
+    <Compile Include="GameObjects\Surface.cs" />
     <Compile Include="GameObjects\WorldCube.cs" />
     <Compile Include="Game\GameObjectCollection.cs" />
     <Compile Include="Game\GameObjectCreator.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using OpenGL;
@@ -69,16 +70,21 @@ namespace OpenGLPractice.Game
             ShadowSurfaces.Add(groundSurface);
             ReflectionSurfaces.Add(wall);
             GameObjects.Add(ground);
+            Surface surface =
+                GameObjectCreator.CreateSurface("Surface", (i_X, i_Z) => i_X * i_X / 6.0f - i_Z * i_Z / 6.0f);
+
+            surface.UseDisplayList = GameObject.k_UseDisplayList;
+            surface.Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+            surface.Transform.Translate(0.0f, 5.0f, 0.0f);
+            //GameObjects.Add(surface);
         }
 
         public void DrawScene()
         {
             GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_LIGHTING));
-            GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_TEXTURE_2D));
             GLErrorCatcher.TryGLCall(() => GL.glDepthMask((byte)GL.GL_FALSE));
             r_WorldCube.Draw();
             GLErrorCatcher.TryGLCall(() => GL.glDepthMask((byte)GL.GL_TRUE));
-            GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_TEXTURE_2D));
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_LIGHTING));
 
             if (DrawShadows)
@@ -112,9 +118,9 @@ namespace OpenGLPractice.Game
 
                 applyClipping(reflectionSurface);
 
-                GL.glTranslatef(-2 * reflectionSurface.Transform.Position.X, -2 * reflectionSurface.Transform.Position.Y, -2 * reflectionSurface.Transform.Position.Z);
+                GL.glTranslatef(reflectionSurface.Transform.Position.X, reflectionSurface.Transform.Position.Y, reflectionSurface.Transform.Position.Z);
                 GL.glMultMatrixf(reflectionSurface.Transform.RotationMatrix);
-                GL.glScalef(1, 1, -1);
+                GL.glScalef(1, -1, 1);
                 foreach (GameObject gameObject in GameObjects)
                 {
                     gameObject.Draw();

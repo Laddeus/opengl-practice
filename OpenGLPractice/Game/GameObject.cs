@@ -159,9 +159,11 @@ namespace OpenGLPractice.Game
             Vector3 currentScale = Transform.Scale;
             GL.glScalef(1.0f / currentScale.X, 1.0f / currentScale.Y, 1.0f / currentScale.Z);
             GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_DEPTH_TEST));
+            GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_LIGHTING));
             GLErrorCatcher.TryGLCall(() => GL.glCallList(r_LocalDirectionCoordinates));
             GLErrorCatcher.TryGLCall(() => GL.glScalef(currentScale.X, currentScale.Y, currentScale.Z));
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_DEPTH_TEST));
+            GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_LIGHTING));
         }
 
         private void drawGameObjectWithTransparency(Action i_DrawMethod)

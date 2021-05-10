@@ -30,7 +30,9 @@ namespace OpenGLPractice.GameObjects
         {
             if (HasTexture)
             {
+                GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_TEXTURE_2D));
                 defineObjectWithTextures();
+                GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_TEXTURE_2D));
             }
             else
             {

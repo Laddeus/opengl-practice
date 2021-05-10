@@ -19,7 +19,8 @@ namespace OpenGLPractice.Game
         Arrow,
         PropellerWing,
         Propeller,
-        Particle
+        Particle,
+        Surface
     }
 
     internal static class GameObjectCreator
@@ -100,6 +101,14 @@ namespace OpenGLPractice.Game
 
         ////    return worldCubeCreated;
         ////}
+
+        public static Surface CreateSurface(string i_Name, Func<float, float, float> i_SurfaceFunctionXZ)
+        {
+            Surface surfaceToBeCreated = new Surface(i_Name, i_SurfaceFunctionXZ);
+            surfaceToBeCreated.InitializeList();
+
+            return surfaceToBeCreated;
+        }
 
         public static string[] GetAllGameObjectTypeNames()
         {

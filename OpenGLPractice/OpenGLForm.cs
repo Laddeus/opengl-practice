@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
@@ -81,7 +82,6 @@ namespace OpenGLPractice
 
             r_ProjectDirectoryLocation = getProjectDirectory();
 
-            gameObjectBindingSource.DataSource = cGL.GameObjects;
             cOGLBindingSource.DataSource = cGL;
 
             m_LastGameSceneClickPosition = new Vector2(GameScene.Width / 2.0f, GameScene.Height / 2.0f);
@@ -223,15 +223,26 @@ namespace OpenGLPractice
 
             keepCubemapCenteredAroundView();
 
+            if (radioButtonLightControl.Checked)
+            {
+                updateLightPosition();
+            }
+
             foreach (GameObject gameObject in cGL.GameObjects)
             {
                 gameObject.Tick(GameLoopTimer.Interval / 1000.0f);
             }
         }
 
+        private void updateLightPosition()
+        {
+            cGL.Light.Position = cGL.Camera.EyePosition;
+            cOGLBindingSource.ResetCurrentItem();
+        }
+
         private void keepCubemapCenteredAroundView()
         {
-            if (lockCameraOnSelectedCheckBox.Checked)
+            if (radioButtonObjectSelected.Checked)
             {
                 cGL.WorldCube.Transform.Position = cGL.Camera.LookAtPosition;
             }
@@ -243,7 +254,7 @@ namespace OpenGLPractice
 
         private void updateCameraView()
         {
-            if (lockCameraOnSelectedCheckBox.Checked && cGL.SelectedGameObjectForControl != null)
+            if (radioButtonObjectSelected.Checked && cGL.SelectedGameObjectForControl != null)
             {
                 cGL.Camera.LookAtPosition = cGL.SelectedGameObjectForControl.Transform.Position;
                 cGL.Camera.UpdateCameraPositionAroundLockedObject();
@@ -260,7 +271,7 @@ namespace OpenGLPractice
             {
                 Keys lastKeyPressed = r_KeysPressed.Dequeue();
 
-                if (lockCameraOnSelectedCheckBox.Checked)
+                if (radioButtonObjectSelected.Checked)
                 {
                     updateGameObjectActions(lastKeyPressed);
                 }
@@ -364,15 +375,21 @@ namespace OpenGLPractice
 
                 if (isValidNumber && result != 0)
                 {
+                    Panel parentPanelOfVectorTextBoxes = i_TextBox.Parent as Panel;
+                    Vector3 newVectorFromTextBoxes = getVectorFromPanel(parentPanelOfVectorTextBoxes);
+
                     switch (i_TextBox.Tag.ToString())
                     {
-                        case "Position":
-                            cGL.SelectedGameObjectForControl.Transform.Position = getPositionFromTextBoxes();
+                        case "GameObject Position":
+                            cGL.SelectedGameObjectForControl.Transform.Position = newVectorFromTextBoxes;
                             break;
-                        case "Scale":
-                            cGL.SelectedGameObjectForControl.Transform.Scale = getScaleFromTextBoxes();
+                        case "GameObject Scale":
+                            cGL.SelectedGameObjectForControl.Transform.Scale = newVectorFromTextBoxes;
                             break;
-                        case "Rotation":
+                        case "GameObject Rotation":
+                            break;
+                        case "Light Position":
+                            cGL.Light.Position = newVectorFromTextBoxes;
                             break;
                         default:
                             break;
@@ -381,23 +398,34 @@ namespace OpenGLPractice
             }
         }
 
-        private Vector3 getPositionFromTextBoxes()
+        private Vector3 getVectorFromPanel(Panel i_PanelWithVectorValues)
         {
-            float x = float.Parse(xPositionTextBox.Text);
-            float y = float.Parse(yPositionTextBox.Text);
-            float z = float.Parse(zPositionTextBox.Text);
+            TextBox[] vectorTextBoxes = i_PanelWithVectorValues.Controls.OfType<TextBox>().ToArray();
+            Array.Sort(vectorTextBoxes, (i_TextBox1, i_TextBox2) => i_TextBox1.TabIndex.CompareTo(i_TextBox2.TabIndex)); ;
+            float x = float.Parse(vectorTextBoxes[0].Text);
+            float y = float.Parse(vectorTextBoxes[1].Text);
+            float z = float.Parse(vectorTextBoxes[2].Text);
 
             return new Vector3(x, y, z);
         }
 
-        private Vector3 getScaleFromTextBoxes()
-        {
-            float x = float.Parse(xScaleTextBox.Text);
-            float y = float.Parse(yScaleTextBox.Text);
-            float z = float.Parse(zScaleTextBox.Text);
-
-            return new Vector3(x, y, z);
-        }
+        ////private Vector3 getPositionFromTextBoxes()
+        ////{
+        ////    float x = float.Parse(xPositionTextBox.Text);
+        ////    float y = float.Parse(yPositionTextBox.Text);
+        ////    float z = float.Parse(zPositionTextBox.Text);
+        //
+        ////    return new Vector3(x, y, z);
+        ////}
+        //
+        ////private Vector3 getScaleFromTextBoxes()
+        ////{
+        ////    float x = float.Parse(xScaleTextBox.Text);
+        ////    float y = float.Parse(yScaleTextBox.Text);
+        ////    float z = float.Parse(zScaleTextBox.Text);
+        //
+        ////    return new Vector3(x, y, z);
+        ////}
 
         private void resetSelectedGameObjectScale()
         {
