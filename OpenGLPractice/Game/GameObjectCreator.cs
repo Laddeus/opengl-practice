@@ -102,9 +102,9 @@ namespace OpenGLPractice.Game
         ////    return worldCubeCreated;
         ////}
 
-        public static Surface CreateSurface(string i_Name, Func<float, float, float> i_SurfaceFunctionXZ)
+        public static Surface CreateSurface(string i_Name, float i_XZCoverage, float i_QuadPieceSize, Func<float, float, float> i_SurfaceFunctionXZ)
         {
-            Surface surfaceToBeCreated = new Surface(i_Name, i_SurfaceFunctionXZ);
+            Surface surfaceToBeCreated = new Surface(i_Name, i_XZCoverage, i_QuadPieceSize, i_SurfaceFunctionXZ);
             surfaceToBeCreated.InitializeList();
 
             return surfaceToBeCreated;

@@ -33,6 +33,7 @@ namespace OpenGLPractice
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenGLForm));
             this.xLabel = new System.Windows.Forms.Label();
             this.yLabel = new System.Windows.Forms.Label();
             this.zLabel = new System.Windows.Forms.Label();
@@ -82,7 +83,10 @@ namespace OpenGLPractice
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelGameObjectsList = new System.Windows.Forms.Panel();
             this.listBoxGameObjects = new System.Windows.Forms.ListBox();
+            this.contextMenuStripGameObjectItems = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemRemoveGameObject = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelGameObjectDetailsView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gameObjectBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cOGLBindingSource)).BeginInit();
@@ -96,6 +100,7 @@ namespace OpenGLPractice
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panelGameObjectsList.SuspendLayout();
+            this.contextMenuStripGameObjectItems.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -633,6 +638,7 @@ namespace OpenGLPractice
             // 
             // listBoxGameObjects
             // 
+            this.listBoxGameObjects.ContextMenuStrip = this.contextMenuStripGameObjectItems;
             this.listBoxGameObjects.DataSource = this.gameObjectBindingSource;
             this.listBoxGameObjects.DisplayMember = "Name";
             this.listBoxGameObjects.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -642,6 +648,21 @@ namespace OpenGLPractice
             this.listBoxGameObjects.Size = new System.Drawing.Size(79, 622);
             this.listBoxGameObjects.TabIndex = 0;
             this.listBoxGameObjects.SelectedIndexChanged += new System.EventHandler(this.listBoxGameObjects_SelectedIndexChanged);
+            // 
+            // contextMenuStripGameObjectItems
+            // 
+            this.contextMenuStripGameObjectItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemRemoveGameObject});
+            this.contextMenuStripGameObjectItems.Name = "contextMenuStripGameObjectItems";
+            this.contextMenuStripGameObjectItems.Size = new System.Drawing.Size(181, 48);
+            // 
+            // toolStripMenuItemRemoveGameObject
+            // 
+            this.toolStripMenuItemRemoveGameObject.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemRemoveGameObject.Image")));
+            this.toolStripMenuItemRemoveGameObject.Name = "toolStripMenuItemRemoveGameObject";
+            this.toolStripMenuItemRemoveGameObject.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemRemoveGameObject.Text = "Remove";
+            this.toolStripMenuItemRemoveGameObject.Click += new System.EventHandler(this.toolStripMenuItemRemoveGameObject_Click);
             // 
             // splitContainer2
             // 
@@ -659,6 +680,12 @@ namespace OpenGLPractice
             this.splitContainer2.Size = new System.Drawing.Size(701, 622);
             this.splitContainer2.SplitterDistance = 505;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // removeToolStripMenuItem
+            // 
+            this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeToolStripMenuItem.Text = "Remove";
             // 
             // OpenGLForm
             // 
@@ -688,6 +715,7 @@ namespace OpenGLPractice
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panelGameObjectsList.ResumeLayout(false);
+            this.contextMenuStripGameObjectItems.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -747,5 +775,8 @@ namespace OpenGLPractice
         private System.Windows.Forms.RadioButton radioButtonObjectSelected;
         private System.Windows.Forms.RadioButton radioButtonFreeMovement;
         private System.Windows.Forms.TextBox xLightPositionTextBox;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripGameObjectItems;
+        private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRemoveGameObject;
     }
 }

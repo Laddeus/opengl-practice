@@ -184,12 +184,12 @@ namespace OpenGLPractice.Game
         private void drawGameObjectWithMaterial(Action i_DrawMethod)
         {
             GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_COLOR_MATERIAL));
-            GLErrorCatcher.TryGLCall(() => GL.glPushAttrib(GL.GL_LIGHTING_BIT));
+            // GLErrorCatcher.TryGLCall(() => GL.glPushAttrib(GL.GL_LIGHTING_BIT));
 
             Material.ApplyMaterial();
             i_DrawMethod.Invoke();
 
-            GLErrorCatcher.TryGLCall(() => GL.glPopAttrib());
+            // GLErrorCatcher.TryGLCall(() => GL.glPopAttrib());
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_COLOR_MATERIAL));
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 using OpenGL;
 using OpenGLPractice.GLMath;
 
@@ -7,6 +8,13 @@ namespace OpenGLPractice.OpenGLUtilities
 {
     internal class Transform
     {
+        public enum eRotationAxis
+        {
+            Up,
+            Right,
+            Forward
+        }
+
         public static int TransformationMatrixSize { get; } = 16;
 
         private readonly float[] r_AccumulatedTransformationsMatrix = new float[TransformationMatrixSize];

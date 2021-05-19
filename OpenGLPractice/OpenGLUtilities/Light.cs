@@ -77,7 +77,7 @@ namespace OpenGLPractice.OpenGLUtilities
                 float lightTypeValue = m_LightType == eLightTypes.Directional ? 0.0f : 1.0f;
                 m_Position = new Vector4(value.X, value.Y, value.Z, lightTypeValue);
 
-                GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_POSITION, m_Position.ToArray));
+                //GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_POSITION, m_Position.ToArray));
             }
         }
 
@@ -202,7 +202,12 @@ namespace OpenGLPractice.OpenGLUtilities
         public void ApplyPositionsAndDirection()
         {
             GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_POSITION, m_Position.ToArray));
-            GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_SPOT_DIRECTION, m_SpotlightDirection.ToArray));
+
+            if (m_LightType == eLightTypes.Spotlight)
+            {
+                GLErrorCatcher.TryGLCall(() => GL.glLightfv(r_LightSourceId, GL.GL_SPOT_DIRECTION, m_SpotlightDirection.ToArray));
+            }
+            // ApplyLight();
         }
 
         public void ApplyLight()
@@ -221,20 +226,19 @@ namespace OpenGLPractice.OpenGLUtilities
 
         private void initializeSpotlightDefaultParameters()
         {
-            SpotlightDirection = new Vector3(0, 0, -1f);
-            SpotlightCutoff = 10.0f;
-            SpotlightExponent = 30.0f;
+            SpotlightDirection = new Vector3(0, -1, 0);
+            SpotlightCutoff = 30;
+            SpotlightExponent = 70;
         }
 
         private void initializeDefaultLightParameters()
         {
-            Position = new Vector3(0, 0, 1);
-            Ambient = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-            Diffuse = new Vector4(1.0f);
+            Ambient = new Vector4(0.2f, 0.2f, 0.2f, 1.0f);
+            Diffuse = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
             Specular = new Vector4(1.0f);
             ConstantAttenuation = 1.0f;
-            LinearAttenuation = 0.14f;
-            QuadraticAttenuation = 0.07f;
+            LinearAttenuation = 0.0f;
+            QuadraticAttenuation = 0.0f;
         }
 
         public void TurnOn()

@@ -11,15 +11,15 @@ namespace OpenGLPractice.Game
 {
     internal class GameEnvironment
     {
-        public Camera Camera { get; private set; }
+        public Camera Camera { get; }
 
-        public List<GameObject> GameObjects { get; private set; }
+        public List<GameObject> GameObjects { get; }
 
-        public Light Light { get; set; }
+        public Light Light { get; }
 
-        public List<ShadowSurface> ShadowSurfaces { get; private set; }
+        public List<ShadowSurface> ShadowSurfaces { get; }
 
-        public List<Plane> ReflectionSurfaces { get; private set; }
+        public List<Plane> ReflectionSurfaces { get; }
 
         private readonly WorldCube r_WorldCube;
 
@@ -36,56 +36,59 @@ namespace OpenGLPractice.Game
         public GameEnvironment()
         {
             GameObjects = new List<GameObject>();
-            Light = Light.CreateLight(Light.eLightTypes.Directional);
+            Light = Light.CreateLight(Light.eLightTypes.Spotlight);
             Camera = new Camera();
             ShadowSurfaces = new List<ShadowSurface>();
             ReflectionSurfaces = new List<Plane>();
 
+            Light.Position = new Vector3(0, 5f, 0f);
+            Camera.CameraUpdated += Light.ApplyPositionsAndDirection;
+
             Axes axes = (Axes)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Axes, "Axes");
-            Plane wall = (Plane)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Plane, "Wall");
-            Plane ground = (Plane)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Plane, "Ground");
-            wall.Transform.Rotate(90, 1, 0, 0);
-            wall.Transform.Translate(0, 5f, -5f);
-            wall.Color = new Vector4(0, 0, 0.5f, 0.5f);
-            wall.IsTransparent = true;
-            ground.Transform.Translate(0, -0.01f, 0);
-            ground.Color = new Vector4(1.0f, 1.0f, 0, 1.0f);
             GameObjects.Add(axes);
 
             r_WorldCube = new WorldCube("WorldCube");
             r_WorldCube.Size = 100.0f;
 
-            ShadowSurface groundSurface = new ShadowSurface()
-            {
-                SurfacePoints = new Matrix3(new Vector3[]
-                {
-                    new Vector3(0, -0, 0),
-                    new Vector3(-1, -0, 1),
-                    new Vector3(1, -0, 1)
-                }),
+            // ShadowSurface groundSurface = new ShadowSurface()
+            // {
+            //     SurfacePoints = new Matrix3(new Vector3[]
+            //     {
+            //         new Vector3(0, -0, 0),
+            //         new Vector3(-1, -0, 1),
+            //         new Vector3(1, -0, 1)
+            //     }),
 
-                ClippingObject = ground
-            };
+            //     ClippingObject = ground
+            // };
 
-            ShadowSurfaces.Add(groundSurface);
-            ReflectionSurfaces.Add(wall);
-            GameObjects.Add(ground);
+            // ShadowSurfaces.Add(groundSurface);
+            Random random = new Random();
             Surface surface =
-                GameObjectCreator.CreateSurface("Surface", (i_X, i_Z) => i_X * i_X / 6.0f - i_Z * i_Z / 6.0f);
+                GameObjectCreator.CreateSurface("Surface", 5, 0.05f,
+                    (i_X, i_Z) => i_X * i_X + i_Z * i_Z);
 
             surface.UseDisplayList = GameObject.k_UseDisplayList;
-            surface.Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-            surface.Transform.Translate(0.0f, 5.0f, 0.0f);
-            //GameObjects.Add(surface);
+            surface.Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+            // GameObjects.Add(surface);
+
+            Cube cube = (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, "Cube");
+            GameObjects.Add(cube);
+            // cube.Transform.Position = new Vector3((float)(Math.Cos(2 * Math.PI / 2) + 1), cube.Transform.Position.Y,
+            //    (float)(Math.Sin(2 * Math.PI / 2) + 0));
         }
 
         public void DrawScene()
         {
-            GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_LIGHTING));
-            GLErrorCatcher.TryGLCall(() => GL.glDepthMask((byte)GL.GL_FALSE));
-            r_WorldCube.Draw();
-            GLErrorCatcher.TryGLCall(() => GL.glDepthMask((byte)GL.GL_TRUE));
-            GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_LIGHTING));
+            // this makes spotlight works for SOME reason..
+            GLErrorCatcher.TryGLCall(() => GL.glPushAttrib(GL.GL_LIGHTING_BIT));
+
+            drawWorldCube();
+
+            foreach (GameObject gameObject in GameObjects)
+            {
+                gameObject.Draw();
+            }
 
             if (DrawShadows)
             {
@@ -97,10 +100,16 @@ namespace OpenGLPractice.Game
                 drawReflections();
             }
 
-            foreach (GameObject gameObject in GameObjects)
-            {
-                gameObject.Draw();
-            }
+            GLErrorCatcher.TryGLCall(() => GL.glPopAttrib());
+        }
+
+        private void drawWorldCube()
+        {
+            GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_LIGHTING));
+            GLErrorCatcher.TryGLCall(() => GL.glDepthMask((byte)GL.GL_FALSE));
+            r_WorldCube.Draw();
+            GLErrorCatcher.TryGLCall(() => GL.glDepthMask((byte)GL.GL_TRUE));
+            GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_LIGHTING));
         }
 
         private void drawReflections()
@@ -116,14 +125,21 @@ namespace OpenGLPractice.Game
             {
                 GL.glLoadMatrixf(matrixBeforeAnyTransformations);
 
+                GL.glTranslatef(0, 0, 2 * reflectionSurface.Transform.Position.Z);
+                GL.glScalef(1, 1, -1);
+
                 applyClipping(reflectionSurface);
 
-                GL.glTranslatef(reflectionSurface.Transform.Position.X, reflectionSurface.Transform.Position.Y, reflectionSurface.Transform.Position.Z);
-                GL.glMultMatrixf(reflectionSurface.Transform.RotationMatrix);
-                GL.glScalef(1, -1, 1);
                 foreach (GameObject gameObject in GameObjects)
                 {
                     gameObject.Draw();
+                }
+
+                if (DrawShadows)
+                {
+                    GL.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
+                    drawShadows();
+                    GL.glPopAttrib();
                 }
             }
 
@@ -154,6 +170,7 @@ namespace OpenGLPractice.Game
                 float[] shadowMatrix = Transform.CalculateShadowMatrix(shadowSurface.SurfacePoints, Light.Position4);
                 GLErrorCatcher.TryGLCall(() => GL.glMultMatrixf(shadowMatrix));
 
+                GLErrorCatcher.TryGLCall(() => GL.glClear(GL.GL_STENCIL_BUFFER_BIT));
                 applyClipping(shadowSurface.ClippingObject);
                 GameObject.ShadowColor = shadowSurface.ClippingObject.Color * 0.5f;
                 foreach (GameObject gameObject in GameObjects)
@@ -172,8 +189,7 @@ namespace OpenGLPractice.Game
 
         private void applyClipping(GameObject i_ClippingObject)
         {
-            GLErrorCatcher.TryGLCall(() => GL.glClear(GL.GL_STENCIL_BUFFER_BIT));
-            GLErrorCatcher.TryGLCall(() => GL.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_REPLACE));
+            GLErrorCatcher.TryGLCall(() => GL.glStencilOp(GL.GL_KEEP, GL.GL_REPLACE, GL.GL_REPLACE));
             GLErrorCatcher.TryGLCall(() => GL.glStencilFunc(GL.GL_ALWAYS, 1, 0xFF));
             GLErrorCatcher.TryGLCall(() =>
                 GL.glColorMask((byte)GL.GL_FALSE, (byte)GL.GL_FALSE, (byte)GL.GL_FALSE, (byte)GL.GL_FALSE));

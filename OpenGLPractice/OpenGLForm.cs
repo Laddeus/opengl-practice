@@ -160,6 +160,11 @@ namespace OpenGLPractice
             applySelectedCubemapToWorldCube();
         }
 
+        private void toolStripMenuItemRemoveGameObject_Click(object sender, EventArgs e)
+        {
+            removeSelectedGameObject();
+        }
+
         // PRIVATE METHODS
         private void loadGameObjectsCombobox()
         {
@@ -237,16 +242,16 @@ namespace OpenGLPractice
         private void updateLightPosition()
         {
             cGL.Light.Position = cGL.Camera.EyePosition;
-            cOGLBindingSource.ResetCurrentItem();
+            this.Invoke(new Action(() => cOGLBindingSource.ResetCurrentItem()));
         }
 
         private void keepCubemapCenteredAroundView()
         {
-            if (radioButtonObjectSelected.Checked)
-            {
-                cGL.WorldCube.Transform.Position = cGL.Camera.LookAtPosition;
-            }
-            else
+            //if (radioButtonObjectSelected.Checked)
+            //{
+            //    cGL.WorldCube.Transform.Position = cGL.Camera.LookAtPosition;
+            //}
+            //else
             {
                 cGL.WorldCube.Transform.Position = cGL.Camera.EyePosition;
             }
@@ -285,7 +290,7 @@ namespace OpenGLPractice
 
             if (m_LastPositionOfSelectedGameObject != cGL.SelectedGameObjectForControl?.Transform.Position)
             {
-                gameObjectBindingSource.ResetCurrentItem();
+                this.Invoke(new Action(() => gameObjectBindingSource.ResetCurrentItem()));
             }
 
             m_LastPositionOfSelectedGameObject = cGL.SelectedGameObjectForControl.Transform.Position;
@@ -321,7 +326,7 @@ namespace OpenGLPractice
             if (KeyHasAction && cGL.SelectedGameObjectForControl != null)
             {
                 gameObjectAction.Invoke();
-                gameObjectBindingSource.ResetCurrentItem();
+                this.Invoke(new Action(() => gameObjectBindingSource.ResetCurrentItem()));
             }
         }
 
@@ -356,7 +361,7 @@ namespace OpenGLPractice
             if (cGL.SelectedGameObjectForControl != null)
             {
                 cGL.SelectedGameObjectForControl.Transform.Position = Vector3.Zero;
-                gameObjectBindingSource.ResetCurrentItem();
+                this.Invoke(new Action(() => gameObjectBindingSource.ResetCurrentItem()));
             }
         }
 
@@ -432,7 +437,7 @@ namespace OpenGLPractice
             if (cGL.SelectedGameObjectForControl != null)
             {
                 cGL.SelectedGameObjectForControl.Transform.Scale = new Vector3(1.0f);
-                gameObjectBindingSource.ResetCurrentItem();
+                this.Invoke(new Action(() => gameObjectBindingSource.ResetCurrentItem()));
             }
         }
 
@@ -487,6 +492,17 @@ namespace OpenGLPractice
                 }
 
                 cGL.WorldCube.UseTexture(selectedCubemapTexture);
+            }
+        }
+
+        private void removeSelectedGameObject()
+        {
+            GameObject selectedGameObject = listBoxGameObjects.SelectedItem as GameObject;
+
+            if (selectedGameObject != null)
+            {
+                cGL.GameObjects.Remove(selectedGameObject);
+                cOGLBindingSource.ResetBindings(false);
             }
         }
     }

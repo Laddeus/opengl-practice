@@ -40,9 +40,6 @@ namespace OpenGLPractice
                 UseLight = true,
                 DrawReflections = true
             };
-
-            GameEnvironment.Light.Position = new Vector3(0, 1.5f, 1.0f);
-            GameEnvironment.Camera.CameraUpdated += Light.ApplyPositionsAndDirection;
         }
 
         ~cOGL()
@@ -182,7 +179,8 @@ namespace OpenGLPractice
 
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_LIGHTING));
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_COLOR_MATERIAL));
-            GLErrorCatcher.TryGLCall(() => GL.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, new float[] { 0.05f, 0.05f, 0.05f, 1.0f }));
+            // GLErrorCatcher.TryGLCall(() => GL.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, new float[] { 0.2f, 0.2f, 0.2f, 1.0f }));
+            GLErrorCatcher.TryGLCall(() => GL.glLightModelf(GL.GL_LIGHT_MODEL_TWO_SIDE, 1.0f));
             GLErrorCatcher.TryGLCall(() => GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA));
         }
     }
