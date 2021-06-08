@@ -152,6 +152,33 @@ namespace OpenGLPractice.OpenGLUtilities
             calculateDirectionVectors();
         }
 
+        public void RotateAround(float i_RotationAngle, Vector3 i_PointToRotateAround, Vector3 i_RotationAxis)
+        {
+            RotateAround(i_RotationAngle,
+                i_PointToRotateAround.X, i_PointToRotateAround.Y, i_PointToRotateAround.Z,
+                i_RotationAxis.X, i_RotationAxis.Y, i_RotationAxis.Z);
+        }
+
+        public void RotateAround(float i_RotationAngle, float i_PointAroundX, float i_PointAroundY, float i_PointAroundZ, float i_RotationAxisX, float i_RotationAxisY, float i_RotationAxisZ)
+        {
+            GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
+            GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
+
+            float[] rotationMatrixArray = new float[TransformationMatrixSize];
+
+            GLErrorCatcher.TryGLCall(() => GL.glTranslatef(i_PointAroundX, i_PointAroundY, i_PointAroundZ));
+            GLErrorCatcher.TryGLCall(() => GL.glRotatef(i_RotationAngle, i_RotationAxisX, i_RotationAxisY, i_RotationAxisZ));
+            GLErrorCatcher.TryGLCall(() => GL.glTranslatef(-i_PointAroundX, -i_PointAroundY, -i_PointAroundZ));
+
+            GL.glGetFloatv(GL.GL_MODELVIEW_MATRIX, rotationMatrixArray);
+            Matrix4 rotationMatrix = new Matrix4(rotationMatrixArray);
+            Vector4 position = new Vector4(Position);
+
+            Position = (rotationMatrix * position).ToVector3;
+
+            GLErrorCatcher.TryGLCall(() => GL.glPopMatrix());
+        }
+
         public void ChangeScale(Vector3 i_ScaleVector)
         {
             ChangeScale(i_ScaleVector.X, i_ScaleVector.Y, i_ScaleVector.Z);

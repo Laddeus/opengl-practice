@@ -45,7 +45,9 @@ namespace OpenGLPractice.Game
             Camera.CameraUpdated += Light.ApplyPositionsAndDirection;
 
             Axes axes = (Axes)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Axes, "Axes");
+            Cube cube = (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, "cube");
             GameObjects.Add(axes);
+            GameObjects.Add(cube);
 
             r_WorldCube = new WorldCube("WorldCube");
             r_WorldCube.Size = 100.0f;
@@ -66,16 +68,11 @@ namespace OpenGLPractice.Game
             Random random = new Random();
             Surface surface =
                 GameObjectCreator.CreateSurface("Surface", 5, 0.05f,
-                    (i_X, i_Z) => i_X * i_X + i_Z * i_Z);
+                    (i_X, i_Z) => i_X * i_X / 6 + i_Z * i_Z / 6);
 
             surface.UseDisplayList = GameObject.k_UseDisplayList;
             surface.Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-            // GameObjects.Add(surface);
-
-            Cube cube = (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, "Cube");
-            GameObjects.Add(cube);
-            // cube.Transform.Position = new Vector3((float)(Math.Cos(2 * Math.PI / 2) + 1), cube.Transform.Position.Y,
-            //    (float)(Math.Sin(2 * Math.PI / 2) + 0));
+            //GameObjects.Add(surface);
         }
 
         public void DrawScene()

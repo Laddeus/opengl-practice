@@ -92,6 +92,19 @@ namespace OpenGLPractice.GLMath
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Vector3" /> struct from the specified <see cref="Vector2"/>,
+        /// setting the 3rd element of the instance to 1 while copying the rest.
+        /// 
+        /// </summary>
+        /// <param name="i_Vector2"></param>
+        public Vector3(Vector2 i_Vector2)
+        {
+            X = i_Vector2.X;
+            Y = i_Vector2.Y;
+            Z = 1;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Vector3" /> struct.
         /// </summary>
         /// <param name="i_X"></param>

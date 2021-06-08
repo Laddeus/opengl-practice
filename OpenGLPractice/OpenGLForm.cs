@@ -406,7 +406,7 @@ namespace OpenGLPractice
         private Vector3 getVectorFromPanel(Panel i_PanelWithVectorValues)
         {
             TextBox[] vectorTextBoxes = i_PanelWithVectorValues.Controls.OfType<TextBox>().ToArray();
-            Array.Sort(vectorTextBoxes, (i_TextBox1, i_TextBox2) => i_TextBox1.TabIndex.CompareTo(i_TextBox2.TabIndex)); ;
+            Array.Sort(vectorTextBoxes, (i_TextBox1, i_TextBox2) => i_TextBox1.TabIndex.CompareTo(i_TextBox2.TabIndex));
             float x = float.Parse(vectorTextBoxes[0].Text);
             float y = float.Parse(vectorTextBoxes[1].Text);
             float z = float.Parse(vectorTextBoxes[2].Text);
