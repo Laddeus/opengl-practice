@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ObjLoader.Loader.Data.VertexData;
 using OpenGLPractice.GameObjects;
+using Texture = OpenGLPractice.OpenGLUtilities.Texture;
 
 namespace OpenGLPractice.Game
 {
@@ -20,7 +22,10 @@ namespace OpenGLPractice.Game
         PropellerWing,
         Propeller,
         Particle,
-        Surface
+        Surface,
+        TableLeg,
+        TableTop,
+        Table
     }
 
     internal static class GameObjectCreator
@@ -108,6 +113,14 @@ namespace OpenGLPractice.Game
             surfaceToBeCreated.InitializeList();
 
             return surfaceToBeCreated;
+        }
+
+        public static Sphere CreateSphere(string i_Name, float i_SphereRadius, Texture i_SphereTexture)
+        {
+            Sphere sphereToBeCreated= new Sphere(i_Name, i_SphereRadius, i_SphereTexture);
+            sphereToBeCreated.InitializeList();
+
+            return sphereToBeCreated;
         }
 
         public static string[] GetAllGameObjectTypeNames()

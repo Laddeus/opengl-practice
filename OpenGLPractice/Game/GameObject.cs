@@ -13,7 +13,10 @@ namespace OpenGLPractice.Game
             Normal
         }
 
-        public const bool k_UseDisplayList = true;
+        public const bool v_UseDisplayList = true;
+        public const bool v_UseMaterial = true;
+        public const bool v_DisplayShadow = true;
+        public const bool v_IsTransparent = true;
 
         public static Vector4 ShadowColor { get; set; } = new Vector4(0.35f, 0.35f, 0.35f, 1.0f);
 
@@ -40,7 +43,6 @@ namespace OpenGLPractice.Game
         public bool IsTransparent { get; set; }
 
         public bool UseDisplayList { get; set; }
-
         public string Name
         {
             get => m_Name;
@@ -184,12 +186,12 @@ namespace OpenGLPractice.Game
         private void drawGameObjectWithMaterial(Action i_DrawMethod)
         {
             GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_COLOR_MATERIAL));
-            // GLErrorCatcher.TryGLCall(() => GL.glPushAttrib(GL.GL_LIGHTING_BIT));
+            GLErrorCatcher.TryGLCall(() => GL.glPushAttrib(GL.GL_LIGHTING_BIT));
 
             Material.ApplyMaterial();
             i_DrawMethod.Invoke();
 
-            // GLErrorCatcher.TryGLCall(() => GL.glPopAttrib());
+            GLErrorCatcher.TryGLCall(() => GL.glPopAttrib());
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_COLOR_MATERIAL));
         }
 

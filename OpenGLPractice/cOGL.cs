@@ -16,7 +16,7 @@ namespace OpenGLPractice
 
         public GameEnvironment GameEnvironment { get; private set; }
 
-        public List<GameObject> GameObjects => GameEnvironment.GameObjects;
+        public GameObjectCollection GameObjects => GameEnvironment.GameObjects;
 
         public Light Light => GameEnvironment.Light;
 

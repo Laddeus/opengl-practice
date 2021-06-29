@@ -228,7 +228,7 @@ namespace OpenGLPractice.OpenGLUtilities
         {
             SpotlightDirection = new Vector3(0, -1, 0);
             SpotlightCutoff = 35;
-            SpotlightExponent = 0;
+            SpotlightExponent = 10;
         }
 
         private void initializeDefaultLightParameters()

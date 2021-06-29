@@ -6,7 +6,7 @@ namespace OpenGLPractice.Game
     {
         private readonly GameObject r_CollectionParent;
 
-        public GameObjectCollection(GameObject i_CollectionParent)
+        public GameObjectCollection(GameObject i_CollectionParent = null)
         {
             r_CollectionParent = i_CollectionParent;
         }

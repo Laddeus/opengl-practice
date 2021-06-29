@@ -34,7 +34,13 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CjClutter.ObjLoader.Loader">
+      <HintPath>..\External Libraries\CjClutter.ObjLoader.Loader.dll</HintPath>
+    </Reference>
     <Reference Include="OpenGLWrapper, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External Libraries\OpenGLWrapper.dll</HintPath>
@@ -55,6 +61,10 @@
     <Compile Include="GameObjects\Axes.cs" />
     <Compile Include="GameObjects\Cup.cs" />
     <Compile Include="GameObjects\Surface.cs" />
+    <Compile Include="GameObjects\Table.cs" />
+    <Compile Include="GameObjects\TableLeg.cs" />
+    <Compile Include="GameObjects\TableTop.cs" />
+    <Compile Include="GameObjects\TestModel.cs" />
     <Compile Include="GameObjects\WorldCube.cs" />
     <Compile Include="Game\GameObjectCollection.cs" />
     <Compile Include="Game\GameObjectCreator.cs" />
@@ -66,6 +76,11 @@
     <Compile Include="GameObjects\Rod.cs" />
     <Compile Include="GameObjects\TelescopicPropeller.cs" />
     <Compile Include="Game\IFoldable.cs" />
+    <Compile Include="Milkshake\Character.cs" />
+    <Compile Include="Milkshake\Matrix.cs" />
+    <Compile Include="Milkshake\MilkshapeModel.cs" />
+    <Compile Include="Milkshake\Model.cs" />
+    <Compile Include="Milkshake\Vector.cs" />
     <Compile Include="OpenGLUtilities\Camera.cs" />
     <Compile Include="cOGL.cs" />
     <Compile Include="OpenGLForm.cs">
@@ -243,4 +258,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /s /y "$(ProjectDir)Resources" "$(ProjectDir)$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

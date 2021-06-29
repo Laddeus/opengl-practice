@@ -16,9 +16,19 @@ namespace OpenGLPractice.GameObjects
 
         public float Height => k_CupHeight;
 
+        public float BottomRadius => (float)k_CupTopRadius;
+
         public Cup(string i_Name) : base(i_Name)
         {
             Color = new Vector4(0, 0, 1, 1.0f);
+            UseMaterial = true;
+            Material = new Material()
+                           {
+                               Ambient = new Vector4(0.0f, 0.1f, 0.06f, 1.0f),
+                               Diffuse = new Vector4(0.0f, 0.50980392f, 0.50980392f, 1.0f),
+                               Specular = new Vector4(0.50196078f, 0.50196078f, 0.50196078f, 1.0f),
+                               Shininess = 32.0f
+                           };
         }
 
         protected override void DefineGameObject()

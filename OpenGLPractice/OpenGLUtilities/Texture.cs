@@ -45,6 +45,7 @@ namespace OpenGLPractice.OpenGLUtilities
                 0, GL.GL_BGR_EXT, GL.GL_UNSIGNED_byte, bitmapImageData.Scan0));
             GLErrorCatcher.TryGLCall(() => GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, (int)GL.GL_LINEAR));
             GLErrorCatcher.TryGLCall(() => GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, (int)GL.GL_LINEAR));
+            GLErrorCatcher.TryGLCall(() => GL.glBindTexture(GL.GL_TEXTURE_2D, 0));
 
             i_TextureImage.UnlockBits(bitmapImageData);
             i_TextureImage.Dispose();

@@ -9,28 +9,29 @@ namespace OpenGLPractice.GameObjects
 {
     internal class Sphere : GameObject
     {
-        public Texture SphereTexture { get; set; }
+        private readonly Texture r_SphereTexture;
+        private readonly float r_SphereRadius;
 
-        public Sphere(string i_Name) : base(i_Name)
+        public float Radius => r_SphereRadius;
+
+        public Sphere(string i_Name, float i_SphereRadius = 0.5f, Texture i_SphereTexture = null) : base(i_Name)
         {
-            DisplayShadow = true;
-            UseMaterial = false;
-
-            Material.Diffuse = new Vector4(1.0f);
-            Material.Ambient = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-            Material.Specular = new Vector4(1.0f);
-            Material.Shininess = 128;
+            r_SphereTexture = i_SphereTexture;
+            r_SphereRadius = i_SphereRadius;
         }
 
         protected override void DefineGameObject()
         {
-            if (SphereTexture != null)
+            if (r_SphereTexture != null)
             {
+                GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_TEXTURE_2D));
                 GLU.gluQuadricTexture(sr_GluQuadric, 1);
-                SphereTexture.BindTexture();
+                r_SphereTexture.BindTexture();
             }
 
-            GLU.gluSphere(sr_GluQuadric, 0.5, 20, 20);
+            GLU.gluSphere(sr_GluQuadric, r_SphereRadius, 40, 40);
+
+            GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_TEXTURE_2D));
         }
     }
 }

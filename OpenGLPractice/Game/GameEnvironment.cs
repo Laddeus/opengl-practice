@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
+using System.Linq;
+using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using OpenGL;
 using OpenGLPractice.GameObjects;
 using OpenGLPractice.GLMath;
@@ -11,9 +12,13 @@ namespace OpenGLPractice.Game
 {
     internal class GameEnvironment
     {
+        private static readonly Random sr_RandomNumberGenerator = new Random();
+
+        private const float k_GreyscaleValue = 0.2f;
+
         public Camera Camera { get; }
 
-        public List<GameObject> GameObjects { get; }
+        public GameObjectCollection GameObjects { get; }
 
         public Light Light { get; }
 
@@ -25,7 +30,11 @@ namespace OpenGLPractice.Game
 
         public WorldCube WorldCube => r_WorldCube;
 
-        //// private readonly Sphere r_SkyDome;
+        public HeliCup[] HeliCups { get; set; }
+
+        public Sphere HiddenBall { get; set; }
+
+        public Table Table { get; set; }
 
         public bool UseLight { get; set; }
 
@@ -33,21 +42,21 @@ namespace OpenGLPractice.Game
 
         public bool DrawReflections { get; set; } // requires ReflectionSurfaces
 
+        private int m_HiddenBallLocation;
+
         public GameEnvironment()
         {
-            GameObjects = new List<GameObject>();
-            Light = Light.CreateLight(Light.eLightTypes.Spotlight);
+            GameObjects = new GameObjectCollection();
+            Light = Light.CreateLight(Light.eLightTypes.Point);
+            Light.TurnOff();
             Camera = new Camera();
+            Light.Position = new Vector3(0, 5f, 0f);
             ShadowSurfaces = new List<ShadowSurface>();
             ReflectionSurfaces = new List<Plane>();
-
-            Light.Position = new Vector3(0, 5f, 0f);
             Camera.CameraUpdated += Light.ApplyPositionsAndDirection;
-
+            
             Axes axes = (Axes)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Axes, "Axes");
-            Cube cube = (Cube)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Cube, "cube");
             GameObjects.Add(axes);
-            GameObjects.Add(cube);
 
             r_WorldCube = new WorldCube("WorldCube");
             r_WorldCube.Size = 100.0f;
@@ -70,9 +79,82 @@ namespace OpenGLPractice.Game
                 GameObjectCreator.CreateSurface("Surface", 5, 0.05f,
                     (i_X, i_Z) => i_X * i_X / 6 + i_Z * i_Z / 6);
 
-            surface.UseDisplayList = GameObject.k_UseDisplayList;
+            surface.UseDisplayList = GameObject.v_UseDisplayList;
             surface.Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
             //GameObjects.Add(surface);
+        }
+
+        private void initializeGameSpecificObjects()
+        {
+            Table = new Table("Table");
+            HeliCups = generateHeliCups();
+            HiddenBall = generateHiddenBall();
+
+            ShadowSurface tableShadow = generateShadowSurfaceOnTable();
+            Light.Position = new Vector3(1, Table.TableHeight * 2, 1);
+            Light.TurnOn();
+            ShadowSurfaces.Add(tableShadow);
+            GameObjects.Add(Table);
+            GameObjects.AddRange(HeliCups);
+            GameObjects.Add(HiddenBall);
+        }
+
+        private ShadowSurface generateShadowSurfaceOnTable()
+        {
+            ShadowSurface tableShadowSurface =  new ShadowSurface()
+                {
+                    SurfacePoints = new Matrix3(new Vector3[]
+                                                    {
+                                                        new Vector3(0, Table.TableHeight + 0.01f, 0),
+                                                        new Vector3(-1, Table.TableHeight + 0.01f, 1),
+                                                        new Vector3(1, Table.TableHeight + 0.01f, 1)
+                                                    }),
+
+                    ClippingObject = Table
+                };
+
+            return tableShadowSurface;
+        }
+
+        private Sphere generateHiddenBall()
+        {
+            Sphere hiddenBall = (Sphere)GameObjectCreator.CreateSphere("HiddenBall", 0.3f, null);
+            int randomCupIndex = sr_RandomNumberGenerator.Next(HeliCups.Length);
+            m_HiddenBallLocation = randomCupIndex;
+
+            Vector3 randomBallPosition = HeliCups[randomCupIndex].Transform.Position;
+            randomBallPosition.Y += hiddenBall.Radius;
+            hiddenBall.Transform.Position = randomBallPosition;
+
+            hiddenBall.UseMaterial = true;
+            hiddenBall.DisplayShadow = true;
+
+            hiddenBall.Material.Diffuse = new Vector4(0.1745f, 0.01175f, 0.01175f, 0.55f);
+            hiddenBall.Material.Ambient = new Vector4(0.61424f, 0.04136f, 0.04136f, 0.55f);
+            hiddenBall.Material.Specular = new Vector4(0.727811f, 0.626959f, 0.626959f, 0.55f);
+            hiddenBall.Material.Shininess = 76.8f;
+
+            return hiddenBall;
+        }
+
+        private HeliCup[] generateHeliCups()
+        {
+            return Enumerable.Range(1, 3).Select(i_Index =>
+                {
+                    HeliCup heliCup = (HeliCup)GameObjectCreator.CreateGameObjectDefault(
+                        eGameObjectTypes.HeliCup,
+                        $"HeliCup{i_Index}"); 
+
+                    heliCup.Transform.Translate(0, Table.TableHeight, (i_Index - 2) * (Table.TableTopRadius - heliCup.CupBottomRadius * 4));
+                    heliCup.DisplayShadow = true;
+
+                    return heliCup;
+                }).ToArray();
+        }
+
+        public void Update(float i_DeltaTime)
+        {
+
         }
 
         public void DrawScene()
@@ -81,6 +163,7 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glPushAttrib(GL.GL_LIGHTING_BIT));
 
             drawWorldCube();
+            //character.DrawModel();
 
             foreach (GameObject gameObject in GameObjects)
             {
@@ -99,6 +182,7 @@ namespace OpenGLPractice.Game
 
             GLErrorCatcher.TryGLCall(() => GL.glPopAttrib());
         }
+
 
         private void drawWorldCube()
         {
@@ -169,7 +253,7 @@ namespace OpenGLPractice.Game
 
                 GLErrorCatcher.TryGLCall(() => GL.glClear(GL.GL_STENCIL_BUFFER_BIT));
                 applyClipping(shadowSurface.ClippingObject);
-                GameObject.ShadowColor = shadowSurface.ClippingObject.Color * 0.5f;
+                GameObject.ShadowColor = shadowSurface.ClippingObject.Color * k_GreyscaleValue;
                 foreach (GameObject gameObject in GameObjects)
                 {
                     if (gameObject.DisplayShadow)
@@ -205,29 +289,62 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glStencilFunc(functionMode, 1, 0xFF));
         }
 
-        private uint[] generateCubemapTextures(IReadOnlyList<Bitmap> i_TextureImages)
+        public void StartGame()
         {
-            uint[] textureIds = new uint[i_TextureImages.Count];
-            GLErrorCatcher.TryGLCall(() => GL.glGenTextures(textureIds.Length, textureIds));
+            initializeGameSpecificObjects();
+            showBall();
+        }
 
-            for (int i = 0; i < textureIds.Length; i++)
+        private void showBall()
+        {
+            foreach (HeliCup heliCup in HeliCups)
             {
-                Bitmap currentBitmap = i_TextureImages[i];
-                currentBitmap.RotateFlip(RotateFlipType.RotateNoneFlipY); // Y axis in Windows is directed downwards, while in OpenGL-upwards
-                Rectangle rect = new Rectangle(0, 0, currentBitmap.Width, currentBitmap.Height);
-                BitmapData bitmapImageData = currentBitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-
-                GLErrorCatcher.TryGLCall(() => GL.glBindTexture(GL.GL_TEXTURE_2D, textureIds[i]));
-                GLErrorCatcher.TryGLCall(() => GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, (int)GL.GL_RGB8, currentBitmap.Width, currentBitmap.Height,
-                    0, GL.GL_BGR_EXT, GL.GL_UNSIGNED_byte, bitmapImageData.Scan0));
-                GLErrorCatcher.TryGLCall(() => GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, (int)GL.GL_LINEAR));
-                GLErrorCatcher.TryGLCall(() => GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, (int)GL.GL_LINEAR));
-
-                currentBitmap.UnlockBits(bitmapImageData);
-                currentBitmap.Dispose();
+                heliCup.Ascend(3);
             }
 
-            return textureIds;
+            // TODO: change waiting method...
+            wait(15000);
+
+            foreach (HeliCup heliCup in HeliCups)
+            {
+                heliCup.Descend(3);
+            }
+        }
+
+        public void ResetGame()
+        {
+            foreach(HeliCup heliCup in HeliCups)
+            {
+                GameObjects.Remove(heliCup);
+            }
+
+            GameObjects.Remove(HiddenBall);
+            GameObjects.Remove(Table);
+
+            StartGame();
+        }
+
+        public void wait(int milliseconds)
+        {
+            Timer timer = new Timer();
+            if (milliseconds == 0 || milliseconds < 0) return;
+
+            // Console.WriteLine("start wait timer");
+            timer.Interval = milliseconds;
+            timer.Enabled = true;
+            timer.Start();
+
+            timer.Tick += (s, e) =>
+                {
+                    timer.Enabled = false;
+                    timer.Stop();
+                    // Console.WriteLine("stop wait timer");
+                };
+
+            while (timer.Enabled)
+            {
+                Application.DoEvents();
+            }
         }
     }
 }

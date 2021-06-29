@@ -21,7 +21,9 @@ namespace OpenGLPractice.GameObjects
         private readonly Cup r_Cup;
         private readonly TelescopicPropeller r_TelescopicPropeller;
 
-        private float m_FlyingDistance;
+        private float m_DesiredHeight;
+
+        public float CupBottomRadius => r_Cup.BottomRadius;
 
         public eHeliCupFlyingStates State { get; set; }
 
@@ -38,7 +40,7 @@ namespace OpenGLPractice.GameObjects
             Children.AddRange(new GameObject[] { r_Cup, r_TelescopicPropeller });
             UpdateShadowsDescent(this);
 
-            Ascend(10.0f);
+            //Ascend(10.0f);
         }
 
         protected override void DefineGameObject()
@@ -65,15 +67,18 @@ namespace OpenGLPractice.GameObjects
             }
         }
 
-        // TODO: fix hovering
         private bool m_IsHoveringUp = true;
         private float m_HoverStartHeight;
-        ////private float m_Ease = 1.0f;
+        private float m_AscendHeight;
+
         private void hoverTick(float i_DeltaTime)
         {
-            Vector3 endHoverPosition = m_IsHoveringUp
-                ? new Vector3(0, m_HoverStartHeight + k_HoverRange, 0)
-                : new Vector3(0, m_HoverStartHeight - k_HoverRange, 0);
+            //Vector3 endHoverPosition = m_IsHoveringUp
+            //    ? new Vector3(0, m_HoverStartHeight + k_HoverRange, 0)
+            //    : new Vector3(0, m_HoverStartHeight - k_HoverRange, 0);
+
+            Vector3 endHoverPosition = Transform.Position;
+            endHoverPosition.Y = m_IsHoveringUp ? m_HoverStartHeight + k_HoverRange : m_HoverStartHeight - k_HoverRange;
 
             if (Math.Abs(Transform.Position.Y - m_HoverStartHeight) < k_HoverRange - 0.1f)
             {
@@ -88,24 +93,35 @@ namespace OpenGLPractice.GameObjects
 
         private void descendTick(float i_DeltaTime)
         {
+            if(Transform.Position.Y > m_DesiredHeight)
+            {
+                Transform.Translate(k_FlyingSpeed * i_DeltaTime * Transform.DownVector);
+            }
+            else
+            {
+                Transform.Position = new Vector3(Transform.Position.X, m_DesiredHeight, Transform.Position.Z);
+                State = eHeliCupFlyingStates.Grounded;
+                r_TelescopicPropeller.FoldTelescope();
+            }
         }
 
         private void ascendTick(float i_DeltaTime)
         {
-            if (Transform.Position.Y < m_FlyingDistance)
+            if (Transform.Position.Y < m_DesiredHeight)
             {
                 Transform.Translate(k_FlyingSpeed * i_DeltaTime * Transform.UpVector);
             }
             else
             {
+                Transform.Position = new Vector3(Transform.Position.X, m_DesiredHeight, Transform.Position.Z);
                 State = eHeliCupFlyingStates.Hovering;
-                m_HoverStartHeight = Transform.Position.Y;
+                m_HoverStartHeight = m_DesiredHeight;
             }
         }
 
         public void Ascend(float i_DistanceToAscend)
         {
-            m_FlyingDistance = i_DistanceToAscend;
+            m_DesiredHeight = Transform.Position.Y + i_DistanceToAscend;
             r_TelescopicPropeller.OpenTelescope();
 
             r_TelescopicPropeller.Opened += TelescopicPropeller_Opened;
@@ -120,7 +136,7 @@ namespace OpenGLPractice.GameObjects
 
         public void Descend(float i_DistanceToDescend)
         {
-            m_FlyingDistance = i_DistanceToDescend;
+            m_DesiredHeight = m_DesiredHeight - i_DistanceToDescend;
             State = eHeliCupFlyingStates.Descending;
         }
     }

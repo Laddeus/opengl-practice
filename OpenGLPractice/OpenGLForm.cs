@@ -40,6 +40,7 @@ namespace OpenGLPractice
         private bool m_IsMousePressed = false;
         private Vector2 m_LastGameSceneClickPosition;
         private Vector3 m_LastPositionOfSelectedGameObject;
+        private bool m_GameStarted = false;
 
         public OpenGLForm()
         {
@@ -106,12 +107,15 @@ namespace OpenGLPractice
 
         private void GameCanvas_Resize(object sender, EventArgs e)
         {
-            cGL.OnResize();
+            if(cGL != null)
+            {
+                cGL.OnResize();
+            }
         }
 
         private void GameLoopTimer_Tick(object sender, EventArgs e)
         {
-            update(5.0f);
+            update(GameLoopTimer.Interval / 1000.0f);
             cGL.Draw();
         }
 
@@ -165,6 +169,11 @@ namespace OpenGLPractice
             removeSelectedGameObject();
         }
 
+        private void buttonStartReset_Click(object sender, EventArgs e)
+        {
+            startResetGame();
+        }
+
         // PRIVATE METHODS
         private void loadGameObjectsCombobox()
         {
@@ -186,21 +195,21 @@ namespace OpenGLPractice
 
         private void sortObjectsByDistanceFromCameraEye()
         {
-            Vector3 cameraEyePosition = cGL.Camera.EyePosition;
+            //Vector3 cameraEyePosition = cGL.Camera.EyePosition;
 
-            cGL.GameObjects.Sort((i_FirstGameObject, i_SecondGameObject) =>
-            {
-                Vector3 firstGameObjectPosition = i_FirstGameObject.Transform.Position;
-                Vector3 secondGameObjectPosition = i_SecondGameObject.Transform.Position;
+            //cGL.GameObjects.Sort((i_FirstGameObject, i_SecondGameObject) =>
+            //{
+            //    Vector3 firstGameObjectPosition = i_FirstGameObject.Transform.Position;
+            //    Vector3 secondGameObjectPosition = i_SecondGameObject.Transform.Position;
 
-                if (firstGameObjectPosition.SquaredDistance(cameraEyePosition) <
-                    secondGameObjectPosition.SquaredDistance(cameraEyePosition))
-                {
-                    return 1;
-                }
+            //    if (firstGameObjectPosition.SquaredDistance(cameraEyePosition) <
+            //        secondGameObjectPosition.SquaredDistance(cameraEyePosition))
+            //    {
+            //        return 1;
+            //    }
 
-                return -1;
-            });
+            //    return -1;
+            //});
         }
 
         private void changeSelectedGameObjectZoomLevel(MouseEventArgs i_MouseEventArgs)
@@ -233,9 +242,11 @@ namespace OpenGLPractice
                 updateLightPosition();
             }
 
+            cGL.GameEnvironment.Update(i_DeltaTime);
+
             foreach (GameObject gameObject in cGL.GameObjects)
             {
-                gameObject.Tick(GameLoopTimer.Interval / 1000.0f);
+                gameObject.Tick(i_DeltaTime);
             }
         }
 
@@ -452,10 +463,15 @@ namespace OpenGLPractice
                 m_LastGameSceneClickPosition.X = e.X;
                 m_LastGameSceneClickPosition.Y = e.Y;
 
-                cGL.Camera.YawAngle += mouseOffsetFromLastClicked.X;
-                cGL.Camera.PitchAngle += mouseOffsetFromLastClicked.Y;
+                //if(cGL.Camera.PitchAngle <= 89.0f && cGL.Camera.PitchAngle >= -89.0f)
+                {
+                    cGL.Camera.PitchAngle += mouseOffsetFromLastClicked.Y;
+                    preventHighPitchCameraMovement();
+                }
+                
 
-                preventHighPitchCameraMovement();
+                cGL.Camera.YawAngle += mouseOffsetFromLastClicked.X;
+
             }
         }
 
@@ -504,6 +520,22 @@ namespace OpenGLPractice
                 cGL.GameObjects.Remove(selectedGameObject);
                 cOGLBindingSource.ResetBindings(false);
             }
+        }
+
+        private void startResetGame()
+        {
+            buttonStartReset.Text = "Reset";
+
+            if (!m_GameStarted)
+            {
+                cGL.GameEnvironment.StartGame();
+            }
+            else
+            {
+                cGL.GameEnvironment.ResetGame();
+            }
+
+            m_GameStarted = !m_GameStarted;
         }
     }
 }

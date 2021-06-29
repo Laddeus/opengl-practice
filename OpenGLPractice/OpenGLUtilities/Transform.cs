@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows.Forms;
 using OpenGL;
 using OpenGLPractice.GLMath;
 
@@ -8,13 +7,6 @@ namespace OpenGLPractice.OpenGLUtilities
 {
     internal class Transform
     {
-        public enum eRotationAxis
-        {
-            Up,
-            Right,
-            Forward
-        }
-
         public static int TransformationMatrixSize { get; } = 16;
 
         private readonly float[] r_AccumulatedTransformationsMatrix = new float[TransformationMatrixSize];
@@ -75,7 +67,7 @@ namespace OpenGLPractice.OpenGLUtilities
             m_Position = Vector3.Zero;
             m_Scale = new Vector3(1.0f);
             m_Rotation = Vector3.Zero;
-            initializeAccumulatedMatrices();
+            initializeAccumulatedMatricesToIdentity();
         }
 
         public static float[] CalculateShadowMatrix(Matrix3 i_PlaneCoordinates, Vector4 i_LightPosition)
@@ -113,7 +105,7 @@ namespace OpenGLPractice.OpenGLUtilities
             return firstVector.CrossProduct(secondVector).Normalized;
         }
 
-        private void initializeAccumulatedMatrices()
+        private void initializeAccumulatedMatricesToIdentity()
         {
             GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
             GLErrorCatcher.TryGLCall(() => GL.glLoadIdentity());
