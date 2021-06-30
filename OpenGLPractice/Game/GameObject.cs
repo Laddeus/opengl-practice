@@ -43,6 +43,9 @@ namespace OpenGLPractice.Game
         public bool IsTransparent { get; set; }
 
         public bool UseDisplayList { get; set; }
+
+        public bool Render { get; set; } = true;
+
         public string Name
         {
             get => m_Name;
@@ -99,17 +102,20 @@ namespace OpenGLPractice.Game
 
         public void Draw(eDrawMode i_DrawMode = eDrawMode.Normal)
         {
-            GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
-
-            applyAccumulatedTransformations();
-            drawGameObject(i_DrawMode);
-
-            foreach (GameObject gameObject in Children)
+            if(Render)
             {
-                gameObject.Draw(i_DrawMode);
-            }
+                GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
 
-            GLErrorCatcher.TryGLCall(() => GL.glPopMatrix());
+                applyAccumulatedTransformations();
+                drawGameObject(i_DrawMode);
+
+                foreach(GameObject gameObject in Children)
+                {
+                    gameObject.Draw(i_DrawMode);
+                }
+
+                GLErrorCatcher.TryGLCall(() => GL.glPopMatrix());
+            }
         }
 
         private void applyAccumulatedTransformations()

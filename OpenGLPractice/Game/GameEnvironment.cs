@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using OpenGL;
@@ -12,7 +14,7 @@ namespace OpenGLPractice.Game
 {
     internal class GameEnvironment
     {
-        private static readonly Random sr_RandomNumberGenerator = new Random();
+        public static Random RandomNumberGenerator { get; } = new Random();
 
         private const float k_GreyscaleValue = 0.2f;
 
@@ -36,6 +38,8 @@ namespace OpenGLPractice.Game
 
         public Table Table { get; set; }
 
+        private CupSwapper m_CupSwapper;
+
         public bool UseLight { get; set; }
 
         public bool DrawShadows { get; set; } // requires ShadowSurfaces 
@@ -43,6 +47,12 @@ namespace OpenGLPractice.Game
         public bool DrawReflections { get; set; } // requires ReflectionSurfaces
 
         private int m_HiddenBallLocation;
+
+        private bool m_SwapAnimationStarted = false;
+
+        public event Action GameAnimationStarted;
+        public event Action GameAnimationEnded;
+
 
         public GameEnvironment()
         {
@@ -91,12 +101,23 @@ namespace OpenGLPractice.Game
             HiddenBall = generateHiddenBall();
 
             ShadowSurface tableShadow = generateShadowSurfaceOnTable();
-            Light.Position = new Vector3(1, Table.TableHeight * 2, 1);
+            Light.Position = new Vector3(-9.430399f, 11.1951046f, -0.11611516f);
             Light.TurnOn();
+            generateSpaceCubemap();
+            Camera.EyePosition = new Vector3(-10.1737862f, 13f, 0);
+            Camera.YawAngle = 0;
+            Camera.PitchAngle = -30;
             ShadowSurfaces.Add(tableShadow);
             GameObjects.Add(Table);
             GameObjects.AddRange(HeliCups);
             GameObjects.Add(HiddenBall);
+        }
+
+        private void generateSpaceCubemap()
+        {
+            CubemapTexture spaceCubemapTexture = new CubemapTexture("Space1", @"Textures\Cubemaps\Space1", ".png");
+            spaceCubemapTexture.LoadTextures();
+            WorldCube.UseTexture(spaceCubemapTexture);
         }
 
         private ShadowSurface generateShadowSurfaceOnTable()
@@ -119,7 +140,7 @@ namespace OpenGLPractice.Game
         private Sphere generateHiddenBall()
         {
             Sphere hiddenBall = (Sphere)GameObjectCreator.CreateSphere("HiddenBall", 0.3f, null);
-            int randomCupIndex = sr_RandomNumberGenerator.Next(HeliCups.Length);
+            int randomCupIndex = RandomNumberGenerator.Next(HeliCups.Length);
             m_HiddenBallLocation = randomCupIndex;
 
             Vector3 randomBallPosition = HeliCups[randomCupIndex].Transform.Position;
@@ -154,7 +175,10 @@ namespace OpenGLPractice.Game
 
         public void Update(float i_DeltaTime)
         {
-
+            if(m_CupSwapper != null)
+            {
+                m_CupSwapper.PerformSwapAnimation(i_DeltaTime);
+            }
         }
 
         public void DrawScene()
@@ -289,29 +313,43 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glStencilFunc(functionMode, 1, 0xFF));
         }
 
-        public void StartGame()
+        public async Task StartGame()
         {
             initializeGameSpecificObjects();
-            showBall();
+            OnGameAnimationStarted();
+            await showBall();
+            swapHeliCups();
         }
 
-        private void showBall()
+        private void swapHeliCups()
+        {
+            if(m_CupSwapper == null)
+            {
+                m_CupSwapper = new CupSwapper(HeliCups, HiddenBall, ref m_HiddenBallLocation);
+                m_CupSwapper.SwapAnimationEnded += OnGameAnimationEnded;
+            }
+
+            m_CupSwapper.Animate();
+        }
+
+        private async Task showBall()
         {
             foreach (HeliCup heliCup in HeliCups)
             {
                 heliCup.Ascend(3);
             }
 
-            // TODO: change waiting method...
-            wait(15000);
+            await Task.Delay(10000);
 
             foreach (HeliCup heliCup in HeliCups)
             {
                 heliCup.Descend(3);
             }
+
+            await Task.Delay(7000);
         }
 
-        public void ResetGame()
+        public async Task ResetGame()
         {
             foreach(HeliCup heliCup in HeliCups)
             {
@@ -321,30 +359,17 @@ namespace OpenGLPractice.Game
             GameObjects.Remove(HiddenBall);
             GameObjects.Remove(Table);
 
-            StartGame();
+            await StartGame();
         }
 
-        public void wait(int milliseconds)
+        protected virtual void OnGameAnimationEnded()
         {
-            Timer timer = new Timer();
-            if (milliseconds == 0 || milliseconds < 0) return;
+            GameAnimationEnded?.Invoke();
+        }
 
-            // Console.WriteLine("start wait timer");
-            timer.Interval = milliseconds;
-            timer.Enabled = true;
-            timer.Start();
-
-            timer.Tick += (s, e) =>
-                {
-                    timer.Enabled = false;
-                    timer.Stop();
-                    // Console.WriteLine("stop wait timer");
-                };
-
-            while (timer.Enabled)
-            {
-                Application.DoEvents();
-            }
+        protected virtual void OnGameAnimationStarted()
+        {
+            GameAnimationStarted?.Invoke();
         }
     }
 }

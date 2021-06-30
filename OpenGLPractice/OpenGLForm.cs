@@ -50,6 +50,8 @@ namespace OpenGLPractice
             ActiveControl = GameScene;
             GameScene.KeyDown += GameScene_KeyDown;
             GameScene.MouseWheel += GameScene_MouseWheel;
+            cGL.GameEnvironment.GameAnimationStarted += gameEnvironmentGameAnimationStarted;
+            cGL.GameEnvironment.GameAnimationEnded += gameEnvironmentGameAnimationEnded;
 
             r_GameObjectActionKeys = new Dictionary<Keys, Action>()
             {
@@ -174,6 +176,21 @@ namespace OpenGLPractice
             startResetGame();
         }
 
+        private void buttonLeftCup_Click(object sender, EventArgs e)
+        {
+            //cGL.GameEnvironment
+        }
+
+        private void buttonMiddleCup_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonRightCup_Click(object sender, EventArgs e)
+        {
+
+        }
+
         // PRIVATE METHODS
         private void loadGameObjectsCombobox()
         {
@@ -191,25 +208,6 @@ namespace OpenGLPractice
                 FileInfo firstFileInfo = textureDirectory.GetFiles()[0];
                 comboBoxCubemapSelection.Items.Add(new CubemapTexture(textureDirectory.Name, textureDirectory.FullName, firstFileInfo.Extension));
             }
-        }
-
-        private void sortObjectsByDistanceFromCameraEye()
-        {
-            //Vector3 cameraEyePosition = cGL.Camera.EyePosition;
-
-            //cGL.GameObjects.Sort((i_FirstGameObject, i_SecondGameObject) =>
-            //{
-            //    Vector3 firstGameObjectPosition = i_FirstGameObject.Transform.Position;
-            //    Vector3 secondGameObjectPosition = i_SecondGameObject.Transform.Position;
-
-            //    if (firstGameObjectPosition.SquaredDistance(cameraEyePosition) <
-            //        secondGameObjectPosition.SquaredDistance(cameraEyePosition))
-            //    {
-            //        return 1;
-            //    }
-
-            //    return -1;
-            //});
         }
 
         private void changeSelectedGameObjectZoomLevel(MouseEventArgs i_MouseEventArgs)
@@ -522,20 +520,38 @@ namespace OpenGLPractice
             }
         }
 
-        private void startResetGame()
+        private async void startResetGame()
         {
             buttonStartReset.Text = "Reset";
 
             if (!m_GameStarted)
             {
-                cGL.GameEnvironment.StartGame();
+                buttonStartReset.Enabled = false;
+                await cGL.GameEnvironment.StartGame();
+                buttonStartReset.Enabled = true;
             }
             else
             {
-                cGL.GameEnvironment.ResetGame();
+                buttonStartReset.Enabled = false;
+                await cGL.GameEnvironment.ResetGame();
+                buttonStartReset.Enabled = true;
             }
 
             m_GameStarted = !m_GameStarted;
+        }
+
+        private void gameEnvironmentGameAnimationStarted()
+        {
+            buttonLeftCup.Enabled = false;
+            buttonMiddleCup.Enabled = false;
+            buttonRightCup.Enabled = false;
+        }
+
+        private void gameEnvironmentGameAnimationEnded()
+        {
+            buttonLeftCup.Enabled = true;
+            buttonMiddleCup.Enabled = true;
+            buttonRightCup.Enabled = true;
         }
     }
 }

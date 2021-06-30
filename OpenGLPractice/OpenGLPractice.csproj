@@ -76,6 +76,7 @@
     <Compile Include="GameObjects\Rod.cs" />
     <Compile Include="GameObjects\TelescopicPropeller.cs" />
     <Compile Include="Game\IFoldable.cs" />
+    <Compile Include="Game\CupSwapper.cs" />
     <Compile Include="Milkshake\Character.cs" />
     <Compile Include="Milkshake\Matrix.cs" />
     <Compile Include="Milkshake\MilkshapeModel.cs" />

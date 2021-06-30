@@ -678,7 +678,7 @@ namespace OpenGLPractice
             // 
             this.labelScoreValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.labelScoreValue.AutoSize = true;
-            this.labelScoreValue.Location = new System.Drawing.Point(479, 30);
+            this.labelScoreValue.Location = new System.Drawing.Point(475, 30);
             this.labelScoreValue.Name = "labelScoreValue";
             this.labelScoreValue.Size = new System.Drawing.Size(16, 17);
             this.labelScoreValue.TabIndex = 5;
@@ -688,7 +688,7 @@ namespace OpenGLPractice
             // 
             this.labelScoreTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.labelScoreTitle.AutoSize = true;
-            this.labelScoreTitle.Location = new System.Drawing.Point(424, 30);
+            this.labelScoreTitle.Location = new System.Drawing.Point(414, 30);
             this.labelScoreTitle.Name = "labelScoreTitle";
             this.labelScoreTitle.Size = new System.Drawing.Size(49, 17);
             this.labelScoreTitle.TabIndex = 4;
@@ -697,32 +697,35 @@ namespace OpenGLPractice
             // buttonMiddleCup
             // 
             this.buttonMiddleCup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.buttonMiddleCup.Location = new System.Drawing.Point(208, 27);
+            this.buttonMiddleCup.Location = new System.Drawing.Point(186, 21);
             this.buttonMiddleCup.Name = "buttonMiddleCup";
-            this.buttonMiddleCup.Size = new System.Drawing.Size(75, 23);
+            this.buttonMiddleCup.Size = new System.Drawing.Size(102, 34);
             this.buttonMiddleCup.TabIndex = 3;
             this.buttonMiddleCup.Text = "Middle Cup";
             this.buttonMiddleCup.UseVisualStyleBackColor = true;
+            this.buttonMiddleCup.Click += new System.EventHandler(this.buttonMiddleCup_Click);
             // 
             // buttonRightCup
             // 
             this.buttonRightCup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.buttonRightCup.Location = new System.Drawing.Point(316, 27);
+            this.buttonRightCup.Location = new System.Drawing.Point(300, 21);
             this.buttonRightCup.Name = "buttonRightCup";
-            this.buttonRightCup.Size = new System.Drawing.Size(75, 23);
+            this.buttonRightCup.Size = new System.Drawing.Size(102, 34);
             this.buttonRightCup.TabIndex = 2;
             this.buttonRightCup.Text = "Right Cup";
             this.buttonRightCup.UseVisualStyleBackColor = true;
+            this.buttonRightCup.Click += new System.EventHandler(this.buttonRightCup_Click);
             // 
             // buttonLeftCup
             // 
             this.buttonLeftCup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.buttonLeftCup.Location = new System.Drawing.Point(100, 27);
+            this.buttonLeftCup.Location = new System.Drawing.Point(83, 21);
             this.buttonLeftCup.Name = "buttonLeftCup";
-            this.buttonLeftCup.Size = new System.Drawing.Size(75, 23);
+            this.buttonLeftCup.Size = new System.Drawing.Size(91, 34);
             this.buttonLeftCup.TabIndex = 1;
             this.buttonLeftCup.Text = "Left Cup";
             this.buttonLeftCup.UseVisualStyleBackColor = true;
+            this.buttonLeftCup.Click += new System.EventHandler(this.buttonLeftCup_Click);
             // 
             // buttonStartReset
             // 

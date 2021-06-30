@@ -19,7 +19,7 @@ namespace OpenGLPractice.GameObjects
 
         private const float k_InitialRodHeight = 1.0f;
 
-        private const float k_TelescopeMovinggSpeed = 0.5f;
+        private const float k_TelescopeMovingSpeed = 1.5f;
 
         public event Action Opened;
 
@@ -92,21 +92,21 @@ namespace OpenGLPractice.GameObjects
             {
                 if (r_BottomRod.Transform.Position.Y < 0.0f)
                 {
-                    r_Propeller.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_UpperRod.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_MiddleRod.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_BottomRod.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
+                    r_Propeller.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_MiddleRod.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_BottomRod.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
                 }
                 else if (r_MiddleRod.Transform.Position.Y < k_InitialRodHeight)
                 {
-                    r_Propeller.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_UpperRod.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_MiddleRod.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
+                    r_Propeller.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_MiddleRod.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
                 }
                 else if (r_UpperRod.Transform.Position.Y < 1.5f * k_InitialRodHeight)
                 {
-                    r_Propeller.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_UpperRod.Transform.Translate(0, k_TelescopeMovinggSpeed * i_DeltaTime, 0);
+                    r_Propeller.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, k_TelescopeMovingSpeed * i_DeltaTime, 0);
                 }
                 else
                 {
@@ -129,21 +129,21 @@ namespace OpenGLPractice.GameObjects
             {
                 if (r_UpperRod.Transform.Position.Y > 1.25f * k_InitialRodHeight)
                 {
-                    r_Propeller.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_UpperRod.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
+                    r_Propeller.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
                 }
                 else if (r_MiddleRod.Transform.Position.Y > 0.5f * k_InitialRodHeight)
                 {
-                    r_Propeller.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_UpperRod.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_MiddleRod.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
+                    r_Propeller.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_MiddleRod.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
                 }
                 else if (r_BottomRod.Transform.Position.Y > -k_InitialRodHeight)
                 {
-                    r_Propeller.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_UpperRod.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_MiddleRod.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
-                    r_BottomRod.Transform.Translate(0, -k_TelescopeMovinggSpeed * i_DeltaTime, 0);
+                    r_Propeller.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_UpperRod.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_MiddleRod.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
+                    r_BottomRod.Transform.Translate(0, -k_TelescopeMovingSpeed * i_DeltaTime, 0);
                 }
                 else
                 {

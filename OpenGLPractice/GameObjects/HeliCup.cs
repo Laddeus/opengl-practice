@@ -16,7 +16,6 @@ namespace OpenGLPractice.GameObjects
 
         private const float k_HoverRange = 0.35f;
         private const float k_FlyingSpeed = 5.0f;
-        private const float k_HoverSpeed = 1.5f;
 
         private readonly Cup r_Cup;
         private readonly TelescopicPropeller r_TelescopicPropeller;
@@ -102,6 +101,7 @@ namespace OpenGLPractice.GameObjects
                 Transform.Position = new Vector3(Transform.Position.X, m_DesiredHeight, Transform.Position.Z);
                 State = eHeliCupFlyingStates.Grounded;
                 r_TelescopicPropeller.FoldTelescope();
+                // DESCEND ENDS HERE
             }
         }
 
@@ -116,6 +116,7 @@ namespace OpenGLPractice.GameObjects
                 Transform.Position = new Vector3(Transform.Position.X, m_DesiredHeight, Transform.Position.Z);
                 State = eHeliCupFlyingStates.Hovering;
                 m_HoverStartHeight = m_DesiredHeight;
+                // ASCEND ENDS HERE
             }
         }
 

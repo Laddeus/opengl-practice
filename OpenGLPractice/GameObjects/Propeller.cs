@@ -18,7 +18,7 @@ namespace OpenGLPractice.GameObjects
         private const float k_RotationsPerSecond = 5.0f;
         private const float k_WingsFoldAngle = 80.0f;
         private const float k_WingsOpenedAngle = 0.0f;
-        private const float k_FoldOpenSpeed = 30.0f;
+        private const float k_FoldOpenSpeed = 40.0f;
 
         public event Action Folded;
 
