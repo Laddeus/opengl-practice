@@ -68,7 +68,6 @@ namespace OpenGLPractice.GameObjects
 
         private bool m_IsHoveringUp = true;
         private float m_HoverStartHeight;
-        private float m_AscendHeight;
 
         private void hoverTick(float i_DeltaTime)
         {

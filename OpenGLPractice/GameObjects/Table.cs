@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
@@ -47,16 +46,18 @@ namespace OpenGLPractice.GameObjects
 
             float legRadius = r_TableLegs[0].LegRadius;
 
+            double angleRadians = Math.PI / 4;
             r_TableLegs = Enumerable.Range(1, 3).Select(
                 i_Index =>
                     {
                         TableLeg tableLeg = new TableLeg($"TableLeg{i_Index}", legWoodTexture);
 
-                        tableLeg.Transform.Position = new Vector3((float)Math.Cos(90 * i_Index), 0, (float)Math.Sin(90 * i_Index))
+                        tableLeg.Transform.Position = new Vector3((float)Math.Cos(angleRadians), 0, (float)Math.Sin(angleRadians))
                                                       * (r_TableTop.TableRadius - legRadius * 4);
                         tableLeg.Material = woodMaterial;
                         tableLeg.UseMaterial = v_UseMaterial;
 
+                        angleRadians *= (4 - i_Index);
                         return tableLeg;
                     }).ToArray();
 

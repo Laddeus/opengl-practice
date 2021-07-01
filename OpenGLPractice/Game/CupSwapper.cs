@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenGLPractice.GameObjects;
 using OpenGLPractice.GLMath;
-using OpenGLPractice.Milkshake;
 
 namespace OpenGLPractice.Game
 {
@@ -21,6 +16,8 @@ namespace OpenGLPractice.Game
 
         public int NumberOfSwaps { get; set; }
 
+        public int HiddenBallLocationIndex { get; set; }
+
         private readonly HeliCup[] r_HeliCups;
         private readonly Sphere r_HiddenBall;
 
@@ -30,18 +27,15 @@ namespace OpenGLPractice.Game
 
         private float m_AccumulatedRotation = 0;
 
-        private int m_HiddenBallLocationIndex;
-
         private bool m_AnimationStarted = false;
 
         public event Action SwapAnimationEnded;
-
 
         public CupSwapper(HeliCup[] i_HeliCups, Sphere i_HiddenBall, ref int i_HiddenBallLocationIndex)
         {
             NumberOfSwaps = GameEnvironment.RandomNumberGenerator.Next(8, 16);
             r_HiddenBall = i_HiddenBall;
-            m_HiddenBallLocationIndex = i_HiddenBallLocationIndex;
+            HiddenBallLocationIndex = i_HiddenBallLocationIndex;
             r_HeliCups = i_HeliCups;
 
             //randomlySetSwapParameters();
@@ -58,7 +52,7 @@ namespace OpenGLPractice.Game
                 }
                 else
                 {
-                    Vector3 ballPosition = r_HeliCups[m_HiddenBallLocationIndex].Transform.Position;
+                    Vector3 ballPosition = r_HeliCups[HiddenBallLocationIndex].Transform.Position;
                     ballPosition.Y += r_HiddenBall.Radius;
                     r_HiddenBall.Transform.Position = ballPosition;
                     r_HiddenBall.Render = true;
@@ -99,10 +93,10 @@ namespace OpenGLPractice.Game
                     m_PointToRotateAround,
                     Vector3.Up);
 
-                if (m_HiddenBallLocationIndex == FirstCupIndex || m_HiddenBallLocationIndex == SecondCupIndex)
+                if (HiddenBallLocationIndex == FirstCupIndex || HiddenBallLocationIndex == SecondCupIndex)
                 {
-                    m_HiddenBallLocationIndex =
-                        m_HiddenBallLocationIndex == FirstCupIndex ? SecondCupIndex : FirstCupIndex;
+                    HiddenBallLocationIndex =
+                        HiddenBallLocationIndex == FirstCupIndex ? SecondCupIndex : FirstCupIndex;
                 }
 
                 swapCupsInArray();
@@ -120,7 +114,7 @@ namespace OpenGLPractice.Game
             r_HeliCups[SecondCupIndex] = cupPlaceholder;
         }
 
-        public void Animate()
+        public void StartAnimation()
         {
             randomlySetSwapParameters();
             m_CurrentSwapNumber = 0;
@@ -129,18 +123,24 @@ namespace OpenGLPractice.Game
             m_AnimationStarted = true;
         }
 
+        public void StopAnimation()
+        {
+            m_AnimationStarted = false;
+            r_HiddenBall.Render = true;
+        }
+
         private void randomlySetSwapParameters()
         {
-            FirstCupIndex = GameEnvironment.RandomNumberGenerator.Next(0, 3);
-            SecondCupIndex = GameEnvironment.RandomNumberGenerator.Next(0, 3);
+            FirstCupIndex = GameEnvironment.RandomNumberGenerator.Next(0, r_HeliCups.Length);
+            SecondCupIndex = GameEnvironment.RandomNumberGenerator.Next(0, r_HeliCups.Length);
 
             while (SecondCupIndex == FirstCupIndex)
             {
-                SecondCupIndex = GameEnvironment.RandomNumberGenerator.Next(0, 3);
+                SecondCupIndex = GameEnvironment.RandomNumberGenerator.Next(0, r_HeliCups.Length);
             }
 
             IsClockwise = GameEnvironment.RandomNumberGenerator.Next(0, 2) != 0;
-            SwapSpeedDegrees = GameEnvironment.RandomNumberGenerator.Next(360, 720);
+            SwapSpeedDegrees = GameEnvironment.RandomNumberGenerator.Next(720, 1440);
 
             m_PointToRotateAround =
                 (r_HeliCups[FirstCupIndex].Transform.Position + r_HeliCups[SecondCupIndex].Transform.Position) / 2;

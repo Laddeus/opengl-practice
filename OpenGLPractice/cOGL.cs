@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using System.Windows.Forms;
 using OpenGL;
 using OpenGLPractice.Game;
 using OpenGLPractice.GameObjects;
-using OpenGLPractice.GLMath;
 using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice

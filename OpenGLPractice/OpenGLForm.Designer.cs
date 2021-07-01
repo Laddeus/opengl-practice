@@ -81,12 +81,13 @@ namespace OpenGLPractice
             this.labelObjectPosition = new System.Windows.Forms.Label();
             this.GameScene = new System.Windows.Forms.Panel();
             this.panelControlGame = new System.Windows.Forms.Panel();
+            this.buttonResetGame = new System.Windows.Forms.Button();
             this.labelScoreValue = new System.Windows.Forms.Label();
             this.labelScoreTitle = new System.Windows.Forms.Label();
             this.buttonMiddleCup = new System.Windows.Forms.Button();
             this.buttonRightCup = new System.Windows.Forms.Button();
             this.buttonLeftCup = new System.Windows.Forms.Button();
-            this.buttonStartReset = new System.Windows.Forms.Button();
+            this.buttonStartGame = new System.Windows.Forms.Button();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
             this.panelGameObjectsList = new System.Windows.Forms.Panel();
             this.listBoxGameObjects = new System.Windows.Forms.ListBox();
@@ -662,27 +663,40 @@ namespace OpenGLPractice
             // 
             // panelControlGame
             // 
+            this.panelControlGame.Controls.Add(this.buttonResetGame);
             this.panelControlGame.Controls.Add(this.labelScoreValue);
             this.panelControlGame.Controls.Add(this.labelScoreTitle);
             this.panelControlGame.Controls.Add(this.buttonMiddleCup);
             this.panelControlGame.Controls.Add(this.buttonRightCup);
             this.panelControlGame.Controls.Add(this.buttonLeftCup);
-            this.panelControlGame.Controls.Add(this.buttonStartReset);
+            this.panelControlGame.Controls.Add(this.buttonStartGame);
             this.panelControlGame.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelControlGame.Location = new System.Drawing.Point(0, 688);
             this.panelControlGame.Name = "panelControlGame";
             this.panelControlGame.Size = new System.Drawing.Size(655, 78);
             this.panelControlGame.TabIndex = 0;
             // 
+            // buttonResetGame
+            // 
+            this.buttonResetGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.buttonResetGame.Enabled = false;
+            this.buttonResetGame.Location = new System.Drawing.Point(557, 16);
+            this.buttonResetGame.Name = "buttonResetGame";
+            this.buttonResetGame.Size = new System.Drawing.Size(82, 45);
+            this.buttonResetGame.TabIndex = 6;
+            this.buttonResetGame.Text = "Reset";
+            this.buttonResetGame.UseVisualStyleBackColor = true;
+            this.buttonResetGame.Click += new System.EventHandler(this.buttonReset_Click);
+            // 
             // labelScoreValue
             // 
             this.labelScoreValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.labelScoreValue.AutoSize = true;
+            this.labelScoreValue.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.cOGLBindingSource, "GameEnvironment.GameScore", true));
             this.labelScoreValue.Location = new System.Drawing.Point(475, 30);
             this.labelScoreValue.Name = "labelScoreValue";
-            this.labelScoreValue.Size = new System.Drawing.Size(16, 17);
+            this.labelScoreValue.Size = new System.Drawing.Size(0, 17);
             this.labelScoreValue.TabIndex = 5;
-            this.labelScoreValue.Text = "0";
             // 
             // labelScoreTitle
             // 
@@ -727,16 +741,16 @@ namespace OpenGLPractice
             this.buttonLeftCup.UseVisualStyleBackColor = true;
             this.buttonLeftCup.Click += new System.EventHandler(this.buttonLeftCup_Click);
             // 
-            // buttonStartReset
+            // buttonStartGame
             // 
-            this.buttonStartReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.buttonStartReset.Location = new System.Drawing.Point(-11, 16);
-            this.buttonStartReset.Name = "buttonStartReset";
-            this.buttonStartReset.Size = new System.Drawing.Size(82, 45);
-            this.buttonStartReset.TabIndex = 0;
-            this.buttonStartReset.Text = "Start";
-            this.buttonStartReset.UseVisualStyleBackColor = true;
-            this.buttonStartReset.Click += new System.EventHandler(this.buttonStartReset_Click);
+            this.buttonStartGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.buttonStartGame.Location = new System.Drawing.Point(-11, 16);
+            this.buttonStartGame.Name = "buttonStartGame";
+            this.buttonStartGame.Size = new System.Drawing.Size(82, 45);
+            this.buttonStartGame.TabIndex = 0;
+            this.buttonStartGame.Text = "Start";
+            this.buttonStartGame.UseVisualStyleBackColor = true;
+            this.buttonStartGame.Click += new System.EventHandler(this.buttonStartReset_Click);
             // 
             // splitContainerMain
             // 
@@ -926,6 +940,7 @@ namespace OpenGLPractice
         private System.Windows.Forms.Button buttonMiddleCup;
         private System.Windows.Forms.Button buttonRightCup;
         private System.Windows.Forms.Button buttonLeftCup;
-        private System.Windows.Forms.Button buttonStartReset;
+        private System.Windows.Forms.Button buttonStartGame;
+        private System.Windows.Forms.Button buttonResetGame;
     }
 }

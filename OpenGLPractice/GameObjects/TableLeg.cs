@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using OpenGL;
+﻿using OpenGL;
 using OpenGLPractice.Game;
-using OpenGLPractice.GLMath;
 using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice.GameObjects

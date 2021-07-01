@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using OpenGL;
 using OpenGLPractice.GameObjects;
 using OpenGLPractice.GLMath;
+using OpenGLPractice.Milkshake;
 using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice.Game
@@ -22,7 +20,7 @@ namespace OpenGLPractice.Game
 
         public GameObjectCollection GameObjects { get; }
 
-        public Light Light { get; }
+        public Light Light { get; private set; }
 
         public List<ShadowSurface> ShadowSurfaces { get; }
 
@@ -48,17 +46,19 @@ namespace OpenGLPractice.Game
 
         private int m_HiddenBallLocation;
 
-        private bool m_SwapAnimationStarted = false;
+        private Light r_Spotlight;
+
+        public int GameScore { get; set; }
 
         public event Action GameAnimationStarted;
         public event Action GameAnimationEnded;
-
 
         public GameEnvironment()
         {
             GameObjects = new GameObjectCollection();
             Light = Light.CreateLight(Light.eLightTypes.Point);
-            Light.TurnOff();
+            //Light test = Light.CreateLight(Light.eLightTypes.Spotlight);
+            //test.Position = new Vector3(0, 15, 0);
             Camera = new Camera();
             Light.Position = new Vector3(0, 5f, 0f);
             ShadowSurfaces = new List<ShadowSurface>();
@@ -94,83 +94,12 @@ namespace OpenGLPractice.Game
             //GameObjects.Add(surface);
         }
 
-        private void initializeGameSpecificObjects()
-        {
-            Table = new Table("Table");
-            HeliCups = generateHeliCups();
-            HiddenBall = generateHiddenBall();
-
-            ShadowSurface tableShadow = generateShadowSurfaceOnTable();
-            Light.Position = new Vector3(-9.430399f, 11.1951046f, -0.11611516f);
-            Light.TurnOn();
-            generateSpaceCubemap();
-            Camera.EyePosition = new Vector3(-10.1737862f, 13f, 0);
-            Camera.YawAngle = 0;
-            Camera.PitchAngle = -30;
-            ShadowSurfaces.Add(tableShadow);
-            GameObjects.Add(Table);
-            GameObjects.AddRange(HeliCups);
-            GameObjects.Add(HiddenBall);
-        }
-
-        private void generateSpaceCubemap()
+        private CubemapTexture generateSpaceCubemapTexture()
         {
             CubemapTexture spaceCubemapTexture = new CubemapTexture("Space1", @"Textures\Cubemaps\Space1", ".png");
             spaceCubemapTexture.LoadTextures();
-            WorldCube.UseTexture(spaceCubemapTexture);
-        }
 
-        private ShadowSurface generateShadowSurfaceOnTable()
-        {
-            ShadowSurface tableShadowSurface =  new ShadowSurface()
-                {
-                    SurfacePoints = new Matrix3(new Vector3[]
-                                                    {
-                                                        new Vector3(0, Table.TableHeight + 0.01f, 0),
-                                                        new Vector3(-1, Table.TableHeight + 0.01f, 1),
-                                                        new Vector3(1, Table.TableHeight + 0.01f, 1)
-                                                    }),
-
-                    ClippingObject = Table
-                };
-
-            return tableShadowSurface;
-        }
-
-        private Sphere generateHiddenBall()
-        {
-            Sphere hiddenBall = (Sphere)GameObjectCreator.CreateSphere("HiddenBall", 0.3f, null);
-            int randomCupIndex = RandomNumberGenerator.Next(HeliCups.Length);
-            m_HiddenBallLocation = randomCupIndex;
-
-            Vector3 randomBallPosition = HeliCups[randomCupIndex].Transform.Position;
-            randomBallPosition.Y += hiddenBall.Radius;
-            hiddenBall.Transform.Position = randomBallPosition;
-
-            hiddenBall.UseMaterial = true;
-            hiddenBall.DisplayShadow = true;
-
-            hiddenBall.Material.Diffuse = new Vector4(0.1745f, 0.01175f, 0.01175f, 0.55f);
-            hiddenBall.Material.Ambient = new Vector4(0.61424f, 0.04136f, 0.04136f, 0.55f);
-            hiddenBall.Material.Specular = new Vector4(0.727811f, 0.626959f, 0.626959f, 0.55f);
-            hiddenBall.Material.Shininess = 76.8f;
-
-            return hiddenBall;
-        }
-
-        private HeliCup[] generateHeliCups()
-        {
-            return Enumerable.Range(1, 3).Select(i_Index =>
-                {
-                    HeliCup heliCup = (HeliCup)GameObjectCreator.CreateGameObjectDefault(
-                        eGameObjectTypes.HeliCup,
-                        $"HeliCup{i_Index}"); 
-
-                    heliCup.Transform.Translate(0, Table.TableHeight, (i_Index - 2) * (Table.TableTopRadius - heliCup.CupBottomRadius * 4));
-                    heliCup.DisplayShadow = true;
-
-                    return heliCup;
-                }).ToArray();
+            return spaceCubemapTexture;
         }
 
         public void Update(float i_DeltaTime)
@@ -313,11 +242,122 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glStencilFunc(functionMode, 1, 0xFF));
         }
 
+        private void initializeGameSpecificObjects()
+        {
+            // main game objects
+            Table = new Table("Table");
+            HeliCups = generateHeliCups();
+            HiddenBall = generateHiddenBall();
+
+            // environment stuff
+            ShadowSurface tableShadow = generateShadowSurfaceOnTable();
+            CubemapTexture spaceCubemapTexture = generateSpaceCubemapTexture();
+            WorldCube.UseTexture(spaceCubemapTexture);
+
+            r_Spotlight = Light.CreateLight(Light.eLightTypes.Point);
+            r_Spotlight.Position = new Vector3(5.571759f, 14.668005f, 0.03756857f);
+            r_Spotlight.SpotlightCutoff = 20;
+            r_Spotlight.SpotlightExponent = 100;
+            r_Spotlight.TurnOff();
+            Camera.CameraUpdated += r_Spotlight.ApplyPositionsAndDirection;
+
+            resetGameObjectsState();
+
+            ShadowSurfaces.Add(tableShadow);
+            GameObjects.Add(Table);
+            GameObjects.AddRange(HeliCups);
+            GameObjects.Add(HiddenBall);
+        }
+
+        private void resetGameObjectsState()
+        {
+            foreach(int index in Enumerable.Range(0, HeliCups.Length) )
+            {
+                float xLocation = 0;
+                float yLocation = Table.TableHeight;
+                float zLocation = (index - 1) * (Table.TableTopRadius - HeliCups[index].CupBottomRadius * 4);
+
+                HeliCups[index].Transform.Position = new Vector3(xLocation, yLocation, zLocation);
+            }
+
+            int randomCupIndex = RandomNumberGenerator.Next(HeliCups.Length);
+            m_HiddenBallLocation = randomCupIndex;
+
+            Vector3 randomBallPosition = HeliCups[randomCupIndex].Transform.Position;
+            randomBallPosition.Y += HiddenBall.Radius;
+            HiddenBall.Transform.Position = randomBallPosition;
+
+            Light.Position = new Vector3(-9.430399f, 11.1951046f, -0.11611516f);
+            Light.TurnOn();
+            Camera.EyePosition = new Vector3(-10.1737862f, 13f, 0);
+            Camera.YawAngle = 0;
+            Camera.PitchAngle = -30;
+        }
+
+        private Sphere generateHiddenBall()
+        {
+            Sphere hiddenBall = (Sphere)GameObjectCreator.CreateSphere("HiddenBall", 0.3f, null);
+
+            hiddenBall.UseMaterial = true;
+            hiddenBall.DisplayShadow = true;
+            hiddenBall.Material.Diffuse = new Vector4(0.1745f, 0.01175f, 0.01175f, 0.55f);
+            hiddenBall.Material.Ambient = new Vector4(0.61424f, 0.04136f, 0.04136f, 0.55f);
+            hiddenBall.Material.Specular = new Vector4(0.727811f, 0.626959f, 0.626959f, 0.55f);
+            hiddenBall.Material.Shininess = 76.8f;
+
+            return hiddenBall;
+        }
+
+        private HeliCup[] generateHeliCups()
+        {
+            return Enumerable.Range(1, 3).Select(i_Index =>
+            {
+                HeliCup heliCup = (HeliCup)GameObjectCreator.CreateGameObjectDefault(
+                    eGameObjectTypes.HeliCup,
+                    $"HeliCup{i_Index}");
+
+                heliCup.DisplayShadow = true;
+
+                return heliCup;
+            }).ToArray();
+        }
+
+        private ShadowSurface generateShadowSurfaceOnTable()
+        {
+            ShadowSurface tableShadowSurface = new ShadowSurface()
+                                                   {
+                                                        SurfacePoints = new Matrix3(new Vector3[]
+                                                           {
+                                                               new Vector3(0, Table.TableHeight + 0.01f, 0),
+                                                               new Vector3(-1, Table.TableHeight + 0.01f, 1),
+                                                               new Vector3(1, Table.TableHeight + 0.01f, 1)
+                                                           }),
+
+                                                       ClippingObject = Table
+                                                   };
+
+            return tableShadowSurface;
+        }
+
         public async Task StartGame()
         {
             initializeGameSpecificObjects();
+
             OnGameAnimationStarted();
-            await showBall();
+            await revealBall();
+            swapHeliCups();
+        }
+
+        public async Task ResetGame()
+        {
+            if(m_CupSwapper != null)
+            {
+                m_CupSwapper.StopAnimation();
+            }
+
+            resetGameObjectsState();
+            OnGameAnimationStarted();
+            await revealBall();
             swapHeliCups();
         }
 
@@ -329,10 +369,10 @@ namespace OpenGLPractice.Game
                 m_CupSwapper.SwapAnimationEnded += OnGameAnimationEnded;
             }
 
-            m_CupSwapper.Animate();
+            m_CupSwapper.StartAnimation();
         }
 
-        private async Task showBall()
+        private async Task revealBall()
         {
             foreach (HeliCup heliCup in HeliCups)
             {
@@ -349,19 +389,6 @@ namespace OpenGLPractice.Game
             await Task.Delay(7000);
         }
 
-        public async Task ResetGame()
-        {
-            foreach(HeliCup heliCup in HeliCups)
-            {
-                GameObjects.Remove(heliCup);
-            }
-
-            GameObjects.Remove(HiddenBall);
-            GameObjects.Remove(Table);
-
-            await StartGame();
-        }
-
         protected virtual void OnGameAnimationEnded()
         {
             GameAnimationEnded?.Invoke();
@@ -370,6 +397,61 @@ namespace OpenGLPractice.Game
         protected virtual void OnGameAnimationStarted()
         {
             GameAnimationStarted?.Invoke();
+        }
+
+        public async Task RevealBall(int i_CupSelectionIndexLocation)
+        {
+            toggleShadowsForCups(i_CupSelectionIndexLocation);
+
+            Vector3 heliCupPosition = HeliCups[i_CupSelectionIndexLocation].Transform.Position;
+            setSpotlightPositionAndDirection(heliCupPosition);
+
+            // save the main light because we are going to swap it with spotlight to be the main light now.
+            Light mainLight = Light;
+            // change main light to be the spotlight.
+            Light = r_Spotlight;
+            mainLight.TurnOff();
+            r_Spotlight.TurnOn();
+
+            bool isCorrectSelection = m_CupSwapper.HiddenBallLocationIndex == i_CupSelectionIndexLocation;
+            if (isCorrectSelection)
+            {
+                GameScore++;
+            }
+
+            HiddenBall.DisplayShadow = isCorrectSelection;
+
+            await revealBall();
+
+            toggleShadowsForCups(i_CupSelectionIndexLocation);
+
+            Light = mainLight;
+            r_Spotlight.TurnOff();
+            Light.TurnOn();
+
+            HiddenBall.DisplayShadow = true;
+
+            await Task.Delay(3000);
+            swapHeliCups();
+        }
+
+        private void setSpotlightPositionAndDirection(Vector3 i_CupPosition)
+        {
+            Vector3 spotLightPosition = i_CupPosition;
+            spotLightPosition.Y += 10;
+            spotLightPosition.X += 5;
+            r_Spotlight.Position = spotLightPosition;
+
+            Vector3 spotLightDirection = (i_CupPosition - r_Spotlight.Position).Normalized;
+            r_Spotlight.SpotlightDirection = spotLightDirection;
+        }
+
+        private void toggleShadowsForCups(int i_CupSelectionIndexLocation)
+        {
+            foreach(HeliCup heliCup in HeliCups)
+            {
+                heliCup.DisplayShadow = !heliCup.DisplayShadow;
+            }
         }
     }
 }

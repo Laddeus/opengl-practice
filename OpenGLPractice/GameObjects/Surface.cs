@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using OpenGL;
 using OpenGLPractice.Game;
-using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.GameObjects
 {

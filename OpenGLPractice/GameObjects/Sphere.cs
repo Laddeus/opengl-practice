@@ -1,8 +1,5 @@
-﻿using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using OpenGL;
+﻿using OpenGL;
 using OpenGLPractice.Game;
-using OpenGLPractice.GLMath;
 using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice.GameObjects

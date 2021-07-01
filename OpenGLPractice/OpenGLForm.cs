@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
@@ -173,22 +176,27 @@ namespace OpenGLPractice
 
         private void buttonStartReset_Click(object sender, EventArgs e)
         {
-            startResetGame();
+            startGame();
+        }
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            resetGame();
         }
 
         private void buttonLeftCup_Click(object sender, EventArgs e)
         {
-            //cGL.GameEnvironment
+            selectCup(0);
         }
 
         private void buttonMiddleCup_Click(object sender, EventArgs e)
         {
-
+            selectCup(1);
         }
 
         private void buttonRightCup_Click(object sender, EventArgs e)
         {
-
+            selectCup(2);
         }
 
         // PRIVATE METHODS
@@ -520,38 +528,53 @@ namespace OpenGLPractice
             }
         }
 
-        private async void startResetGame()
+        private readonly CancellationTokenSource m_CancellationTokenSource = new CancellationTokenSource();
+        private async void startGame()
         {
-            buttonStartReset.Text = "Reset";
+            m_GameStarted = true;
+            buttonStartGame.Enabled = false;
+            await cGL.GameEnvironment.StartGame();
 
-            if (!m_GameStarted)
-            {
-                buttonStartReset.Enabled = false;
-                await cGL.GameEnvironment.StartGame();
-                buttonStartReset.Enabled = true;
-            }
-            else
-            {
-                buttonStartReset.Enabled = false;
-                await cGL.GameEnvironment.ResetGame();
-                buttonStartReset.Enabled = true;
-            }
+            buttonResetGame.Enabled = true;
+            //Task.Run(cGL.GameEnvironment.StartGame, m_CancellationTokenSource.Token);
+        }
 
-            m_GameStarted = !m_GameStarted;
+        public async void resetGame()
+        {
+            buttonResetGame.Enabled = false;
+            await cGL.GameEnvironment.ResetGame();
+            buttonResetGame.Enabled = true;
         }
 
         private void gameEnvironmentGameAnimationStarted()
+        {
+            disableCupSelectionButtons();
+        }
+
+        private void gameEnvironmentGameAnimationEnded()
+        {
+            enableCupSelectionButtons();
+        }
+
+        void disableCupSelectionButtons()
         {
             buttonLeftCup.Enabled = false;
             buttonMiddleCup.Enabled = false;
             buttonRightCup.Enabled = false;
         }
 
-        private void gameEnvironmentGameAnimationEnded()
+        void enableCupSelectionButtons()
         {
             buttonLeftCup.Enabled = true;
             buttonMiddleCup.Enabled = true;
             buttonRightCup.Enabled = true;
+        }
+
+        private async void selectCup(int i_CupIndexLocation)
+        {
+            disableCupSelectionButtons();
+            await cGL.GameEnvironment.RevealBall(i_CupIndexLocation);
+            cOGLBindingSource.ResetCurrentItem();
         }
     }
 }

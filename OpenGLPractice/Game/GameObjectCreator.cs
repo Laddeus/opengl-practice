@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ObjLoader.Loader.Data.VertexData;
 using OpenGLPractice.GameObjects;
 using Texture = OpenGLPractice.OpenGLUtilities.Texture;
 
