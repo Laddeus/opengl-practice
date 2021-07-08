@@ -60,6 +60,9 @@
   <ItemGroup>
     <Compile Include="GameObjects\Axes.cs" />
     <Compile Include="GameObjects\Cup.cs" />
+    <Compile Include="GameObjects\Mirror.cs" />
+    <Compile Include="GameObjects\MirrorFrame.cs" />
+    <Compile Include="GameObjects\MirrorSurface.cs" />
     <Compile Include="GameObjects\Surface.cs" />
     <Compile Include="GameObjects\Table.cs" />
     <Compile Include="GameObjects\TableLeg.cs" />

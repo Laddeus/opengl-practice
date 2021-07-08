@@ -88,9 +88,9 @@ namespace OpenGLPractice.Game
         }
 
         public static Rod CreateRod(string i_Name, float i_InnerRodRadius = 0.1f, float i_OuterRingWidth = 0.05f,
-            float i_Height = 1)
+            float i_Height = 1, Texture i_RodTexture = null)
         {
-            Rod rodCreated = new Rod(i_Name, i_InnerRodRadius, i_OuterRingWidth, i_Height);
+            Rod rodCreated = new Rod(i_Name, i_InnerRodRadius, i_OuterRingWidth, i_Height, i_RodTexture);
 
             rodCreated.InitializeList();
 

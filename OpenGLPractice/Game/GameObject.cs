@@ -17,6 +17,7 @@ namespace OpenGLPractice.Game
         public const bool v_UseMaterial = true;
         public const bool v_DisplayShadow = true;
         public const bool v_IsTransparent = true;
+        public const bool v_IsReflective = true;
 
         public static Vector4 ShadowColor { get; set; } = new Vector4(0.35f, 0.35f, 0.35f, 1.0f);
 
@@ -43,6 +44,8 @@ namespace OpenGLPractice.Game
         public bool IsTransparent { get; set; }
 
         public bool UseDisplayList { get; set; }
+
+        public bool DisplayReflection { get; set; } = true;
 
         public bool Render { get; set; } = true;
 
@@ -156,7 +159,7 @@ namespace OpenGLPractice.Game
                     break;
             }
 
-            if (LocalCoordinatesActive)
+            if (LocalCoordinatesActive && i_DrawMode == eDrawMode.Normal)
             {
                 drawLocalCoordinates();
             }

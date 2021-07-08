@@ -11,7 +11,7 @@ namespace OpenGLPractice.GameObjects
         private readonly TableLeg[] r_TableLegs;
         private readonly TableTop r_TableTop;
 
-        public float TableHeight => r_TableLegs[0].LegHeight + r_TableTop.TopHeight;
+        public float TableHeight => TableLeg.LegHeight + r_TableTop.TopHeight;
 
         public float TableTopRadius => r_TableTop.TableRadius;
 
@@ -35,16 +35,15 @@ namespace OpenGLPractice.GameObjects
                                             Shininess = 76.8f
                                         };
 
-            r_TableLegs = new TableLeg[]
-                              {
-                                  new TableLeg("TableLeg1", legWoodTexture),
-                                  new TableLeg("TableLeg2", legWoodTexture),
-                                  new TableLeg("TableLeg3", legWoodTexture),
-                              };
+            //r_TableLegs = new TableLeg[]
+            //                  {
+            //                      new TableLeg("TableLeg1", topWoodTexture),
+            //                      new TableLeg("TableLeg2", topWoodTexture),
+            //                      new TableLeg("TableLeg3", topWoodTexture),
+            //                  };
 
             r_TableTop = new TableTop("TableTop", topWoodTexture);
 
-            float legRadius = r_TableLegs[0].LegRadius;
 
             double angleRadians = Math.PI / 4;
             r_TableLegs = Enumerable.Range(1, 3).Select(
@@ -53,7 +52,7 @@ namespace OpenGLPractice.GameObjects
                         TableLeg tableLeg = new TableLeg($"TableLeg{i_Index}", legWoodTexture);
 
                         tableLeg.Transform.Position = new Vector3((float)Math.Cos(angleRadians), 0, (float)Math.Sin(angleRadians))
-                                                      * (r_TableTop.TableRadius - legRadius * 4);
+                                                      * (r_TableTop.TableRadius - TableLeg.LegRadius * 4);
                         tableLeg.Material = woodMaterial;
                         tableLeg.UseMaterial = v_UseMaterial;
 
@@ -61,9 +60,11 @@ namespace OpenGLPractice.GameObjects
                         return tableLeg;
                     }).ToArray();
 
-            r_TableTop.Transform.Translate(0,r_TableLegs[0].LegHeight,0);
+            r_TableTop.Transform.Translate(0,TableLeg.LegHeight,0);
             r_TableTop.Material = woodMaterial;
             r_TableTop.UseMaterial = v_UseMaterial;
+
+            UseDisplayList = v_UseDisplayList;
 
             Children.AddRange(r_TableLegs);
             Children.Add(r_TableTop);

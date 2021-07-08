@@ -254,6 +254,11 @@ namespace OpenGLPractice
             {
                 gameObject.Tick(i_DeltaTime);
             }
+
+            foreach(GameObject gameEnvironmentReflectionSurface in cGL.GameEnvironment.ReflectionSurfaces)
+            {
+                gameEnvironmentReflectionSurface.Tick(i_DeltaTime);
+            }
         }
 
         private void updateLightPosition()

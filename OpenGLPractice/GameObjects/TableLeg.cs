@@ -10,8 +10,8 @@ namespace OpenGLPractice.GameObjects
         private const float k_LegHeight = 6.0f;
         private readonly Texture r_LegWoodTexture;
 
-        public float LegHeight => k_LegHeight;
-        public float LegRadius => k_LegRadius;
+        public static float LegHeight => k_LegHeight;
+        public static float LegRadius => k_LegRadius;
 
         public TableLeg(string i_Name, Texture i_LegWoodTexture = null) : base(i_Name)
         {

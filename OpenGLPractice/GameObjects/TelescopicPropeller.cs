@@ -34,7 +34,7 @@ namespace OpenGLPractice.GameObjects
 
         public float Height => (1.75f * k_InitialRodHeight) * Transform.Scale.Y;
 
-        public TelescopicPropeller(string i_Name) : base(i_Name)
+        public TelescopicPropeller(string i_Name, bool i_Opened = false) : base(i_Name)
         {
             r_BottomRod = GameObjectCreator.CreateRod("bottomRod", k_InitialRodRadius, k_InitialRodOuterRingWidth,
                 k_InitialRodHeight);
@@ -43,13 +43,30 @@ namespace OpenGLPractice.GameObjects
             r_UpperRod = GameObjectCreator.CreateRod("upperRod", k_InitialRodRadius, k_InitialRodOuterRingWidth,
                 k_InitialRodHeight);
 
+            State = i_Opened ? eTelescopeState.Opened : eTelescopeState.Folded;
+
+            r_BottomRod.UseDisplayList = v_UseDisplayList;
+            r_UpperRod.UseDisplayList = v_UseDisplayList;
+            r_MiddleRod.UseDisplayList = v_UseDisplayList;
+
             r_MiddleRod.Transform.ChangeScale(0.5f, 0.5f, 0.5f);
             r_UpperRod.Transform.ChangeScale(0.25f, 0.25f, 0.25f);
-            r_BottomRod.Transform.Translate(0, -k_InitialRodHeight, 0);
-            r_MiddleRod.Transform.Translate(0, -0.5f * k_InitialRodHeight, 0);
-            r_UpperRod.Transform.Translate(0, -0.25f * k_InitialRodHeight, 0);
 
-            r_Propeller = new Propeller("Propeller", r_MiddleRod.RodRadius);
+            r_Propeller = new Propeller("Propeller", r_MiddleRod.RodRadius, i_Opened);
+
+            r_BottomRod.Transform.Translate(0, -k_InitialRodHeight, 0);
+
+            if(!i_Opened)
+            {
+                r_MiddleRod.Transform.Translate(0, -0.5f * k_InitialRodHeight, 0);
+                r_UpperRod.Transform.Translate(0, -0.25f * k_InitialRodHeight, 0);
+            }
+            else
+            {
+                r_MiddleRod.Transform.Translate(0, 0, 0);
+                r_UpperRod.Transform.Translate(0,  0.5f * k_InitialRodHeight, 0);
+                r_Propeller.Transform.Translate(0, 0.75f * k_InitialRodHeight, 0);
+            }
 
             Children.AddRange(new GameObject[] { r_BottomRod, r_MiddleRod, r_UpperRod, r_Propeller });
         }

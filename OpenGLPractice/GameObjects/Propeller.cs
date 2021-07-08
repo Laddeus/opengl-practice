@@ -31,22 +31,31 @@ namespace OpenGLPractice.GameObjects
 
         public ePropellerState State { get; private set; } = ePropellerState.Folded;
 
-        public Propeller(string i_Name, float i_NoseRadius = 0.25f) : base(i_Name)
+        public Propeller(string i_Name, float i_NoseRadius = 0.25f, bool i_WingsOpen = false) : base(i_Name)
         {
             r_FirstPropellerWing = (PropellerWing)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.PropellerWing, "Wing1");
             r_SecondPropellerWing = (PropellerWing)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.PropellerWing, "Wing2");
             r_PropellerNose = (Sphere)GameObjectCreator.CreateGameObjectDefault(eGameObjectTypes.Sphere, "PropellerNose");
 
+            r_PropellerNose.UseDisplayList = v_UseDisplayList;
+
             Children.AddRange(new GameObject[] { r_FirstPropellerWing, r_SecondPropellerWing, r_PropellerNose });
 
             r_SecondPropellerWing.Transform.Rotate(180, 0, 1, 0);
-            r_FirstPropellerWing.Transform.Rotate(k_WingsFoldAngle, 1, 0, 0);
-            r_SecondPropellerWing.Transform.Rotate(-k_WingsFoldAngle, 1, 0, 0);
+
+            if(!i_WingsOpen)
+            {
+                r_FirstPropellerWing.Transform.Rotate(k_WingsFoldAngle, 1, 0, 0);
+                r_SecondPropellerWing.Transform.Rotate(-k_WingsFoldAngle, 1, 0, 0);
+            }
+
             r_PropellerNose.Transform.ChangeScale(i_NoseRadius, i_NoseRadius, i_NoseRadius);
             r_PropellerNose.Transform.ChangeScale(1, 1.5f, 1);
             r_PropellerNose.Color = new Vector4(0, 0, 0, 1);
 
             m_CurrentWingsAngle = 80.0f;
+
+            State = i_WingsOpen ? ePropellerState.Opened : ePropellerState.Folded;
         }
 
         protected override void DefineGameObject()
@@ -57,7 +66,7 @@ namespace OpenGLPractice.GameObjects
         {
             base.Tick(i_DeltaTime);
 
-            switch (State)
+             switch (State)
             {
                 case ePropellerState.Folding:
                     foldWings(i_DeltaTime);
