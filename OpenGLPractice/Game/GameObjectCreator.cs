@@ -33,7 +33,6 @@ namespace OpenGLPractice.Game
 
         static GameObjectCreator()
         {
-            string currentNamespace = typeof(GameObjectCreator).Namespace;
             sr_NameToGameObjectTypeDictionary = new Dictionary<string, Type>();
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
 
@@ -58,7 +57,7 @@ namespace OpenGLPractice.Game
 
         public static GameObject CreateGameObjectDefault(string i_ClassName, string i_GameObjectName, params object[] i_Arguments)
         {
-            GameObject gameObjectToCreate = null;
+            GameObject gameObjectToCreate;
             Type gameObjectType;
 
             bool isClassNameAType = sr_NameToGameObjectTypeDictionary.TryGetValue(i_ClassName, out gameObjectType);
@@ -77,7 +76,7 @@ namespace OpenGLPractice.Game
                 }
 
                 gameObjectToCreate = (GameObject)gameObjectConstructor.Invoke(parameters);
-                gameObjectToCreate.InitializeList();
+                gameObjectToCreate.InitializeDisplayList();
             }
             else
             {
@@ -92,24 +91,15 @@ namespace OpenGLPractice.Game
         {
             Rod rodCreated = new Rod(i_Name, i_InnerRodRadius, i_OuterRingWidth, i_Height, i_RodTexture);
 
-            rodCreated.InitializeList();
+            rodCreated.InitializeDisplayList();
 
             return rodCreated;
         }
 
-        ////public static WorldCube CreateWorldCube(string i_Name, Bitmap[] i_CubemapTextureImages)
-        ////{
-        ////    WorldCube worldCubeCreated = new WorldCube(i_Name, i_CubemapTextureImages);
-
-        ////    worldCubeCreated.InitializeList();
-
-        ////    return worldCubeCreated;
-        ////}
-
         public static Surface CreateSurface(string i_Name, float i_XZCoverage, float i_QuadPieceSize, Func<float, float, float> i_SurfaceFunctionXZ)
         {
             Surface surfaceToBeCreated = new Surface(i_Name, i_XZCoverage, i_QuadPieceSize, i_SurfaceFunctionXZ);
-            surfaceToBeCreated.InitializeList();
+            surfaceToBeCreated.InitializeDisplayList();
 
             return surfaceToBeCreated;
         }
@@ -117,7 +107,7 @@ namespace OpenGLPractice.Game
         public static Sphere CreateSphere(string i_Name, float i_SphereRadius, Texture i_SphereTexture)
         {
             Sphere sphereToBeCreated= new Sphere(i_Name, i_SphereRadius, i_SphereTexture);
-            sphereToBeCreated.InitializeList();
+            sphereToBeCreated.InitializeDisplayList();
 
             return sphereToBeCreated;
         }

@@ -261,7 +261,7 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glEndList());
         }
 
-        public void InitializeList()
+        public void InitializeDisplayList()
         {
             GLErrorCatcher.TryGLCall(() => GL.glPushMatrix());
             GLErrorCatcher.TryGLCall(() => GL.glNewList(r_GLListID, GL.GL_COMPILE));

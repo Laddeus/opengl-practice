@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenGLPractice.Game;
+﻿using OpenGLPractice.Game;
+using OpenGLPractice.GLMath;
 
 namespace OpenGLPractice.GameObjects
 {
@@ -18,6 +14,11 @@ namespace OpenGLPractice.GameObjects
         {
             MirrorFrame mirrorFrame = new MirrorFrame("Mirror Frame", i_MirrorSize);
             TelescopicPropeller mirrorPropeller = new TelescopicPropeller("Mirror Propeller", true);
+
+            foreach(GameObject mirrorPropellerChild in mirrorPropeller.Children)
+            {
+            }
+
             mirrorFrame.Transform.Translate(mirrorFrame.FrameHeight / 2, 0, 0);
             mirrorPropeller.Transform.Translate(0, i_MirrorSize + 1.2f, 0);
             mirrorPropeller.DisplayReflection = false;

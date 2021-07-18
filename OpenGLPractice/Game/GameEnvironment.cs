@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using OpenGL;
 using OpenGLPractice.GameObjects;
 using OpenGLPractice.GLMath;
-using OpenGLPractice.Milkshake;
 using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice.Game
@@ -58,8 +57,6 @@ namespace OpenGLPractice.Game
         {
             GameObjects = new GameObjectCollection();
             Light = Light.CreateLight(Light.eLightTypes.Point);
-            //Light test = Light.CreateLight(Light.eLightTypes.Spotlight);
-            //test.Position = new Vector3(0, 15, 0);
             Camera = new Camera();
             Light.Position = new Vector3(0, 5f, 0f);
             ShadowSurfaces = new List<ShadowSurface>();
@@ -71,28 +68,6 @@ namespace OpenGLPractice.Game
 
             r_WorldCube = new WorldCube("WorldCube");
             r_WorldCube.Size = 100.0f;
-
-            // ShadowSurface groundSurface = new ShadowSurface()
-            // {
-            //     SurfacePoints = new Matrix3(new Vector3[]
-            //     {
-            //         new Vector3(0, -0, 0),
-            //         new Vector3(-1, -0, 1),
-            //         new Vector3(1, -0, 1)
-            //     }),
-
-            //     ClippingObject = ground
-            // };
-
-            // ShadowSurfaces.Add(groundSurface);
-            Random random = new Random();
-            Surface surface =
-                GameObjectCreator.CreateSurface("Surface", 5, 0.05f,
-                    (i_X, i_Z) => i_X * i_X / 6 + i_Z * i_Z / 6);
-
-            surface.UseDisplayList = GameObject.v_UseDisplayList;
-            surface.Color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-            //GameObjects.Add(surface);
         }
 
         private CubemapTexture generateSpaceCubemapTexture()
@@ -117,7 +92,6 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glPushAttrib(GL.GL_LIGHTING_BIT));
 
             drawWorldCube();
-            //character.DrawModel();
 
             foreach (GameObject gameObject in GameObjects)
             {
@@ -160,7 +134,7 @@ namespace OpenGLPractice.Game
             {
                 GL.glLoadMatrixf(matrixBeforeAnyTransformations);
 
-                applyClipping(new GameObject[] { reflectionSurface });
+                applyClipping(reflectionSurface);
 
                 GL.glScalef(-1, 1, 1);
                 GL.glTranslatef(-2 * reflectionSurface.Transform.Position.X, 0, 0);
@@ -169,15 +143,21 @@ namespace OpenGLPractice.Game
                 {
                     if(gameObject.DisplayReflection)
                     {
+                        Vector3 oldScale = gameObject.Transform.Scale;
+
+                        gameObject.Transform.ChangeScale(-1, 1, 1);
                         gameObject.Draw();
+                        gameObject.Transform.Scale = oldScale;
                     }
                 }
 
                 //if (DrawShadows)
                 //{
-                //    GL.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
+                //    //GL.glPushAttrib(GL.GL_STENCIL_BUFFER_BIT);
+                //    GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_BLEND));
                 //    drawShadows(reflectionSurface);
-                //    GL.glPopAttrib();
+                //    GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_BLEND));
+                //    //GL.glPopAttrib();
                 //}
             }
 
@@ -211,8 +191,7 @@ namespace OpenGLPractice.Game
 
                 // (matrixBeforeAnyTransformations * (shadowMatrix * (specificObjectsAccumulatedMatrix * every_pixel_of_object_vector)))
 
-                //GLErrorCatcher.TryGLCall(() => GL.glClear(GL.GL_STENCIL_BUFFER_BIT));
-                applyClipping(new GameObject[] { shadowSurface.ClippingObject, i_ReflectiveSurface });
+                applyClipping(shadowSurface.ClippingObject);
                 GameObject.ShadowColor = shadowSurface.ClippingObject.Color * k_GreyscaleValue;
                 foreach (GameObject gameObject in GameObjects)
                 {
@@ -228,26 +207,21 @@ namespace OpenGLPractice.Game
             GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_STENCIL_TEST));
         }
 
-        private void applyClipping(GameObject[] i_ClippingObject)
+        private void applyClipping(GameObject i_ClippingObject)
         {
             GLErrorCatcher.TryGLCall(() => GL.glClear(GL.GL_STENCIL_BUFFER_BIT));
-            GLErrorCatcher.TryGLCall(() => GL.glStencilOp(GL.GL_KEEP, GL.GL_REPLACE, GL.GL_REPLACE));
+            GLErrorCatcher.TryGLCall(() => GL.glStencilOp(GL.GL_REPLACE, GL.GL_REPLACE, GL.GL_REPLACE));
             GLErrorCatcher.TryGLCall(() => GL.glStencilFunc(GL.GL_ALWAYS, 1, 0xFF));
             GLErrorCatcher.TryGLCall(() =>
                 GL.glColorMask((byte)GL.GL_FALSE, (byte)GL.GL_FALSE, (byte)GL.GL_FALSE, (byte)GL.GL_FALSE));
             GLErrorCatcher.TryGLCall(() => GL.glDisable(GL.GL_DEPTH_TEST));
 
-            if (i_ClippingObject != null)
-            {
-                foreach(GameObject clippingObject in i_ClippingObject)
-                {
-                    clippingObject?.Draw();
-                }
-            }
+            i_ClippingObject?.Draw();
 
             GLErrorCatcher.TryGLCall(() => GL.glEnable(GL.GL_DEPTH_TEST));
-            GLErrorCatcher.TryGLCall(() =>
-            GL.glColorMask((byte)GL.GL_TRUE, (byte)GL.GL_TRUE, (byte)GL.GL_TRUE, (byte)GL.GL_TRUE));
+            GLErrorCatcher.TryGLCall(
+                () => GL.glColorMask((byte)GL.GL_TRUE, (byte)GL.GL_TRUE, (byte)GL.GL_TRUE, (byte)GL.GL_TRUE));
+            GLErrorCatcher.TryGLCall(() => GL.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_REPLACE));
 
             uint functionMode = i_ClippingObject != null ? GL.GL_EQUAL : GL.GL_NOTEQUAL;
             GLErrorCatcher.TryGLCall(() => GL.glStencilFunc(functionMode, 1, 0xFF));
@@ -275,8 +249,8 @@ namespace OpenGLPractice.Game
             // mirror
             Mirror mirror = new Mirror("Mirror", 5);
             mirror.Transform.Position = new Vector3(10, 11, 0);
+
             resetGameObjectsState();
-           
             ReflectionSurfaces.Add(mirror);
             ShadowSurfaces.Add(tableShadow);
             GameObjects.AddRange(HeliCups);

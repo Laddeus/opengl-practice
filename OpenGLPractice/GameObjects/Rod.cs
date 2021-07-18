@@ -1,5 +1,6 @@
 ﻿using OpenGL;
 using OpenGLPractice.Game;
+using OpenGLPractice.GLMath;
 using OpenGLPractice.OpenGLUtilities;
 
 namespace OpenGLPractice.GameObjects
@@ -43,10 +44,6 @@ namespace OpenGLPractice.GameObjects
             GLU.gluDisk(sr_GluQuadric, r_InnerCylinderRadius, r_OuterCylinderRadius, 40, 40);
 
             GL.glDisable(GL.GL_TEXTURE_2D);
-        }
-
-        public override void Tick(float i_DeltaTime)
-        {
         }
     }
 }

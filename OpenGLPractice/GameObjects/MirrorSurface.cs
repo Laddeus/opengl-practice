@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenGL;
+﻿using OpenGL;
 using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
 
@@ -18,14 +13,9 @@ namespace OpenGLPractice.GameObjects
             : base(i_Name)
         {
             r_MirrorSurfaceRadius = i_MirrorSurfaceRadius;
-            //UseMaterial = v_UseMaterial;
             IsTransparent = v_IsTransparent;
             Color = r_MirrorColor;
             Transform.Rotate(90, 0, 1, 0);
-            //Material.Ambient = new Vector4(0.23125f, 0.23125f, 0.23125f, 1.0f);
-            //Material.Diffuse = new Vector4(0.2775f, 0.2775f, 0.2775f, 1.0f);
-            //Material.Specular = new Vector4(0.773911f, 0.773911f, 0.773911f, 1.0f);
-            //Material.Shininess = 38.4f;
         }
 
         protected override void DefineGameObject()

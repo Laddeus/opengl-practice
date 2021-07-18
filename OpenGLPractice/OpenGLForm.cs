@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenGLPractice.Game;
 using OpenGLPractice.GLMath;
@@ -43,7 +41,6 @@ namespace OpenGLPractice
         private bool m_IsMousePressed = false;
         private Vector2 m_LastGameSceneClickPosition;
         private Vector3 m_LastPositionOfSelectedGameObject;
-        private bool m_GameStarted = false;
 
         public OpenGLForm()
         {
@@ -510,7 +507,7 @@ namespace OpenGLPractice
         private void applySelectedCubemapToWorldCube()
         {
             CubemapTexture selectedCubemapTexture = comboBoxCubemapSelection.SelectedItem as CubemapTexture;
-
+                
             if (selectedCubemapTexture != null)
             {
                 if (!selectedCubemapTexture.IsLoaded)
@@ -533,15 +530,12 @@ namespace OpenGLPractice
             }
         }
 
-        private readonly CancellationTokenSource m_CancellationTokenSource = new CancellationTokenSource();
         private async void startGame()
         {
-            m_GameStarted = true;
             buttonStartGame.Enabled = false;
             await cGL.GameEnvironment.StartGame();
 
             buttonResetGame.Enabled = true;
-            //Task.Run(cGL.GameEnvironment.StartGame, m_CancellationTokenSource.Token);
         }
 
         public async void resetGame()
